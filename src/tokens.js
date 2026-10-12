@@ -1,7 +1,7 @@
 import { lightness, withLightness } from './color.js'
 
-// colorsbymax token schema. Every themeable colour is one of these keys, exposed to CSS as
-// `--color-<key>`. A site maps its colours onto these keys once (e.g. Tailwind v4 @theme
+// Kamiliyon token schema. Every themeable color is one of these keys, exposed to CSS as
+// `--color-<key>`. A site maps its colors onto these keys once (e.g. Tailwind v4 @theme
 // variables), after which any theme can be applied at runtime.
 
 /**
@@ -69,14 +69,14 @@ export const TOKEN_GROUPS = [
   {
     group: 'Data / categorical',
     tokens: [
-      { key: 'data-1', label: 'Data 1', usage: 'Charts, icons, category colour 1' },
-      { key: 'data-2', label: 'Data 2', usage: 'Category colour 2' },
-      { key: 'data-3', label: 'Data 3', usage: 'Category colour 3' },
-      { key: 'data-4', label: 'Data 4', usage: 'Category colour 4' },
-      { key: 'data-5', label: 'Data 5', usage: 'Category colour 5' },
-      { key: 'data-6', label: 'Data 6', usage: 'Category colour 6' },
-      { key: 'data-7', label: 'Data 7', usage: 'Category colour 7' },
-      { key: 'data-8', label: 'Data 8', usage: 'Category colour 8' },
+      { key: 'data-1', label: 'Data 1', usage: 'Charts, icons, category color 1' },
+      { key: 'data-2', label: 'Data 2', usage: 'Category color 2' },
+      { key: 'data-3', label: 'Data 3', usage: 'Category color 3' },
+      { key: 'data-4', label: 'Data 4', usage: 'Category color 4' },
+      { key: 'data-5', label: 'Data 5', usage: 'Category color 5' },
+      { key: 'data-6', label: 'Data 6', usage: 'Category color 6' },
+      { key: 'data-7', label: 'Data 7', usage: 'Category color 7' },
+      { key: 'data-8', label: 'Data 8', usage: 'Category color 8' },
     ],
   },
   {
@@ -275,6 +275,6 @@ export function completeTokens(partial, base = BASE_TOKENS) {
   return full
 }
 
-/** The built-in "colorsbymax picks": hand-tuned themes that pass every contrast check. */
+/** The built-in "Kamiliyon picks": hand-tuned themes that pass every contrast check. */
 /** @type {Theme[]} */
 export const PRESETS = RAW_PRESETS.map((t) => ({ ...t, tokens: completeTokens(t.tokens) }))

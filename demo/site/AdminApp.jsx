@@ -6,7 +6,7 @@
 //   Posts, Testimonials   write, edit and delete what the docs page shows
 //   Announcement  a banner on every page, switched on and off from here
 //   Site text     the landing page's hero text
-//   Colour panel  switch parts of the colour panel off for everyone (e.g. something buggy)
+//   Color panel  switch parts of the color panel off for everyone (e.g. something buggy)
 
 import { useEffect, useState } from 'react'
 import {
@@ -29,23 +29,24 @@ const SECTIONS = [
   { id: 'announcement', label: 'Announcement', Icon: Megaphone },
   { id: 'bell', label: 'Bell messages', Icon: Bell },
   { id: 'text', label: 'Site text', Icon: Type },
-  { id: 'panel', label: 'Colour panel', Icon: Palette },
+  { id: 'panel', label: 'Color panel', Icon: Palette },
 ]
-/** What each colour panel feature is, for its switch. */
+/** What each color panel feature is, for its switch. */
 const FEATURE_INFO = {
   picks: ['Max’s picks', 'The hand-tuned themes group.'],
   library: ['Theme library', 'The 715 community palettes, by mood.'],
-  search: ['Search', 'The search box and its colour suggestions.'],
-  surprise: ['Surprise me', 'Picks a random theme, with a burst of colour.'],
-  scan: ['Scan site', 'Reads a site’s colours and builds themes around them.'],
+  search: ['Search', 'The search box and its color suggestions.'],
+  surprise: ['Surprise me', 'Picks a random theme, with a burst of color.'],
+  scan: ['Scan site', 'Reads a site’s colors and builds themes around them.'],
   custom: ['Custom palettes', 'Visitors building their own palettes.'],
-  overrides: ['Override a single colour', 'Changing one colour at a time.'],
+  overrides: ['Override a single color', 'Changing one color at a time.'],
   importExport: ['Import / export', 'Sharing palettes, and palettes from files.'],
   audit: ['Audit', 'Points out what won’t look right on the page.'],
   addToSite: ['Add to site', 'The light and dark switch for a visitor’s own site.'],
-  colourStyle: ['Subtle / Balanced / Colourful', 'The switch for how boldly a theme paints the site.'],
-  colourCount: ['Colours per theme', '− and + for how many colours a theme uses.'],
-  studio: ['Studio', 'Going deeper: point and click to colour any part, and choosing which pages get the colours.'],
+  colourStyle: ['Subtle / Balanced / Colorful', 'The switch for how boldly a theme paints the site.'],
+  colourCount: ['Colors per theme', '− and + for how many colors a theme uses.'],
+  picker: ['Color picker', 'Picking a color from the site and getting five themes built around it.'],
+  studio: ['Studio', 'Going deeper: point and click to color any part, and choosing which pages get the colors.'],
 }
 const sectionFromHash = () => SECTIONS.find((s) => s.id === location.hash.slice(1))?.id ?? 'overview'
 
@@ -109,7 +110,7 @@ function Workspace({ login, signOut, section, home }) {
           {avatar ? <img src={avatar} alt="" className="h-11 w-11 rounded-2xl" /> : <ShieldCheck className="h-8 w-8" aria-hidden="true" />}
           <div>
             <p className="text-[11px] font-bold tracking-widest uppercase opacity-60">Admin</p>
-            <h1 className="font-display text-xl font-bold">colorsbymax admin</h1>
+            <h1 className="font-display text-xl font-bold">Kamiliyon admin</h1>
             <p className="text-xs opacity-70">Signed in with GitHub as {login}</p>
           </div>
         </div>
@@ -159,7 +160,7 @@ function Workspace({ login, signOut, section, home }) {
           {section === 'overview' && <Overview inbox={inbox} content={content} fresh={fresh} onNew={(kind) => setEditing({ kind })} />}
           {section === 'feedback' && (
             <>
-              <Head title="Feedback" text="Every report from colorsbymax and mrmaxdesigns.com. Reply from here: it’s emailed to them, and their answer comes to your inbox." />
+              <Head title="Feedback" text="Every report from Kamiliyon and mrmaxdesigns.com. Reply from here: it’s emailed to them, and their answer comes to your inbox." />
               <Inbox inbox={inbox} reload={reloadInbox} setInbox={setInbox} />
             </>
           )}
@@ -352,7 +353,7 @@ function AnnouncementEditor({ onSaved }) {
             <label htmlFor="ann-text" className="text-sm font-semibold text-ink">Message</label>
             <span className={`text-xs tabular-nums ${draft.text.length > MAX_ANNOUNCEMENT - 20 ? 'text-warning' : 'text-ink-muted'}`}>{draft.text.length} / {MAX_ANNOUNCEMENT}</span>
           </div>
-          <textarea id="ann-text" rows={2} maxLength={MAX_ANNOUNCEMENT} value={draft.text} onChange={(e) => set({ text: e.target.value })} placeholder="colorsbymax 0.4.0 is out: themes can now take over plain sites." className={input} />
+          <textarea id="ann-text" rows={2} maxLength={MAX_ANNOUNCEMENT} value={draft.text} onChange={(e) => set({ text: e.target.value })} placeholder="Kamiliyon 0.6.0 is out: pick a color from your site and get five themes." className={input} />
         </div>
         <div className={`${tile} grid gap-4 sm:grid-cols-[1fr_200px]`}>
           <div>
@@ -367,7 +368,7 @@ function AnnouncementEditor({ onSaved }) {
         <div className={tile}>
           <p className="text-sm font-semibold text-ink">Style</p>
           <div role="radiogroup" aria-label="Style" className="mt-2 flex gap-2">
-            {[['brand', 'Brand', 'The theme’s own colour'], ['soft', 'Soft', 'A light tint, calmer']].map(([id, label, note]) => (
+            {[['brand', 'Brand', 'The theme’s own color'], ['soft', 'Soft', 'A light tint, calmer']].map(([id, label, note]) => (
               <button key={id} type="button" role="radio" aria-checked={draft.tone === id} onClick={() => set({ tone: id })} className={`flex-1 cursor-pointer rounded-xl border px-3 py-2 text-left text-sm transition ${draft.tone === id ? 'border-ink bg-ink text-background' : 'border-border text-ink hover:border-primary'}`}>
                 <span className="block font-semibold">{label}</span>
                 <span className="block text-xs opacity-75">{note}</span>
@@ -389,7 +390,7 @@ const MAX_NOTICES = 10
 const newNotice = () => ({ id: `n-${Date.now().toString(36)}`, title: '', text: '', link: '', label: '', date: new Date().toISOString().slice(0, 10) })
 
 /**
- * The messages in colorsbymax's bell, seen by everyone who has it installed (where they work on their
+ * The messages in Kamiliyon's bell, seen by everyone who has it installed (where they work on their
  * site). Updates announce themselves when a release is published; these are for anything else: a
  * feature you'd like feedback on, what's coming next.
  */
@@ -416,7 +417,7 @@ function BellEditor({ onSaved }) {
     <>
       <Head
         title="Bell messages"
-        text="Messages in the bell of every colorsbymax install, where people work on their sites (never to their visitors). New releases announce themselves with how to update, as soon as you publish; write here for anything else, like a feature you’d like feedback on. Newest first; each install checks once a day."
+        text="Messages in the bell of every Kamiliyon install, where people work on their sites (never to their visitors). New releases announce themselves with how to update, as soon as you publish; write here for anything else, like a feature you’d like feedback on. Newest first; each install checks once a day."
       />
       <BellNow notices={current} />
       <div className="space-y-4">
@@ -489,7 +490,7 @@ function BellNow({ notices }) {
         <p className="text-xs font-bold tracking-wide text-ink-muted uppercase">Sent by itself when you publish</p>
         {release ? (
           <>
-            <p className="mt-2 text-sm font-semibold text-ink">colorsbymax {release.version} is out</p>
+            <p className="mt-2 text-sm font-semibold text-ink">Kamiliyon {release.version} is out</p>
             <p className="text-xs text-ink-secondary">Shown to everyone on an older version, with the version they have.</p>
             {release.notes.length > 0 ? (
               <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-ink">
@@ -593,11 +594,11 @@ function PanelFeatures({ onSaved }) {
     const res = await saveSettings({ ...settings, features: off })
     setBusy(false)
     setError(res.ok ? null : res.error)
-    if (res.ok) onSaved(res.preview ? 'Saved (preview only: nothing was stored).' : 'Saved. The colour panel changes for every visitor within a minute.')
+    if (res.ok) onSaved(res.preview ? 'Saved (preview only: nothing was stored).' : 'Saved. The color panel changes for every visitor within a minute.')
   }
   return (
     <>
-      <Head title="Colour panel" text="Switch parts of the colour panel off for everyone, for example while something is buggy. Off hides it from visitors and from their settings." />
+      <Head title="Color panel" text="Switch parts of the color panel off for everyone, for example while something is buggy. Off hides it from visitors and from their settings." />
       <ul className="grid gap-3 sm:grid-cols-2">
         {Object.keys(FEATURES).map((key) => {
           const [label, text] = FEATURE_INFO[key] ?? [key, '']

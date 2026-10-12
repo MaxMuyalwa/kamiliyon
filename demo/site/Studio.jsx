@@ -1,5 +1,5 @@
 // The landing page's spotlight on Studio: what it does, and Studio at work on this very page, live
-// (a card picked out and given its own colours), in the visitor's current theme.
+// (a card picked out and given its own colors), in the visitor's current theme.
 
 import { Files, Layers, MousePointerClick, ScanSearch, ShieldCheck, Sparkles } from 'lucide-react'
 import { LivePreview, Scaled, useColourVersion } from './Hero.jsx'
@@ -8,15 +8,15 @@ import { Reveal, SectionHeading, openStudio } from './ui.jsx'
 const POINTS = [
   { Icon: MousePointerClick, title: 'Point and click anything', text: 'A button, a card, a heading, the footer. Pick it on the page and give it its own background, text and border.' },
   { Icon: Layers, title: 'One, all of them, or every page', text: 'Change just that part, every part like it on the page, or every one like it on every page of your site.' },
-  { Icon: ShieldCheck, title: 'Readable from the first click', text: 'Studio checks the text in what you pick straight away, marks colours that wouldn’t read, and Fix finds one that does.' },
-  { Icon: Files, title: 'Only the pages you choose', text: 'Colour the landing page and leave the app inside as it is, or any set of pages. Studio finds them on your site.' },
-  { Icon: ScanSearch, title: 'Check the page', text: 'Audit points out what won’t look right in your colours: a logo that disappears, a picture with a white box.' },
+  { Icon: ShieldCheck, title: 'Readable from the first click', text: 'Studio checks the text in what you pick straight away, marks colors that wouldn’t read, and Fix finds one that does.' },
+  { Icon: Files, title: 'Only the pages you choose', text: 'Color the landing page and leave the app inside as it is, or any set of pages. Studio finds them on your site.' },
+  { Icon: ScanSearch, title: 'Check the page', text: 'Audit points out what won’t look right in your colors: a logo that disappears, a picture with a white box.' },
   { Icon: Sparkles, title: 'Keep it for good', text: 'Save it all as a prompt for Claude, Cursor or Copilot, or as CSS, and your site keeps exactly what you made.' },
 ]
 
 /**
  * Studio at work, live: this page in a window, with Studio picking one of its cards and giving it
- * the theme's colour (preview.js), in the visitor's current theme.
+ * the theme's color (preview.js), in the visitor's current theme.
  */
 function Picture() {
   const version = useColourVersion()
@@ -43,7 +43,7 @@ export function Studio() {
       <div className="mx-auto grid max-w-6xl items-center gap-16 lg:grid-cols-[1.05fr_1fr]">
         <div>
           <SectionHeading id="studio-title" eyebrow="New · Studio" title="Go deeper than a theme" align="left">
-            A theme colours your whole site in one click. Studio is for the rest: open it from the panel’s header and colour your site part by
+            A theme colors your whole site in one click. Studio is for the rest: open it from the panel’s header and color your site part by
             part, exactly the way you want it.
           </SectionHeading>
           <ul className="grid gap-5 sm:grid-cols-2">
@@ -71,7 +71,7 @@ export function Studio() {
         </div>
         <Reveal delay={100}>
           <Picture />
-          <p className="mt-3 text-center text-sm text-ink-muted">This page, live: Studio picking a card and giving it the theme’s colour.</p>
+          <p className="mt-3 text-center text-sm text-ink-muted">This page, live: Studio picking a card and giving it the theme’s color.</p>
         </Reveal>
       </div>
     </section>

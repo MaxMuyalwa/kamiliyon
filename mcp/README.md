@@ -1,16 +1,16 @@
-# colorsbymax MCP server
+# Kamiliyon MCP server
 
-An [MCP](https://modelcontextprotocol.io) server that teaches AI agents (Claude Code, Cursor, GitHub Copilot, Codex, Google Antigravity, Gemini CLI, Grok Build, Claude Desktop, Windsurf, Kiro, Zed and others) to use [colorsbymax](https://github.com/MaxMuyalwa/colorsbymax), the live theme switcher for websites.
+An [MCP](https://modelcontextprotocol.io) server that teaches AI agents (Claude Code, Cursor, GitHub Copilot, Codex, Google Antigravity, Gemini CLI, Grok Build, Claude Desktop, Windsurf, Kiro, Zed and others) to use [Kamiliyon](https://github.com/MaxMuyalwa/colorsbymax), the live theme switcher for websites.
 
 With it, you can ask your agent things like:
 
-- *"Add colorsbymax to this project."*
+- *"Add Kamiliyon to this project."*
 - *"Find me a calm ocean theme that works in dark mode."*
-- *"Build a theme around our brand colours #e63946 and #1d3557."*
+- *"Build a theme around our brand colors #e63946 and #1d3557."*
 - *"Does white text pass on #f59e0b?"*
-- *"I've picked my colours. Make them the default and hide the switcher in production."*
+- *"I've picked my colors. Make them the default and hide the switcher in production."*
 
-The agent inspects the project, gets the exact install command and edits for its framework, and uses the same theme library, palette builder and contrast checks as the colorsbymax panel.
+The agent inspects the project, gets the exact install command and edits for its framework, and uses the same theme library, palette builder and contrast checks as the Kamiliyon panel.
 
 ## Add it to your editor
 
@@ -19,8 +19,8 @@ It runs with `npx`, so there's nothing to install first. Node 18 or later.
 **Adding the server doesn't change your site by itself.** It gives your agent the tools. After adding it:
 
 1. **Start a new chat or session** in your project. Agents load MCP servers when a session starts.
-2. **Ask:** *"Add colorsbymax to this project."* The agent installs colorsbymax and adds the one line it needs.
-3. **Run your site.** The colour button appears in the bottom-right corner.
+2. **Ask:** *"Add Kamiliyon to this project."* The agent installs Kamiliyon and adds the one line it needs.
+3. **Run your site.** The color button appears in the bottom-right corner.
 
 **Claude Code**
 
@@ -96,25 +96,25 @@ On Windows, if your editor can't start `npx`, use `"command": "cmd"` with `"args
 
 | Tool | What it does |
 | --- | --- |
-| `setup_plan` | Inspects a project folder and returns the install command and the exact edits to add the colour button. It covers Vite, Create React App, Next.js (app and pages routers), Remix and React Router, Gatsby, Astro, Nuxt, SvelteKit, Vue and Svelte apps, and plain HTML sites with no bundler. It says whether the site paints with colorsbymax's `--color-*` tokens or will be re-coloured automatically, and reports an existing setup and any available update. |
-| `find_themes` | Searches the 720 built-in themes (Max's picks and the library) by name or mood, by category (pastel, earthy, ocean, moody…), or by how close they are to a brand colour, in light or dark. |
+| `setup_plan` | Inspects a project folder and returns the install command and the exact edits to add the color button. It covers Vite, Create React App, Next.js (app and pages routers), Remix and React Router, Gatsby, Astro, Nuxt, SvelteKit, Vue and Svelte apps, and plain HTML sites with no bundler. It says whether the site paints with Kamiliyon's `--color-*` tokens or will be re-colored automatically, and reports an existing setup and any available update. |
+| `find_themes` | Searches the 720 built-in themes (Max's picks and the library) by name or mood, by category (pastel, earthy, ocean, moody…), or by how close they are to a brand color, in light or dark. |
 | `get_theme` | Returns every token of a theme, with its contrast report. Formats: theme JSON (the panel's Import/export format), CSS variables, Tailwind v4 `@theme`, or a `defaultTheme` config. |
-| `theme_from_colours` | Builds a complete, contrast-checked 35-token theme around 1–8 colours, as the panel does for an uploaded image. It can return the dark version too. |
-| `check_contrast` | Checks a theme the way the panel does (text on the page and on cards, button text, icons and more) and returns the smallest fixes. It can also check plain pairs of foreground and background colours. |
-| `finish` | Once the colours are chosen: **keep** makes them every visitor's default and hides the button in production; **bring-back** shows it again; **hide-locally** hides it on one device; **remove** uninstalls colorsbymax and keeps the colours in your CSS. |
-| `docs` | colorsbymax's documentation by topic: overview, quick start, full setup, tokens, finishing, updating, and the full TypeScript API. |
+| `theme_from_colours` | Builds a complete, contrast-checked 35-token theme around 1–8 colors, as the panel does for an uploaded image. It can return the dark version too. |
+| `check_contrast` | Checks a theme the way the panel does (text on the page and on cards, button text, icons and more) and returns the smallest fixes. It can also check plain pairs of foreground and background colors. |
+| `finish` | Once the colors are chosen: **keep** makes them every visitor's default and hides the button in production; **bring-back** shows it again; **hide-locally** hides it on one device; **remove** uninstalls Kamiliyon and keeps the colors in your CSS. |
+| `docs` | Kamiliyon's documentation by topic: overview, quick start, full setup, tokens, finishing, updating, and the full TypeScript API. |
 
 It also has two prompts, `add-colorsbymax` and `finish-colorsbymax`, which some editors show as slash commands.
 
 ## What it can and can't do
 
-- **It reads your project but never changes it.** `setup_plan` scans source files to detect the framework and how colours are painted. The agent makes the edits it describes, so you review them as usual.
-- **Network:** one request to the npm registry, to check for the newest colorsbymax version. It works offline too.
-- **Picking colours happens on the page.** The agent can suggest and build themes, but the best way to choose is in the colorsbymax panel on your running site. You can paste theme JSON from the agent into the panel's Import/export, or copy the panel's theme to the agent for `finish`.
+- **It reads your project but never changes it.** `setup_plan` scans source files to detect the framework and how colors are painted. The agent makes the edits it describes, so you review them as usual.
+- **Network:** one request to the npm registry, to check for the newest Kamiliyon version. It works offline too.
+- **Picking colors happens on the page.** The agent can suggest and build themes, but the best way to choose is in the Kamiliyon panel on your running site. You can paste theme JSON from the agent into the panel's Import/export, or copy the panel's theme to the agent for `finish`.
 
 ## Development
 
-The server bundles colorsbymax's colour engine from `../src`, so the MCP server and the panel always agree.
+The server bundles Kamiliyon's color engine from `../src`, so the MCP server and the panel always agree.
 
 ```bash
 # from the repo root

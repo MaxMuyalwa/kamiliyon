@@ -1,5 +1,5 @@
 // Light and dark versions of themes. Every built-in theme is designed light, so dark mode
-// derives a dark twin: dark tinted surfaces, light text, and brand and data colours lifted
+// derives a dark twin: dark tinted surfaces, light text, and brand and data colors lifted
 // until they read on the dark background, then the usual contrast auto-fix.
 
 import { contrastRatio, hexToRgb, hslToRgb, luminance, rgbToHex, rgbToHsl } from './color.js'
@@ -28,7 +28,7 @@ const lift = (hex, min, max = 0.78) => {
 }
 
 /**
- * Lightens a colour, keeping its hue and saturation, until it reaches `ratio` against `bg`.
+ * Lightens a color, keeping its hue and saturation, until it reaches `ratio` against `bg`.
  * Lightness alone doesn't guarantee that: a vivid blue or violet at 60% lightness still reads dark.
  */
 const readOn = (hex, bg, ratio) => {
@@ -51,7 +51,7 @@ export function darkTokens(t) {
   const areaBg = deriveAppTokens({ ...t, secondary })['app-background']
   const lighterBg = luminance(areaBg) > luminance(background) ? areaBg : background
   // Primary is also text in dark mode (links, badges): lift it until it reads, then give buttons
-  // whichever text colour reads best on it, the page's dark tone or white.
+  // whichever text color reads best on it, the page's dark tone or white.
   const primary = readOn(lift(t.primary, 0.58, 0.7), lighterBg, TEXT)
   const onPrimary = [background, '#ffffff'].sort((a, b) => contrastRatio(b, primary) - contrastRatio(a, primary))[0]
   const tokens = {
@@ -76,7 +76,7 @@ export function darkTokens(t) {
     danger: readOn(lift(t.danger, 0.66), background, ICON),
     info: readOn(lift(t.info, 0.66), background, ICON),
   }
-  // Data 1 and 2 are also used as text; the rest as icons and chart colours.
+  // Data 1 and 2 are also used as text; the rest as icons and chart colors.
   for (let n = 1; n <= 8; n++) tokens[`data-${n}`] = readOn(lift(t[`data-${n}`], 0.6), background, n <= 2 ? TEXT : ICON)
   const full = { ...tokens, ...deriveAppTokens(tokens) }
   return { ...full, ...fixAll(full) }
@@ -101,20 +101,20 @@ export function toDark(theme) {
 
 /**
  * The version of a theme to list for a mode. Custom palettes always appear exactly as the
- * visitor made them.
+ * visitor made them, except ones built by Kamiliyon (from a picked color), which get a dark twin.
  * @param {import('./tokens.js').Theme} theme
  * @param {'light' | 'dark'} mode
  */
-export const inMode = (theme, mode) => (mode === 'dark' && !theme.custom ? toDark(theme) : theme)
+export const inMode = (theme, mode) => (mode === 'dark' && (!theme.custom || theme.twin) ? toDark(theme) : theme)
 
-// The page's quiet colours: its background, surfaces, borders and soft tints.
+// The page's quiet colors: its background, surfaces, borders and soft tints.
 const QUIET = ['background', 'surface', 'secondary', 'accent', 'border', 'app-background', 'app-input', 'app-border']
 // Text that sits on those tints, kept readable once they're calmer.
 const ON_QUIET = { secondary: 'on-secondary', accent: 'on-accent' }
 
 /**
- * The Subtle style on a site painted with the colour tokens: the page's backgrounds, cards,
- * borders and tints go nearly neutral (same lightness, a hint of the hue), so the theme's colour
+ * The Subtle style on a site painted with the color tokens: the page's backgrounds, cards,
+ * borders and tints go nearly neutral (same lightness, a hint of the hue), so the theme's color
  * stays on what matters: buttons, links, headings, highlights and charts.
  */
 export function subtleTokens(t) {
@@ -131,23 +131,23 @@ export function subtleTokens(t) {
   return out
 }
 
-// ------------------------------------------------------------------ colour styles
+// ------------------------------------------------------------------ color styles
 // How boldly a site takes a theme: Subtle keeps the site's own look and brings the theme in on
-// its accents, Balanced is the theme as it's designed, and Colourful is an overhaul.
+// its accents, Balanced is the theme as it's designed, and Colorful is an overhaul.
 
-/** What Subtle keeps from the site: its backgrounds, cards, text, borders and status colours. */
+/** What Subtle keeps from the site: its backgrounds, cards, text, borders and status colors. */
 const SITE_KEYS = ['background', 'surface', 'border', 'shadow', 'ink', 'ink-secondary', 'ink-muted', 'success', 'warning', 'danger', 'info', 'app-background', 'app-input', 'app-border', 'app-shadow-dark', 'app-shadow-light', 'app-ink', 'app-ink-muted']
 
-/** The soft tints a page is coloured with (badges, icon tiles, bands): Subtle keeps them quiet. */
+/** The soft tints a page is colored with (badges, icon tiles, bands): Subtle keeps them quiet. */
 const TINT_KEYS = ['secondary', 'accent']
 
 /**
  * Subtle: the site's own backgrounds, cards and text stay (in the current mode). The theme's brand
- * colour comes in on buttons, links and highlights, and the soft tints (badges, icon tiles, bands)
+ * color comes in on buttons, links and highlights, and the soft tints (badges, icon tiles, bands)
  * take only a quiet, greyed hint of the theme, so the page keeps its own feel. Balanced shows those
  * tints in full. Every pairing is then checked, and anything hard to read nudged until it reads.
  * @param {import('./tokens.js').ThemeTokens} theme
- * @param {import('./tokens.js').ThemeTokens} site  the site's own colours, in the same mode
+ * @param {import('./tokens.js').ThemeTokens} site  the site's own colors, in the same mode
  */
 export function accentTokens(theme, site) {
   const out = { ...theme }
@@ -155,7 +155,7 @@ export function accentTokens(theme, site) {
   for (const key of TINT_KEYS) {
     if (!theme[key] || !site.background) continue
     const [h, sat] = hslOf(theme[key])
-    // The site's own page lightness, nudged a step towards a tint, with a fifth of the theme's colour.
+    // The site's own page lightness, nudged a step towards a tint, with a fifth of the theme's color.
     const [, , bgL] = hslOf(site.background)
     const l = bgL > 0.5 ? Math.max(0.86, bgL - 0.06) : Math.min(0.22, bgL + 0.07)
     out[key] = hsl(h, sat * 0.22, l)
@@ -170,13 +170,13 @@ const tintTowards = (colour, base, amount) => {
 }
 
 /**
- * Colourful: an overhaul. The page and its cards take a clear tint of the brand colours (soft in
- * light mode, deeper in dark), borders and tints lean towards them, and colorsbymax paints the
+ * Colorful: an overhaul. The page and its cards take a clear tint of the brand colors (soft in
+ * light mode, deeper in dark), borders and tints lean towards them, and Kamiliyon paints the
  * page's parts by role on top (see vivid.js). Text is checked against every new background.
  */
 export function vividTokens(t, { strength = 0.5, tint = null } = {}) {
-  // Strength runs from a light wash (0) to bold (1); a tint from the site's pictures colours the
-  // washes in place of the theme's brand colours.
+  // Strength runs from a light wash (0) to bold (1); a tint from the site's pictures colors the
+  // washes in place of the theme's brand colors.
   const k = Math.min(1, Math.max(0, strength))
   const lerp = (a, b) => a + (b - a) * k
   const dark = isDarkTheme(t)
@@ -186,7 +186,7 @@ export function vividTokens(t, { strength = 0.5, tint = null } = {}) {
     ...t,
     // Its lightest is still a clear step above Balanced's soft wash.
     background: tintTowards(wash, t.background, dark ? lerp(0.11, 0.24) : lerp(0.09, 0.19)),
-    // Cards take the same tint as the page (a second brand colour can clash on a large surface).
+    // Cards take the same tint as the page (a second brand color can clash on a large surface).
     surface: tintTowards(wash, t.surface, dark ? lerp(0.07, 0.18) : lerp(0.045, 0.11)),
     border: tintTowards(wash, t.border, lerp(0.15, 0.45)),
     secondary: tintTowards(wash, t.secondary, lerp(0.12, 0.4)),
@@ -202,7 +202,7 @@ export function vividTokens(t, { strength = 0.5, tint = null } = {}) {
 /**
  * Balanced: the theme in every role, with a soft wash of it on the page, cards and borders, so it
  * shows on the page even where the theme's own backgrounds are nearly white (or nearly black).
- * Gentler than Colourful at its lightest; text keeps the theme's own colours.
+ * Gentler than Colorful at its lightest; text keeps the theme's own colors.
  */
 export function balancedTokens(t) {
   const dark = isDarkTheme(t)

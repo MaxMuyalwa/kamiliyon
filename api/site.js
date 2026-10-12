@@ -1,4 +1,4 @@
-// The site's editable settings for every visitor: landing page text and which colour panel
+// The site's editable settings for every visitor: landing page text and which color panel
 // features are on. Written by the admin (api/admin/site.js); cached briefly at the edge.
 import { json, readSettings } from './_lib/admin.js'
 

@@ -1,4 +1,4 @@
-// The messages in colorsbymax's bell, for every install that checks (the switcher asks once a day,
+// The messages in Kamiliyon's bell, for every install that checks (the switcher asks once a day,
 // on development addresses by default). Written by the admin in the admin space (api/admin/site.js).
 // Any site may read them, so they're served to every origin; nothing about the caller is kept.
 import { json, readSettings } from './_lib/admin.js'

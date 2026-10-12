@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { ArrowDown, Moon, Palette, Sparkles, Sun } from 'lucide-react'
+import { ArrowDown, Moon, Palette, Sun } from 'lucide-react'
 import { useTheme } from '../../src/index.js'
 import { CopyButton, panelToggle } from './ui.jsx'
 import { PREVIEW } from './preview.js'
@@ -16,9 +16,9 @@ import forestPhone from '../assets/hero/forest-phone.webp'
 import roseDesktop from '../assets/hero/rose-desktop.webp'
 import rosePhone from '../assets/hero/rose-phone.webp'
 
-// Real screenshots of this site in use, each taken after picking the theme in the colour panel:
+// Real screenshots of this site in use, each taken after picking the theme in the color panel:
 // its preview pages (preview.js), the "Why" section with the panel open on a desktop and the
-// "colorsbymax way" card on a phone. Each comes with that theme's colours (themes.json), which
+// "Kamiliyon way" card on a phone. Each comes with that theme's colors (themes.json), which
 // paint the hero's text around it.
 const SHOTS = [
   { id: 'violet', name: 'Violet', mode: 'dark', desktop: violetDesktop, phone: violetPhone },
@@ -31,7 +31,7 @@ const LIVE = -1 // "This site": the same preview pages, live, in whatever theme 
 const DESKTOP = { width: 1440, height: 900 } // the screenshots' size in CSS pixels
 const PHONE = { width: 390, height: 844 }
 
-/** A theme's colours as CSS variables, so every token utility inside re-colours to it. */
+/** A theme's colors as CSS variables, so every token utility inside re-colors to it. */
 const themeVars = (id) => Object.fromEntries(Object.entries(THEMES[id]).map(([k, v]) => [`--color-${k}`, v]))
 
 /** Draws `children` at a fixed size, scaled down to fill the box it sits in, like a screenshot. */
@@ -104,7 +104,7 @@ function PreviewFrame({ kind, version, visible, onReady }) {
   )
 }
 
-/** The page's colours as a short key: it changes with every new theme or mode, after a pause. */
+/** The page's colors as a short key: it changes with every new theme or mode, after a pause. */
 export function useColourVersion() {
   const { tokens } = useTheme()
   const colours = Object.values(tokens).join()
@@ -200,7 +200,6 @@ export function Hero() {
 
           <div className="flex flex-col items-center px-5 pt-10 pb-4 text-center sm:px-8 md:pt-14">
             <p className="hero-in inline-flex items-center gap-2 rounded-full border border-border bg-surface/80 px-3 py-1 text-xs font-medium text-ink-secondary shadow-sm transition-colors duration-700 sm:text-sm" style={{ '--hero-delay': '150ms' }}>
-              <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
               {defaultBadge ? (
                 <>
                   <span className="hidden sm:inline">A live theme switcher · </span>700+ palettes · contrast checked

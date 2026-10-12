@@ -1,7 +1,7 @@
 // Studio's point and click, drawn over the page: while it's on, the part under the pointer is
 // outlined and named; a click picks it (instead of following a link or pressing a button) and
-// opens a card beside it to give it a background, text and border colour, from the theme or any
-// colour. Changes show at once and are kept; Done goes back to Studio in the panel.
+// opens a card beside it to give it a background, text and border color, from the theme or any
+// color. Changes show at once and are kept; Done goes back to Studio in the panel.
 
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { contrastRatio } from './color.js'
@@ -9,6 +9,7 @@ import { formatRatio } from './contrast.js'
 import { ArrowDownRight, ArrowUpLeft, Check, Trash2, X } from './icons.jsx'
 import { usePathname } from './scope.js'
 import { PROPS, SWATCH_TOKENS, bestText, checkText, childOf, describe, kindOf, parentOf, pickTarget, selectorOf } from './studio.js'
+import { PICK_ROLES, readPick } from './pick.js'
 import { useTheme } from './ThemeProvider.jsx'
 import { TOKEN_LABELS } from './tokens.js'
 
@@ -130,7 +131,7 @@ export default function StudioLayer({ onDone }) {
   const pick = (el, { stepping = false } = {}) => {
     if (!stepping) trail.current = []
     const info = describe(el)
-    // Picked before: carry on with its colours.
+    // Picked before: carry on with its colors.
     const existing = theme.paints.find((p) => (p.everywhere && info.similar && p.similar === info.similar) || (p.page === pathname && (p.one === info.one || (p.all && p.similar === info.similar))))
     setPicked({ ...info, paint: existing ?? { id: newId(), page: pathname, one: info.one, similar: info.similar, likeIt: info.likeIt, all: false, kind: info.kind, text: info.text, where: info.where, hasBorder: info.hasBorder, props: {} } })
   }
@@ -145,7 +146,7 @@ export default function StudioLayer({ onDone }) {
       <div className="pointer-events-none fixed inset-x-0 bottom-4 z-[70] flex justify-center px-3">
         <div className="pointer-events-auto flex max-w-full items-center gap-3 rounded-full border border-zinc-200 bg-white py-1.5 pr-1.5 pl-4 text-xs text-zinc-800 shadow-xl" role="status">
           <span className="min-w-0">
-            <strong className="font-semibold text-zinc-900">Studio:</strong> {coarse ? 'tap' : 'click'} any part of the page to colour it
+            <strong className="font-semibold text-zinc-900">Studio:</strong> {coarse ? 'tap' : 'click'} any part of the page to color it
           </span>
           <button type="button" onClick={onDone} className="shrink-0 rounded-full bg-zinc-900 px-3 py-1 text-xs font-semibold text-white cursor-pointer hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2">
             Done
@@ -212,8 +213,8 @@ function Editor({ picked, rect, onPickParent, canPickParent, onPickChild, canPic
   })
   useEffect(() => cardRef.current?.querySelector('button')?.focus({ preventScroll: true }), [])
 
-  // Checked as soon as it's picked, and again once new colours are on the page: at once, and after
-  // the site's own colour transitions (which report the colour mid-way) have finished.
+  // Checked as soon as it's picked, and again once new colors are on the page: at once, and after
+  // the site's own color transitions (which report the color mid-way) have finished.
   const roots = () => {
     if (!paint.all || !paint.similar) return [picked.el]
     try {
@@ -249,8 +250,8 @@ function Editor({ picked, rect, onPickParent, canPickParent, onPickChild, canPic
     else delete props[key]
     update({ ...paint, props })
   }
-  // Fix: the text colour that reads on every background the hard-to-read text sits on, checked
-  // against each of them; the theme's colour where one is good enough, else black or white.
+  // Fix: the text color that reads on every background the hard-to-read text sits on, checked
+  // against each of them; the theme's color where one is good enough, else black or white.
   const fixText = () => {
     const failing = check?.failing ?? []
     if (!failing.length) return
@@ -301,7 +302,7 @@ function Editor({ picked, rect, onPickParent, canPickParent, onPickChild, canPic
       </div>
       {!canPickChild && picked.text && (
         <p className="mt-1.5 text-[11px] text-zinc-600">
-          This is the text itself. To colour its words, use <strong className="font-semibold text-zinc-800">Text colour</strong> below.
+          This is the text itself. To color its words, use <strong className="font-semibold text-zinc-800">Text color</strong> below.
         </p>
       )}
 
@@ -333,7 +334,7 @@ function Editor({ picked, rect, onPickParent, canPickParent, onPickChild, canPic
       )}
       {paint.everywhere && (
         <p className="mt-1.5 text-[11px] leading-snug text-zinc-600">
-          Studio will colour every {picked.kind.toLowerCase()} like this on every page of your site, as you open them.
+          Studio will color every {picked.kind.toLowerCase()} like this on every page of your site, as you open them.
         </p>
       )}
 
@@ -343,13 +344,13 @@ function Editor({ picked, rect, onPickParent, canPickParent, onPickChild, canPic
         {PROPS.map(({ key, label }) => (
           <ColourRow
             key={key}
-            label={key === 'text' ? 'Text colour' : label}
+            label={key === 'text' ? 'Text color' : label}
             hint={key === 'border' && !paint.hasBorder ? 'adds an outline' : key === 'background' ? 'behind it' : key === 'text' ? 'its words' : null}
             value={paint.props[key]}
             swatches={swatches}
             onChange={(v) => setColour(key, v)}
             inScope={inScope}
-            // A background is checked against the text on it, a text colour against the background.
+            // A background is checked against the text on it, a text color against the background.
             readsOn={main && key === 'background' ? (hex) => ({ ratio: contrastRatio(main.text, hex), need: main.need }) : main && key === 'text' ? (hex) => ({ ratio: contrastRatio(hex, main.background), need: main.need }) : null}
           />
         ))}
@@ -411,7 +412,7 @@ function Readability({ check, onFix, fixed }) {
   )
 }
 
-/** One colour: the theme's swatches, any colour, or none (the part's own). */
+/** One color: the theme's swatches, any color, or none (the part's own). */
 function ColourRow({ label, hint, value, swatches, onChange, inScope, readsOn }) {
   const id = useId()
   const current = value ? (value.token && inScope ? swatches.find((s) => s.token === value.token)?.hex ?? value.hex : value.hex) : null
@@ -458,11 +459,91 @@ function ColourRow({ label, hint, value, swatches, onChange, inScope, readsOn })
         <label
           className={`relative grid h-6 w-6 place-items-center overflow-hidden rounded-md border cursor-pointer ${value && !value.token ? 'border-zinc-900 ring-2 ring-zinc-900 ring-offset-1' : 'border-zinc-300'}`}
           style={{ background: value && !value.token ? value.hex : 'conic-gradient(#f43f5e, #f59e0b, #10b981, #0ea5e9, #6366f1, #d946ef, #f43f5e)' }}
-          data-tip="Any colour"
+          data-tip="Any color"
         >
-          <span className="sr-only">Any colour for the {label.toLowerCase()}</span>
+          <span className="sr-only">Any color for the {label.toLowerCase()}</span>
           <input type="color" value={current ?? '#6366f1'} onChange={(e) => onChange({ hex: e.target.value })} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" />
         </label>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Picking a color from the site (Custom palettes): hovering names each part, its color and the
+ * job that color does ("Button · brand color · #6d28d9"); a click picks it instead of using it.
+ * Escape or Cancel goes back without a pick.
+ */
+export function ColourPickLayer({ onPick, onCancel }) {
+  const [hover, setHover] = useState(null)
+  const rect = useRect(hover?.el ?? null)
+  const latest = useRef({})
+  latest.current = { onPick, onCancel }
+  const coarse = typeof matchMedia === 'function' && matchMedia('(hover: none)').matches
+
+  useEffect(() => {
+    const onMove = (e) => {
+      if (e.pointerType === 'touch') return
+      const el = pickTarget(e)
+      setHover((h) => (h?.el === el ? h : el ? { el, ...readPick(el) } : null))
+    }
+    const block = (e) => {
+      if (!pickTarget(e)) return
+      e.preventDefault()
+      e.stopPropagation()
+      e.stopImmediatePropagation()
+    }
+    const onClick = (e) => {
+      const el = pickTarget(e)
+      if (!el) return
+      block(e)
+      latest.current.onPick(readPick(el))
+    }
+    const onKey = (e) => {
+      if (e.key !== 'Escape') return
+      e.preventDefault()
+      latest.current.onCancel()
+    }
+    const types = ['pointerdown', 'mousedown', 'mouseup', 'pointerup', 'submit', 'dblclick']
+    document.addEventListener('pointermove', onMove, true)
+    for (const type of types) document.addEventListener(type, block, true)
+    document.addEventListener('click', onClick, true)
+    document.addEventListener('keydown', onKey, true)
+    document.documentElement.style.setProperty('cursor', 'crosshair')
+    return () => {
+      document.removeEventListener('pointermove', onMove, true)
+      for (const type of types) document.removeEventListener(type, block, true)
+      document.removeEventListener('click', onClick, true)
+      document.removeEventListener('keydown', onKey, true)
+      document.documentElement.style.removeProperty('cursor')
+    }
+  }, [])
+
+  const role = hover && PICK_ROLES.find((r) => r.id === hover.role)
+  return (
+    <div className="theme-switcher">
+      {hover && rect && (
+        <>
+          <Outline rect={rect} label={`${hover.kind} · ${role.label.toLowerCase()} color`} />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none fixed z-[70] flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white py-1 pr-2.5 pl-1 text-[11px] font-semibold text-zinc-900 shadow-lg"
+            style={{ left: Math.min(rect.left, window.innerWidth - 150), top: rect.bottom + 8 > window.innerHeight - 40 ? rect.top - 34 : rect.bottom + 8 }}
+          >
+            <span className="h-5 w-5 rounded-full border border-black/15" style={{ background: hover.colour }} />
+            {hover.colour}
+          </div>
+        </>
+      )}
+      <div className="pointer-events-none fixed inset-x-0 bottom-4 z-[70] flex justify-center px-3">
+        <div className="pointer-events-auto flex max-w-full items-center gap-3 rounded-full border border-zinc-200 bg-white py-1.5 pr-1.5 pl-4 text-xs text-zinc-800 shadow-xl" role="status">
+          <span className="min-w-0">
+            <strong className="font-semibold text-zinc-900">Pick a color:</strong> {coarse ? 'tap' : 'click'} anything on your site
+          </span>
+          <button type="button" onClick={onCancel} className="shrink-0 rounded-full border border-zinc-300 px-3 py-1 text-xs font-semibold text-zinc-800 cursor-pointer hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900">
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   )

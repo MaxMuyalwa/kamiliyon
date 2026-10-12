@@ -1,6 +1,6 @@
 // One-line setup: `import 'colorsbymax/auto'` anywhere in a site's code (for example main.jsx)
-// puts the colour button on the page, with no wrapping and no config. Sites that don't paint
-// with the --color-* variables are re-coloured automatically.
+// puts the color button on the page, with no wrapping and no config. Sites that don't paint
+// with the --color-* variables are re-colored automatically.
 //
 // For settings, call autoMount instead; the automatic mount then steps aside:
 //
@@ -17,7 +17,7 @@ let container = null
 let pending = null
 
 /**
- * Mounts the colour button and panel on its own, outside the site's app. Calling it again
+ * Mounts the color button and panel on its own, outside the site's app. Calling it again
  * replaces the previous mount with the new config. Returns a function that removes it.
  * @param {import('./ThemeProvider.jsx').ColorsByMaxConfig} [config]
  */
@@ -44,7 +44,7 @@ function cancelPending() {
 }
 
 // Mount automatically shortly after the page has loaded, once a single-page app's first render
-// is in, so the re-colouring engine sees the site's content. A timer rather than animation
+// is in, so the re-coloring engine sees the site's content. A timer rather than animation
 // frames, which browsers pause in background tabs. A call to autoMount before then takes over.
 const MOUNT_DELAY = 50
 if (typeof window !== 'undefined') {

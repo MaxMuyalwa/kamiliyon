@@ -1,7 +1,7 @@
 // The browser tab's icon: mrmaxdesigns' logo mark (three slanted bars) in the current theme's
-// colours. The icon carries two versions, and the browser shows whichever suits its tabs: deeper
-// colours on light tabs, lighter ones on dark tabs, each checked to stand out. Browsers that don't
-// support colour-changing SVG favicons keep the logo from favicon.svg.
+// colors. The icon carries two versions, and the browser shows whichever suits its tabs: deeper
+// colors on light tabs, lighter ones on dark tabs, each checked to stand out. Browsers that don't
+// support color-changing SVG favicons keep the logo from favicon.svg.
 
 import { useEffect } from 'react'
 import { contrastRatio, useTheme } from '../../src/index.js'
@@ -12,7 +12,7 @@ const BARS = [
   'M134.89,163.05h-57.13C106.1,108.7,134.43,54.35,162.77,0h55.44c-27.77,54.35-55.55,108.7-83.32,163.05Z',
   'M212.65,163.05h-57.13C183.86,108.7,212.19,54.35,240.53,0h55.44c-27.77,54.35-55.55,108.7-83.32,163.05Z',
 ]
-// Which theme colours paint them: the gradient partner, the brand, and an accent (see barColours),
+// Which theme colors paint them: the gradient partner, the brand, and an accent (see barColours),
 // like the logo's own red, violet and blue.
 const ROLES = ['primary-alt', 'primary', 'data-3']
 // Typical tab backgrounds, light and dark.
@@ -22,7 +22,7 @@ const MIN_CONTRAST = 3 // WCAG's minimum for icons
 
 const toRgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
 const toHex = (rgb) => `#${rgb.map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')}`
-/** Moves a colour towards `target` (black or white) until it reaches the contrast needed on `tab`. */
+/** Moves a color towards `target` (black or white) until it reaches the contrast needed on `tab`. */
 function standOut(hex, tab, target) {
   const [from, to] = [toRgb(hex), toRgb(target)]
   for (let t = 0; t <= 1; t += 0.04) {
@@ -32,7 +32,7 @@ function standOut(hex, tab, target) {
   return target
 }
 
-/** A colour's hue, in degrees. */
+/** A color's hue, in degrees. */
 function hue(hex) {
   const [r, g, b] = toRgb(hex).map((v) => v / 255)
   const max = Math.max(r, g, b)
@@ -43,12 +43,12 @@ function hue(hex) {
 }
 const hueGap = (a, b) => Math.min(Math.abs(hue(a) - hue(b)), 360 - Math.abs(hue(a) - hue(b)))
 
-/** The bars' colours: the gradient partner and the brand, then the chart colour most unlike both. */
+/** The bars' colors: the gradient partner and the brand, then the chart color most unlike both. */
 function barColours(tokens) {
   return [tokens[ROLES[0]], tokens[ROLES[1]], tokens[thirdBarRole(tokens)]]
 }
 
-/** The chart colour (data-1…8) least like the gradient partner and the brand, for the third bar. */
+/** The chart color (data-1…8) least like the gradient partner and the brand, for the third bar. */
 function thirdBarRole(tokens) {
   const [a, b] = [tokens[ROLES[0]], tokens[ROLES[1]]]
   const apart = (x) => Math.min(hueGap(x, a), hueGap(x, b))
@@ -58,8 +58,8 @@ function thirdBarRole(tokens) {
 }
 
 /**
- * The logo mark (the three bars) for the page, in the same theme colours as the tab icon. It paints
- * with the colour variables, so the "Colour the logo" setting applies to it.
+ * The logo mark (the three bars) for the page, in the same theme colors as the tab icon. It paints
+ * with the color variables, so the "Color the logo" setting applies to it.
  */
 export function LogoMark({ className = '' }) {
   const { tokens } = useTheme()
@@ -81,7 +81,7 @@ function faviconSvg(tokens) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -66 296 296"><style>${css}</style>${BARS.map((d, i) => `<path class="b${i}" d="${d}"/>`).join('')}</svg>`
 }
 
-/** Keeps the tab icon, and the browser's theme colour, in the current theme's colours. */
+/** Keeps the tab icon, and the browser's theme color, in the current theme's colors. */
 export function ThemedFavicon() {
   const { tokens } = useTheme()
   useEffect(() => {

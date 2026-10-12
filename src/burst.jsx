@@ -1,20 +1,23 @@
-// A burst of colour: squiggles, dots and dashes in the theme's colours, flung out from the middle
-// of whatever it sits in (a `relative` parent). The colour button bursts on its entrance and on
+// A burst of color: squiggles, dots and dashes in the theme's colors, flung out from the middle
+// of whatever it sits in (a `relative` parent). The color button bursts on its entrance and on
 // every click; the panel's "Surprise me" bursts with the theme it just picked.
 
 import { useEffect, useState } from 'react'
 
-/** The mark for something new in the bell: a small red plus, outlined so it shows on any colour. */
-export function NewMark({ className = '' }) {
+/**
+ * The mark for something new in the bell: a small plus in the theme's own color (like the color
+ * button's dot), outlined in the panel's background so it shows on any color.
+ */
+export function NewMark({ colour, className = '' }) {
   return (
     <svg viewBox="0 0 12 12" aria-hidden="true" className={`theme-new-mark pointer-events-none absolute h-3 w-3 ${className}`}>
-      <path d="M6 1.5v9M1.5 6h9" stroke="#ffffff" strokeWidth="4.5" strokeLinecap="round" />
-      <path d="M6 1.5v9M1.5 6h9" stroke="#dc2626" strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M6 1.5v9M1.5 6h9" style={{ stroke: 'var(--color-white)' }} strokeWidth="4.5" strokeLinecap="round" />
+      <path d="M6 1.5v9M1.5 6h9" style={{ stroke: colour }} strokeWidth="2.4" strokeLinecap="round" />
     </svg>
   )
 }
 
-export const BURST_TIME = 1100 // ms a burst of colour lasts
+export const BURST_TIME = 1100 // ms a burst of color lasts
 
 // Each piece flies to (x, y) px from the centre, turning from r degrees as it goes.
 const BURST_KEYS = ['primary', 'primary-alt', 'data-1', 'data-2', 'data-3', 'data-4', 'warning', 'data-5']
@@ -30,7 +33,7 @@ const BURST_PIECES = Array.from({ length: 12 }, (_, i) => {
   }
 })
 
-/** `spread` scales how far the pieces fly, for something wider than the colour button. */
+/** `spread` scales how far the pieces fly, for something wider than the color button. */
 export function Burst({ tokens, spread = 1 }) {
   return (
     <span aria-hidden="true" className="theme-burst pointer-events-none absolute inset-0">

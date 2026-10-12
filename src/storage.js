@@ -18,10 +18,10 @@ const VERSION = 1
  *   resolves on load without downloading the whole library
  * @property {{ at: number, palette: string[], themes: import('./tokens.js').Theme[] } | null} scanned
  *   Result of the last site scan
- * @property {{ mode: 'all' | 'pages', pages: string[] } | null} scope  Where the colours go, chosen in
+ * @property {{ mode: 'all' | 'pages', pages: string[] } | null} scope  Where the colors go, chosen in
  *   Studio (null: the site's `pages` config, else the whole site)
  * @property {string[]} seen  Pages of the site this visitor has opened, newest first, for Studio
- * @property {object[]} paints  Parts of pages coloured by pointing and clicking in Studio
+ * @property {object[]} paints  Parts of pages colored by pointing and clicking in Studio
  */
 
 /** @returns {ThemeState} */
@@ -54,7 +54,7 @@ export function loadState(storageKey, defaultTheme) {
     const customs = Array.isArray(data.customs)
       ? data.customs
           .filter((c) => c && typeof c.id === 'string' && typeof c.name === 'string')
-          .map((c) => ({ id: c.id, name: c.name, custom: true, tokens: complete(c.tokens) }))
+          .map((c) => ({ id: c.id, name: c.name, custom: true, ...(c.twin ? { twin: true } : {}), tokens: complete(c.tokens) }))
       : []
     const snap = data.snapshot
     const snapshot =
@@ -76,7 +76,7 @@ export function loadState(storageKey, defaultTheme) {
       customs,
       snapshot,
       scanned,
-      // How many colours each theme uses, where the visitor changed it (5 to 10).
+      // How many colors each theme uses, where the visitor changed it (5 to 10).
       paletteSizes: Object.fromEntries(
         Object.entries(data.paletteSizes && typeof data.paletteSizes === 'object' ? data.paletteSizes : {}).filter(
           ([id, n]) => typeof id === 'string' && Number.isInteger(n) && n >= 5 && n <= 10,
@@ -95,7 +95,7 @@ export function loadState(storageKey, defaultTheme) {
  * Persists state plus the fully resolved tokens, so the pre-paint script can apply
  * them without knowing about presets, and the pages they go on (`where`, from Studio or the
  * site's `pages` config), so it leaves the other pages alone; and Studio's stylesheet for each
- * page with parts coloured by pointing and clicking (`paintCss`), so those show at once too.
+ * page with parts colored by pointing and clicking (`paintCss`), so those show at once too.
  */
 export function saveState(storageKey, state, resolved, where = null, paintCss = null) {
   try {
@@ -106,7 +106,7 @@ export function saveState(storageKey, state, resolved, where = null, paintCss = 
 }
 
 /**
- * Where the visitor dragged the colour button, as fractions (0–1) of the space it can move in,
+ * Where the visitor dragged the color button, as fractions (0–1) of the space it can move in,
  * so it keeps its relative spot when the window resizes. Null means the default corner.
  * @returns {{ rx: number, ry: number } | null}
  */

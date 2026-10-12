@@ -8,9 +8,9 @@ const COLUMNS = [
   {
     title: 'Learn',
     links: [
-      ['Why colorsbymax', '#why'],
-      ['Colour roles', '#roles'],
-      ['The rules of colour', '#rules'],
+      ['Why Kamiliyon', '#why'],
+      ['Color roles', '#roles'],
+      ['The rules of color', '#rules'],
       ['Features', '#features'],
     ],
   },
@@ -27,7 +27,7 @@ const COLUMNS = [
   {
     title: 'Packages',
     links: [
-      ['colorsbymax on npm', NPM],
+      ['Kamiliyon on npm', NPM],
       ['colorsbymax-mcp', MCP_NPM],
       ['GitHub', REPO],
     ],
@@ -62,7 +62,7 @@ function WhatsAppIcon(props) {
 
 const external = (href) => href.startsWith('http')
 
-/** Layered waves in the theme's brand colours, drifting slowly, above the footer. */
+/** Layered waves in the theme's brand colors, drifting slowly, above the footer. */
 function Waves() {
   return (
     <div className="relative -mb-px h-28 overflow-hidden md:h-40" aria-hidden="true">
@@ -95,7 +95,7 @@ export function Footer({ home = '' }) {
                 <Wordmark />
               </a>
               <p className="mt-3 max-w-xs text-sm leading-relaxed">
-                A live theme switcher for any website. 700+ palettes, 35 colour roles, contrast checked. Every colour in this footer comes from
+                A live theme switcher for any website. 700+ palettes, 35 color roles, contrast checked. Every color in this footer comes from
                 the theme you picked.
               </p>
               <a href={REPO} className="mt-5 inline-flex items-center gap-2 rounded-full bg-on-secondary px-4 py-2 text-sm font-semibold text-secondary transition hover:-translate-y-0.5">
@@ -138,12 +138,12 @@ export function Footer({ home = '' }) {
           </div>
 
           <p className="pointer-events-none mt-12 text-center font-display text-[15vw] leading-none font-extrabold tracking-tighter opacity-[0.07] select-none md:text-[11rem]" aria-hidden="true">
-            colorsbymax
+            Kamiliyon
           </p>
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-on-secondary/15 pt-6 text-sm">
             <p>
-              © {new Date().getFullYear()} <a href={MRMAX} className="font-semibold underline-offset-4 hover:underline">mrmaxdesigns</a> · colorsbymax is MIT licensed
+              © {new Date().getFullYear()} <a href={MRMAX} className="font-semibold underline-offset-4 hover:underline">mrmaxdesigns</a> · Kamiliyon is MIT licensed
             </p>
             <span className="flex flex-wrap items-center gap-x-5 gap-y-2">
               <button type="button" onClick={openFeedback} className="cursor-pointer font-semibold underline-offset-4 hover:underline">

@@ -1,4 +1,4 @@
-// Palettes from files: reads the colours in an uploaded image or PDF and turns them into a
+// Palettes from files: reads the colors in an uploaded image or PDF and turns them into a
 // theme. Images are sampled pixel by pixel. PDFs are rendered with PDF.js, which is opt-in: a
 // site passes `loadPdf` from 'colorsbymax/pdf', so sites that don't want PDFs never install or
 // bundle it. Hex codes written in a PDF, as in brand guidelines, win over its pixels.
@@ -13,23 +13,23 @@ export const MAX_FILE_BYTES = 25 * 1024 * 1024
 const SAMPLE_SIZE = 200
 /** PDF pages read, from the first. */
 const MAX_PDF_PAGES = 3
-/** Colours closer than this (CIE76 ΔE) count as one. */
+/** Colors closer than this (CIE76 ΔE) count as one. */
 const MERGE_DELTA_E = 12
-/** Colours covering less than this share of the sampled pixels are ignored. */
+/** Colors covering less than this share of the sampled pixels are ignored. */
 const MIN_SHARE = 0.004
-/** How close (CIE76 ΔE) a colour must be to a mix of two others to count as their edge blend. */
+/** How close (CIE76 ΔE) a color must be to a mix of two others to count as their edge blend. */
 const BLEND_DELTA_E = 6
-/** Most colours returned. */
+/** Most colors returned. */
 export const MAX_COLOURS = 8
 
 const HEX_IN_TEXT = /#([0-9a-f]{6}|[0-9a-f]{3})\b/gi
 const hslOf = (hex) => rgbToHsl(hexToRgb(hex))
 
 /**
- * The main colours in an image or PDF, most important first.
+ * The main colors in an image or PDF, most important first.
  * @param {File} file
  * @param {{ loadPdf?: (() => Promise<any>) | null }} [options]  PDF support, from 'colorsbymax/pdf'
- * @returns {Promise<{ colours: string[], from: 'image' | 'pdf-text' | 'pdf' }>}
+ * @returns {Promise<{ colors: string[], from: 'image' | 'pdf-text' | 'pdf' }>}
  */
 export async function coloursFromFile(file, { loadPdf = null } = {}) {
   if (file.size > MAX_FILE_BYTES) throw new Error('That file is over 25 MB. Try a smaller one.')
@@ -66,14 +66,14 @@ function pixelsOf(source, width, height) {
   canvas.width = Math.max(1, Math.round(width * scale))
   canvas.height = Math.max(1, Math.round(height * scale))
   const ctx = canvas.getContext('2d', { willReadFrequently: true })
-  // Nearest-pixel scaling: smoothing would invent blends along every edge between two colours.
+  // Nearest-pixel scaling: smoothing would invent blends along every edge between two colors.
   ctx.imageSmoothingEnabled = false
   ctx.drawImage(source, 0, 0, canvas.width, canvas.height)
   return ctx.getImageData(0, 0, canvas.width, canvas.height).data
 }
 
 /**
- * Buckets pixels into a coarse colour grid, then folds similar buckets together and keeps the
+ * Buckets pixels into a coarse color grid, then folds similar buckets together and keeps the
  * ones covering a real share of the picture.
  * @param {Uint8ClampedArray[]} pixelSets
  */
@@ -108,7 +108,7 @@ export function dominantColours(pixelSets) {
 }
 
 /**
- * True for a colour that is just the anti-aliased edge between two much more common ones:
+ * True for a color that is just the anti-aliased edge between two much more common ones:
  * it sits on the line between them and covers far less of the picture.
  */
 function isEdgeBlend(m, kept) {
@@ -166,14 +166,14 @@ async function coloursFromPdf(file, loadPdf) {
 const expandHex = (h) => `#${(h.length === 3 ? h.replace(/./g, (c) => c + c) : h).toLowerCase()}`
 
 /**
- * Assigns a palette's colours to theme roles: the most vivid becomes primary, a very light one
- * the page background, a very dark one the text, and every colour feeds the data set.
- * @param {string[]} colours  most important first
+ * Assigns a palette's colors to theme roles: the most vivid becomes primary, a very light one
+ * the page background, a very dark one the text, and every color feeds the data set.
+ * @param {string[]} colors  most important first
  */
 export function rolesFromPalette(colours) {
   const info = colours.map((hex, i) => {
     const [h, s, l] = hslOf(hex)
-    // Vivid, mid-lightness colours make good brands; earlier colours get a small edge.
+    // Vivid, mid-lightness colors make good brands; earlier colors get a small edge.
     return { hex, h, s, l, score: s * (1 - Math.abs(l - 0.5) * 1.4) * (1 - i * 0.04) }
   })
   const accents = info.filter((c) => c.s >= 0.2 && c.l >= 0.15 && c.l <= 0.85).sort((a, b) => b.score - a.score)
@@ -186,7 +186,7 @@ export function rolesFromPalette(colours) {
   const ink = [...byLight].reverse().find((c) => c.l <= 0.25 && contrastRatio(c.hex, bg) >= 7)
   if (ink) roles.ink = ink.hex
 
-  // Without anything vivid (a greyscale palette), use the most mid-toned colour.
+  // Without anything vivid (a greyscale palette), use the most mid-toned color.
   const primary = accents[0] ?? [...info].sort((a, b) => Math.abs(a.l - 0.45) - Math.abs(b.l - 0.45))[0]
   roles.primary = primary.hex
   const hueDist = (a, b) => Math.min(Math.abs(a - b), 360 - Math.abs(a - b))

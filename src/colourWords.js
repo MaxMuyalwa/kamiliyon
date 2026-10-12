@@ -1,6 +1,6 @@
-// Colour words for the panel's search: "red" finds every theme whose main colours are red, not
+// Color words for the panel's search: "red" finds every theme whose main colors are red, not
 // only the ones with red in their name. Each word is a range of hue, saturation and lightness;
-// a theme matches when its brand colour or its gradient partner falls in it.
+// a theme matches when its brand color or its gradient partner falls in it.
 
 import { hexToRgb, rgbToHsl } from './color.js'
 
@@ -27,12 +27,12 @@ const COLOURS = [
   ['black', ['dark'], ([, , l]) => l <= 0.18],
   ['white', ['light'], ([, , l]) => l >= 0.9],
 ]
-// Everyday colour names first (black, blue, brown), then the rest (blush, berry…).
+// Everyday color names first (black, blue, brown), then the rest (blush, berry…).
 const WORDS = [...COLOURS.map(([word]) => word), ...COLOURS.flatMap(([, aliases]) => aliases)]
 const hslOf = (hex) => rgbToHsl(hexToRgb(hex))
 
 /**
- * The colour test for a search, or null if it isn't a colour word. "reds" and "Red" count too.
+ * The color test for a search, or null if it isn't a color word. "reds" and "Red" count too.
  * @returns {((tokens: Record<string, string>) => boolean) | null}
  */
 export function colourMatcher(query) {
@@ -40,13 +40,13 @@ export function colourMatcher(query) {
   const found = COLOURS.find(([word, aliases]) => word === q || aliases.includes(q))
   if (!found) return null
   const [, , test] = found
-  // Brand colour and gradient partner are what a theme looks like; black and white also count
-  // the deep brand colour (its darkest ink) and the page background.
+  // Brand color and gradient partner are what a theme looks like; black and white also count
+  // the deep brand color (its darkest ink) and the page background.
   const keys = ['black', 'white'].includes(found[0]) ? ['primary', 'primary-dark', 'background'] : ['primary', 'primary-alt']
   return (tokens) => keys.some((k) => tokens[k] && test(hslOf(tokens[k])))
 }
 
-/** Words that finish what's being typed (at most `max`), colours first, then `extra` (e.g. moods). */
+/** Words that finish what's being typed (at most `max`), colors first, then `extra` (e.g. moods). */
 export function suggestWords(query, extra = [], max = 6) {
   const q = query.trim().toLowerCase()
   if (!q) return []

@@ -42,7 +42,7 @@ function luminance(hex) {
 	const [r, g, b] = hexToRgb(hex).map(channelToLinear);
 	return .2126 * r + .7152 * g + .0722 * b;
 }
-/** WCAG 2.x contrast ratio between two colours (1–21). */
+/** WCAG 2.x contrast ratio between two colors (1–21). */
 function contrastRatio(a, b) {
 	const la = luminance(a);
 	const lb = luminance(b);
@@ -112,7 +112,7 @@ function toLab(hex) {
 		200 * (fy - fz)
 	];
 }
-/** CIE76 colour difference. */
+/** CIE76 color difference. */
 function deltaE(a, b) {
 	const [l1, a1, b1] = toLab(a);
 	const [l2, a2, b2] = toLab(b);
@@ -465,7 +465,11 @@ function fixAll(tokens) {
 	let current = { ...tokens };
 	const changes = {};
 	for (let pass = 0; pass < PAIRINGS.length * 3; pass++) {
-		const fixable = checkTheme(current).map((issue) => suggestFix(issue.pairing, current)).find(Boolean);
+		let fixable = null;
+		for (const issue of checkTheme(current)) {
+			fixable = suggestFix(issue.pairing, current);
+			if (fixable) break;
+		}
 		if (!fixable) break;
 		current = {
 			...current,
@@ -660,42 +664,42 @@ var TOKEN_GROUPS = [
 			{
 				key: "data-1",
 				label: "Data 1",
-				usage: "Charts, icons, category colour 1"
+				usage: "Charts, icons, category color 1"
 			},
 			{
 				key: "data-2",
 				label: "Data 2",
-				usage: "Category colour 2"
+				usage: "Category color 2"
 			},
 			{
 				key: "data-3",
 				label: "Data 3",
-				usage: "Category colour 3"
+				usage: "Category color 3"
 			},
 			{
 				key: "data-4",
 				label: "Data 4",
-				usage: "Category colour 4"
+				usage: "Category color 4"
 			},
 			{
 				key: "data-5",
 				label: "Data 5",
-				usage: "Category colour 5"
+				usage: "Category color 5"
 			},
 			{
 				key: "data-6",
 				label: "Data 6",
-				usage: "Category colour 6"
+				usage: "Category color 6"
 			},
 			{
 				key: "data-7",
 				label: "Data 7",
-				usage: "Category colour 7"
+				usage: "Category color 7"
 			},
 			{
 				key: "data-8",
 				label: "Data 8",
-				usage: "Category colour 8"
+				usage: "Category color 8"
 			}
 		]
 	},
@@ -922,7 +926,7 @@ function completeTokens(partial, base = BASE_TOKENS) {
 	for (const key of APP_KEYS) if (!(key in partial)) full[key] = derived[key];
 	return full;
 }
-/** The built-in "colorsbymax picks": hand-tuned themes that pass every contrast check. */
+/** The built-in "Kamiliyon picks": hand-tuned themes that pass every contrast check. */
 /** @type {Theme[]} */
 var PRESETS = RAW_PRESETS.map((t) => ({
 	...t,
@@ -935,7 +939,7 @@ var DARK_SUFFIX = "~dark";
 /** True when a theme's page background is dark. */
 var isDarkTheme = (tokens) => luminance(tokens.background) < .2;
 var hslOf$4 = (hex) => rgbToHsl(hexToRgb(hex));
-var hsl$1 = (h, s, l) => rgbToHex(hslToRgb([
+var hsl$2 = (h, s, l) => rgbToHex(hslToRgb([
 	h,
 	Math.min(1, Math.max(0, s)),
 	Math.min(1, Math.max(0, l))
@@ -943,21 +947,21 @@ var hsl$1 = (h, s, l) => rgbToHex(hslToRgb([
 /** Same hue, saturation capped at `maxS`, lightness set to `l`. */
 var tone = (hex, l, maxS = 1) => {
 	const [h, s] = hslOf$4(hex);
-	return hsl$1(h, Math.min(s, maxS), l);
+	return hsl$2(h, Math.min(s, maxS), l);
 };
 /** Keeps hue and saturation, lifting lightness into [min, max] so it reads on a dark page. */
 var lift = (hex, min, max = .78) => {
 	const [h, s, l] = hslOf$4(hex);
-	return hsl$1(h, s, Math.min(max, Math.max(min, l)));
+	return hsl$2(h, s, Math.min(max, Math.max(min, l)));
 };
 /**
-* Lightens a colour, keeping its hue and saturation, until it reaches `ratio` against `bg`.
+* Lightens a color, keeping its hue and saturation, until it reaches `ratio` against `bg`.
 * Lightness alone doesn't guarantee that: a vivid blue or violet at 60% lightness still reads dark.
 */
 var readOn = (hex, bg, ratio) => {
 	const [h, s, l] = hslOf$4(hex);
 	let out = hex;
-	for (let x = l; contrastRatio(out, bg) < ratio && x < .96; x += .01) out = hsl$1(h, s, x);
+	for (let x = l; contrastRatio(out, bg) < ratio && x < .96; x += .01) out = hsl$2(h, s, x);
 	return out;
 };
 var TEXT = 4.8;
@@ -1028,12 +1032,12 @@ function toDark(theme) {
 }
 /**
 * The version of a theme to list for a mode. Custom palettes always appear exactly as the
-* visitor made them.
+* visitor made them, except ones built by Kamiliyon (from a picked color), which get a dark twin.
 * @param {import('./tokens.js').Theme} theme
 * @param {'light' | 'dark'} mode
 */
-var inMode = (theme, mode) => mode === "dark" && !theme.custom ? toDark(theme) : theme;
-/** What Subtle keeps from the site: its backgrounds, cards, text, borders and status colours. */
+var inMode = (theme, mode) => mode === "dark" && (!theme.custom || theme.twin) ? toDark(theme) : theme;
+/** What Subtle keeps from the site: its backgrounds, cards, text, borders and status colors. */
 var SITE_KEYS = [
 	"background",
 	"surface",
@@ -1054,15 +1058,15 @@ var SITE_KEYS = [
 	"app-ink",
 	"app-ink-muted"
 ];
-/** The soft tints a page is coloured with (badges, icon tiles, bands): Subtle keeps them quiet. */
+/** The soft tints a page is colored with (badges, icon tiles, bands): Subtle keeps them quiet. */
 var TINT_KEYS = ["secondary", "accent"];
 /**
 * Subtle: the site's own backgrounds, cards and text stay (in the current mode). The theme's brand
-* colour comes in on buttons, links and highlights, and the soft tints (badges, icon tiles, bands)
+* color comes in on buttons, links and highlights, and the soft tints (badges, icon tiles, bands)
 * take only a quiet, greyed hint of the theme, so the page keeps its own feel. Balanced shows those
 * tints in full. Every pairing is then checked, and anything hard to read nudged until it reads.
 * @param {import('./tokens.js').ThemeTokens} theme
-* @param {import('./tokens.js').ThemeTokens} site  the site's own colours, in the same mode
+* @param {import('./tokens.js').ThemeTokens} site  the site's own colors, in the same mode
 */
 function accentTokens(theme, site) {
 	const out = { ...theme };
@@ -1072,7 +1076,7 @@ function accentTokens(theme, site) {
 		const [h, sat] = hslOf$4(theme[key]);
 		const [, , bgL] = hslOf$4(site.background);
 		const l = bgL > .5 ? Math.max(.86, bgL - .06) : Math.min(.22, bgL + .07);
-		out[key] = hsl$1(h, sat * .22, l);
+		out[key] = hsl$2(h, sat * .22, l);
 	}
 	return {
 		...out,
@@ -1089,8 +1093,8 @@ var tintTowards = (colour, base, amount) => {
 	]);
 };
 /**
-* Colourful: an overhaul. The page and its cards take a clear tint of the brand colours (soft in
-* light mode, deeper in dark), borders and tints lean towards them, and colorsbymax paints the
+* Colorful: an overhaul. The page and its cards take a clear tint of the brand colors (soft in
+* light mode, deeper in dark), borders and tints lean towards them, and Kamiliyon paints the
 * page's parts by role on top (see vivid.js). Text is checked against every new background.
 */
 function vividTokens(t, { strength = .5, tint = null } = {}) {
@@ -1118,7 +1122,7 @@ function vividTokens(t, { strength = .5, tint = null } = {}) {
 /**
 * Balanced: the theme in every role, with a soft wash of it on the page, cards and borders, so it
 * shows on the page even where the theme's own backgrounds are nearly white (or nearly black).
-* Gentler than Colourful at its lightest; text keeps the theme's own colours.
+* Gentler than Colorful at its lightest; text keeps the theme's own colors.
 */
 function balancedTokens(t) {
 	const dark = isDarkTheme(t);
@@ -1140,12 +1144,12 @@ function balancedTokens(t) {
 var MAX_SCANNED_ELEMENTS = 5e3;
 var COLOR_IN_GRADIENT = /(?:rgba?|hsla?|oklab|oklch|lab|lch|color)\([^()]*\)|#[0-9a-f]{3,8}\b/gi;
 var hueDist$1 = (a, b) => Math.min(Math.abs(a - b), 360 - Math.abs(a - b));
-var hsl = (h, s, l) => rgbToHex(hslToRgb([
+var hsl$1 = (h, s, l) => rgbToHex(hslToRgb([
 	(h % 360 + 360) % 360,
 	Math.min(1, Math.max(0, s)),
 	Math.min(1, Math.max(0, l))
 ]));
-var toHsl = (hex) => rgbToHsl(hexToRgb(hex));
+var toHsl$1 = (hex) => rgbToHsl(hexToRgb(hex));
 /** Best guess at the site's name: og:site_name, then the first part of the title, then the host. */
 function detectSiteName(doc = document) {
 	const og = doc.querySelector("meta[property=\"og:site_name\"]")?.content?.trim();
@@ -1177,8 +1181,8 @@ function createColorParser() {
 	};
 }
 /**
-* Temporarily removes colorsbymax's inline token overrides, and its re-colouring stylesheet, so a
-* read sees the site's own colours. Everything happens synchronously, so nothing repaints in between.
+* Temporarily removes Kamiliyon's inline token overrides, and its re-coloring stylesheet, so a
+* read sees the site's own colors. Everything happens synchronously, so nothing repaints in between.
 */
 function withoutAppliedTheme(fn) {
 	const freeze = document.createElement("style");
@@ -1206,7 +1210,7 @@ function withoutAppliedTheme(fn) {
 	}
 }
 /**
-* Collects the page's painted colours with how much each is used as a background (by area),
+* Collects the page's painted colors with how much each is used as a background (by area),
 * as text (by length × font size²) and as a border.
 * @param {{ exclude?: string }} [options]  selector for UI to skip, e.g. the switcher itself
 */
@@ -1273,7 +1277,7 @@ function mergeSimilar(entries) {
 	return out;
 }
 /**
-* Works out token roles from collected colours.
+* Works out token roles from collected colors.
 * @returns {{ roles: Record<string, string>, palette: string[] }}
 */
 function inferRoles(colors) {
@@ -1291,7 +1295,7 @@ function inferRoles(colors) {
 	const ink = (byText.find((c) => readable(c, 4.5)) ?? byText[0])?.hex ?? "#1f2937";
 	const inkSecondary = byText.find((c) => c.hex !== ink && deltaE(c.hex, ink) > 8 && readable(c, 3))?.hex;
 	const accents = colors.filter((c) => c.hex !== ink && c.hex !== inkSecondary).map((c) => {
-		const [h, s, l] = toHsl(c.hex);
+		const [h, s, l] = toHsl$1(c.hex);
 		const share = c.bg / BG + c.text / TEXT + c.border / BORDER * .5;
 		return {
 			hex: c.hex,
@@ -1304,7 +1308,7 @@ function inferRoles(colors) {
 	const primary = accents[0]?.hex;
 	const alt = accents.slice(1).find((c) => hueDist$1(c.h, accents[0].h) >= 20)?.hex;
 	const tint = byBg.find((c) => {
-		const [, s, l] = toHsl(c.hex);
+		const [, s, l] = toHsl$1(c.hex);
 		return l >= .82 && s >= .1 && c.hex !== background && c.hex !== surface;
 	})?.hex;
 	const roles = {
@@ -1336,28 +1340,28 @@ function inferRoles(colors) {
 */
 function themeFromRoles(roles, { softness = 0, boldness = 0, complementary = false } = {}) {
 	const primary = roles.primary ?? "#334155";
-	const [H, S] = toHsl(primary);
-	const alt = complementary ? hsl(H + 180, Math.max(S, .45), .5) : roles["primary-alt"] ?? hsl(H + 30, Math.max(S, .4), .55);
-	const [AH, AS] = toHsl(alt);
-	const ink = roles.ink ?? hsl(H, .15, .13);
-	let background = roles.background ?? hsl(H, Math.min(S, .5) * .4, .985);
-	if (softness) background = hsl(H, Math.min(S, .6) * .5, .97);
+	const [H, S] = toHsl$1(primary);
+	const alt = complementary ? hsl$1(H + 180, Math.max(S, .45), .5) : roles["primary-alt"] ?? hsl$1(H + 30, Math.max(S, .4), .55);
+	const [AH, AS] = toHsl$1(alt);
+	const ink = roles.ink ?? hsl$1(H, .15, .13);
+	let background = roles.background ?? hsl$1(H, Math.min(S, .5) * .4, .985);
+	if (softness) background = hsl$1(H, Math.min(S, .6) * .5, .97);
 	if (boldness) background = "#ffffff";
-	const secondary = roles.secondary && !softness && !boldness ? roles.secondary : hsl(H, Math.min(S, .7) * (.6 + boldness * .3), .92 - boldness * .05);
-	const data = Array.from({ length: 8 }, (_, i) => roles[`data-${i + 1}`] ?? hsl(H + 45 * (i + 1), Math.max(S, .5), .45));
+	const secondary = roles.secondary && !softness && !boldness ? roles.secondary : hsl$1(H, Math.min(S, .7) * (.6 + boldness * .3), .92 - boldness * .05);
+	const data = Array.from({ length: 8 }, (_, i) => roles[`data-${i + 1}`] ?? hsl$1(H + 45 * (i + 1), Math.max(S, .5), .45));
 	return completeTokens({
 		primary,
-		"primary-dark": hsl(H, Math.min(S, .7), .25),
+		"primary-dark": hsl$1(H, Math.min(S, .7), .25),
 		"primary-alt": alt,
 		"on-primary": "#ffffff",
 		background,
 		surface: boldness ? "#ffffff" : roles.surface ?? "#ffffff",
 		secondary,
-		"on-secondary": hsl(H, Math.min(S, .8), .28),
-		accent: hsl(AH, Math.min(AS, .7) * .6, .93),
-		"on-accent": hsl(AH, Math.min(AS, .8), .3),
-		border: hsl(H, Math.min(S, .4) * .5, .9),
-		shadow: hsl(H, .4, .1),
+		"on-secondary": hsl$1(H, Math.min(S, .8), .28),
+		accent: hsl$1(AH, Math.min(AS, .7) * .6, .93),
+		"on-accent": hsl$1(AH, Math.min(AS, .8), .3),
+		border: hsl$1(H, Math.min(S, .4) * .5, .9),
+		shadow: hsl$1(H, .4, .1),
 		ink,
 		"ink-secondary": roles["ink-secondary"] ?? withLightness(ink, Math.min(.45, lightness(ink) + .3)),
 		"ink-muted": roles["ink-secondary"] ?? withLightness(ink, Math.min(.45, lightness(ink) + .32)),
@@ -1373,7 +1377,7 @@ var passing = (tokens) => ({
 	...fixAll(tokens)
 });
 /**
-* Suggested themes for a scanned site, all named after it. "Scanned" keeps the colours as
+* Suggested themes for a scanned site, all named after it. "Scanned" keeps the colors as
 * found; every other suggestion passes contrast.
 * @param {{ roles: Record<string, string> }} scan
 * @param {string} siteName
@@ -1438,7 +1442,7 @@ function cleanScope(input) {
 		pages: cleanPages(input.pages)
 	};
 }
-/** Whether a page gets the colours. */
+/** Whether a page gets the colors. */
 var pageMatches = (page, path) => page.endsWith("/*") ? path === page.slice(0, -2) || path.startsWith(page.slice(0, -1)) : path === page;
 var inScope = (scope, path) => !scope || scope.mode !== "pages" || scope.pages.some((p) => pageMatches(p, path));
 var NAVIGATE = "colorsbymax:navigate";
@@ -1494,7 +1498,7 @@ function linkedPages(max = 30) {
 }
 /** The config line that gives every visitor these pages. */
 var pagesSnippet = (pages) => `// Add to your colorsbymax config (the autoMount({...}) call, or the config passed to <ThemeProvider>):\npages: ${JSON.stringify(pages, null, 2)},`;
-var pagesPrompt = (pages) => `In my colorsbymax config (the autoMount({...}) call, or the config passed to <ThemeProvider>), set pages: ${JSON.stringify(pages)} so the theme only colours those pages and every other page keeps its own colours. A path ending in /* covers that section and every page under it. If the site uses import 'colorsbymax/auto', replace it with import { autoMount } from 'colorsbymax/auto' and an autoMount({ pages: [...] }) call. Don't change anything else.`;
+var pagesPrompt = (pages) => `In my colorsbymax config (the autoMount({...}) call, or the config passed to <ThemeProvider>), set pages: ${JSON.stringify(pages)} so the theme only colors those pages and every other page keeps its own colors. A path ending in /* covers that section and every page under it. If the site uses import 'colorsbymax/auto', replace it with import { autoMount } from 'colorsbymax/auto' and an autoMount({ pages: [...] }) call. Don't change anything else.`;
 //#endregion
 //#region src/underlay.js
 var MAX_SIBLINGS = 40;
@@ -1531,7 +1535,7 @@ function underlayOf(el) {
 	}
 	return null;
 }
-/** The theme colours offered as swatches, in order. */
+/** The theme colors offered as swatches, in order. */
 var SWATCH_TOKENS = [
 	"primary",
 	"primary-alt",
@@ -1633,7 +1637,7 @@ function selectorFor(el) {
 }
 /** A selector for every part like this one: the same tag and classes, or its siblings of that tag. */
 function similarSelector(el) {
-	const classes = [...el.classList].filter((c) => !/^(cbm|colorsbymax)/.test(c)).slice(0, 8);
+	const classes = [...el.classList].filter((c) => !/^(cbm|Kamiliyon)/.test(c)).slice(0, 8);
 	if (classes.length) return `${el.localName}${classes.map((c) => `.${CSS.escape(c)}`).join("")}`;
 	const path = selectorFor(el).split(" > ");
 	path[path.length - 1] = el.localName;
@@ -1780,7 +1784,7 @@ function describe$1(el) {
 var canvas = null;
 var rgbaCache = /* @__PURE__ */ new Map();
 /**
-* Any CSS colour the browser understands (rgb, hex, oklch, color(srgb …), color-mix and the rest)
+* Any CSS color the browser understands (rgb, hex, oklch, color(srgb …), color-mix and the rest)
 * as [r, g, b, alpha], read back from a pixel so every format comes out the same way.
 */
 function rgbaOf(colour) {
@@ -1835,13 +1839,13 @@ function rgbaOf(colour) {
 	return out;
 }
 var hexOfRgb = (rgb) => `#${rgb.map((n) => Math.round(Math.min(255, Math.max(0, n))).toString(16).padStart(2, "0")).join("")}`;
-/** `top` (with its alpha) laid over the solid colour `under`. */
+/** `top` (with its alpha) laid over the solid color `under`. */
 var over$1 = ([r, g, b, a], under) => under.map((u, i) => [
 	r,
 	g,
 	b
 ][i] * a + u * (1 - a));
-/** Any CSS colour as #rrggbb, or null when it's mostly see-through. */
+/** Any CSS color as #rrggbb, or null when it's mostly see-through. */
 function toHex(colour) {
 	const [r, g, b, a] = rgbaOf(colour);
 	return a < .5 ? null : hexOfRgb([
@@ -1867,7 +1871,7 @@ function pageBackdrop() {
 	];
 }
 /**
-* The solid colour an element's text sits on: its own background and every see-through one
+* The solid color an element's text sits on: its own background and every see-through one
 * behind it, laid over each other down to the first solid one (or the page). Background
 * pictures and gradients aren't counted.
 */
@@ -1883,7 +1887,8 @@ function backgroundRgb(el) {
 	for (const layer of layers.reverse()) colour = over$1(layer, colour);
 	return colour;
 }
-/** An element's text colour as it shows: faded by its own alpha and any see-through parents. */
+var backgroundBehind = (el) => hexOfRgb(backgroundRgb(el));
+/** An element's text color as it shows: faded by its own alpha and any see-through parents. */
 function textRgb(el, background = backgroundRgb(el)) {
 	let [r, g, b, a] = rgbaOf(getComputedStyle(el).color);
 	for (let node = el; node && node.nodeType === 1; node = node.parentElement) a *= Number(getComputedStyle(node).opacity) || 0;
@@ -1894,7 +1899,7 @@ function textRgb(el, background = backgroundRgb(el)) {
 		a
 	], background);
 }
-/** Text against its background right now: the ratio, both colours, and what it needs to pass. */
+/** Text against its background right now: the ratio, both colors, and what it needs to pass. */
 function readability(el) {
 	const bg = backgroundRgb(el);
 	const text = hexOfRgb(textRgb(el, bg));
@@ -1940,8 +1945,8 @@ function checkText(roots, max = 60) {
 	};
 }
 /**
-* The best text colour for a background: the theme colour that reads best, or black or white
-* when no theme colour is readable enough.
+* The best text color for a background: the theme color that reads best, or black or white
+* when no theme color is readable enough.
 */
 function bestText(background, tokens, need = 4.5) {
 	const seen = /* @__PURE__ */ new Set();
@@ -2003,7 +2008,7 @@ function cleanPaints(list) {
 var selectorOf = (paint) => (paint.all || paint.everywhere) && paint.similar ? paint.similar : paint.one;
 /** The page a paint is drawn on, or '*' for one that goes on every page. */
 var pageOf = (paint) => paint.everywhere ? "*" : paint.page;
-/** A colour for the stylesheet: the theme's variable where it follows the theme, else its hex. */
+/** A color for the stylesheet: the theme's variable where it follows the theme, else its hex. */
 var cssValue = (v, themed) => v.token && themed ? `var(--color-${v.token}${v.hex ? `, ${v.hex}` : ""})` : v.hex ?? `var(--color-${v.token})`;
 /** The stylesheet for some paints. `themed`: the page takes the theme, so swatches follow it. */
 function paintCss(paints, themed = true) {
@@ -2018,7 +2023,7 @@ function paintCss(paints, themed = true) {
 	}).join("");
 }
 var hexOf = (v, tokens) => v.token ? tokens[v.token] : v.hex;
-var nameOf = (v, tokens) => v.token ? `${hexOf(v, tokens)} (the theme's ${TOKEN_LABELS[v.token]?.toLowerCase() ?? v.token} colour, var(--color-${v.token}))` : v.hex;
+var nameOf = (v, tokens) => v.token ? `${hexOf(v, tokens)} (the theme's ${TOKEN_LABELS[v.token]?.toLowerCase() ?? v.token} color, var(--color-${v.token}))` : v.hex;
 var partName = (p) => {
 	const kind = p.kind.toLowerCase();
 	return [p.text ? `the ${kind} “${p.text}”` : `${[
@@ -2033,7 +2038,7 @@ var groupByPage = (paints) => paints.reduce((m, p) => m.set(pageOf(p), [...m.get
 var onPage = (page) => page === "*" ? "On every page of the site" : `On the page ${page}`;
 /** A prompt for Claude, Cursor or Copilot that makes the changes in the site's code. */
 function paintsPrompt(paints, tokens) {
-	return `Make these colour changes in my site's code. I picked them in colorsbymax Studio by clicking on the page. Find each part in the code from its description and words (the CSS selector is only a hint), and change only what's listed; keep everything else the same. Where the site already has a colour variable or theme setting for a colour, use that instead of hard-coding the hex.\n\n${[...groupByPage(paints)].map(([page, list]) => {
+	return `Make these color changes in my site's code. I picked them in Kamiliyon Studio by clicking on the page. Find each part in the code from its description and words (the CSS selector is only a hint), and change only what's listed; keep everything else the same. Where the site already has a color variable or theme setting for a color, use that instead of hard-coding the hex.\n\n${[...groupByPage(paints)].map(([page, list]) => {
 		const lines = list.map((p, i) => {
 			const who = p.everywhere ? `${partName(p)}, and every ${p.kind.toLowerCase()} like it on every page (it's a shared component, so change it where it's defined)` : p.all && p.similar ? `${partName(p)}, and every ${p.kind.toLowerCase()} like it (${p.likeIt} on the page)` : partName(p);
 			const changes = PROPS.filter(({ key }) => p.props[key]).map(({ key, label }) => `${label.toLowerCase()} ${nameOf(p.props[key], tokens)}`);
@@ -2042,7 +2047,7 @@ function paintsPrompt(paints, tokens) {
 		return `${onPage(page)}:\n${lines.join("\n")}`;
 	}).join("\n\n")}`;
 }
-/** The changes as plain CSS, with the theme's colours as hex. */
+/** The changes as plain CSS, with the theme's colors as hex. */
 function paintsCssExport(paints, tokens) {
 	return [...groupByPage(paints)].map(([page, list]) => {
 		const rules = list.flatMap((p) => {
@@ -2055,7 +2060,7 @@ function paintsCssExport(paints, tokens) {
 				...border ? [`${sel} { ${p.hasBorder ? "border-color:" : "border: 1px solid"} ${hexOf(border, tokens)}; }`] : []
 			];
 		});
-		return `/* colorsbymax Studio, ${page === "*" ? "on every page" : `on ${page}`} */\n${rules.join("\n")}`;
+		return `/* Kamiliyon Studio, ${page === "*" ? "on every page" : `on ${page}`} */\n${rules.join("\n")}`;
 	}).join("\n\n");
 }
 //#endregion
@@ -2072,7 +2077,7 @@ var over = ([r, g, b, a], under) => under.map((u, i) => [
 	b
 ][i] * a + u * (1 - a));
 var hasGradient = (cs) => cs.backgroundImage && cs.backgroundImage !== "none" && /gradient/.test(cs.backgroundImage);
-/** Elements that hold words of their own, and icons drawn in the text colour. */
+/** Elements that hold words of their own, and icons drawn in the text color. */
 function holders() {
 	const out = [];
 	const seen = /* @__PURE__ */ new Set();
@@ -2095,8 +2100,8 @@ function holders() {
 	});
 }
 /**
-* The solid colours an element's text could sit on: its background with every see-through one
-* behind it laid over each other, or each colour of a gradient behind it.
+* The solid colors an element's text could sit on: its background with every see-through one
+* behind it laid over each other, or each color of a gradient behind it.
 */
 function backgroundsOf(el, cache) {
 	if (cache.has(el)) return cache.get(el);
@@ -2130,7 +2135,7 @@ function behind(el, cache) {
 * The element whose solid fill a piece of text sits on (a button, a pill), or null when it's on the
 * page itself, a gradient or see-through layers. Light text on such a fill is kept light, and the
 * fill deepened, rather than the text turned dark: what a designer would do, and what the
-* re-colouring engine does with any other theme.
+* re-coloring engine does with any other theme.
 */
 function fillOwner(el) {
 	for (let node = el; node && node !== document.body && node !== document.documentElement;) {
@@ -2146,7 +2151,7 @@ function fillOwner(el) {
 	}
 	return null;
 }
-/** How readable each element is right now: its worst ratio, what it needs, its colour and backgrounds. */
+/** How readable each element is right now: its worst ratio, what it needs, its color and backgrounds. */
 function readAll(elements) {
 	const cache = /* @__PURE__ */ new Map();
 	const out = /* @__PURE__ */ new Map();
@@ -2168,7 +2173,7 @@ function readAll(elements) {
 	}
 	return out;
 }
-/** Reads with transitions held, so colours that animate report where they're going. */
+/** Reads with transitions held, so colors that animate report where they're going. */
 function steady(fn) {
 	const freeze = document.createElement("style");
 	freeze.textContent = "*,*::before,*::after{transition:none!important}";
@@ -2180,9 +2185,9 @@ function steady(fn) {
 	}
 }
 /**
-* The colour a hard-to-read element should take. Its own colour first, made lighter or darker
+* The color a hard-to-read element should take. Its own color first, made lighter or darker
 * until it reads, so a green "Paid" stays green and a red "Failed" red; else the theme's nearest
-* colour that reads, else the strongest.
+* color that reads, else the strongest.
 */
 function fixFor({ text, bgs }, target, tokens) {
 	const worstOf = (c) => Math.min(...bgs.map((bg) => contrastRatio(c, bg)));
@@ -2299,7 +2304,7 @@ function createGuard() {
 	});
 	window.addEventListener("load", schedule);
 	return {
-		/** Checks the page soon against these colours (the ones the page now shows). */
+		/** Checks the page soon against these colors (the ones the page now shows). */
 		check(next) {
 			tokens = next;
 			schedule();
@@ -2459,19 +2464,19 @@ function useUpdates(storageKey, enabled) {
 var SAMPLE_SIZE = 200;
 /** PDF pages read, from the first. */
 var MAX_PDF_PAGES = 3;
-/** Colours closer than this (CIE76 ΔE) count as one. */
+/** Colors closer than this (CIE76 ΔE) count as one. */
 var MERGE_DELTA_E = 12;
-/** Colours covering less than this share of the sampled pixels are ignored. */
+/** Colors covering less than this share of the sampled pixels are ignored. */
 var MIN_SHARE = .004;
-/** How close (CIE76 ΔE) a colour must be to a mix of two others to count as their edge blend. */
+/** How close (CIE76 ΔE) a color must be to a mix of two others to count as their edge blend. */
 var BLEND_DELTA_E = 6;
 var HEX_IN_TEXT = /#([0-9a-f]{6}|[0-9a-f]{3})\b/gi;
 var hslOf$3 = (hex) => rgbToHsl(hexToRgb(hex));
 /**
-* The main colours in an image or PDF, most important first.
+* The main colors in an image or PDF, most important first.
 * @param {File} file
 * @param {{ loadPdf?: (() => Promise<any>) | null }} [options]  PDF support, from 'colorsbymax/pdf'
-* @returns {Promise<{ colours: string[], from: 'image' | 'pdf-text' | 'pdf' }>}
+* @returns {Promise<{ colors: string[], from: 'image' | 'pdf-text' | 'pdf' }>}
 */
 async function coloursFromFile(file, { loadPdf = null } = {}) {
 	if (file.size > 26214400) throw new Error("That file is over 25 MB. Try a smaller one.");
@@ -2513,7 +2518,7 @@ function pixelsOf$1(source, width, height) {
 	return ctx.getImageData(0, 0, canvas.width, canvas.height).data;
 }
 /**
-* Buckets pixels into a coarse colour grid, then folds similar buckets together and keeps the
+* Buckets pixels into a coarse color grid, then folds similar buckets together and keeps the
 * ones covering a real share of the picture.
 * @param {Uint8ClampedArray[]} pixelSets
 */
@@ -2555,7 +2560,7 @@ function dominantColours(pixelSets) {
 	return kept.slice(0, 8).map((m) => m.hex);
 }
 /**
-* True for a colour that is just the anti-aliased edge between two much more common ones:
+* True for a color that is just the anti-aliased edge between two much more common ones:
 * it sits on the line between them and covers far less of the picture.
 */
 function isEdgeBlend(m, kept) {
@@ -2614,9 +2619,9 @@ async function coloursFromPdf(file, loadPdf) {
 }
 var expandHex = (h) => `#${(h.length === 3 ? h.replace(/./g, (c) => c + c) : h).toLowerCase()}`;
 /**
-* Assigns a palette's colours to theme roles: the most vivid becomes primary, a very light one
-* the page background, a very dark one the text, and every colour feeds the data set.
-* @param {string[]} colours  most important first
+* Assigns a palette's colors to theme roles: the most vivid becomes primary, a very light one
+* the page background, a very dark one the text, and every color feeds the data set.
+* @param {string[]} colors  most important first
 */
 function rolesFromPalette(colours) {
 	const info = colours.map((hex, i) => {
@@ -2771,7 +2776,7 @@ function markZones() {
 	}
 	plain.forEach((p, i) => i % 2 === 0 && p.setAttribute("data-cbm-z", "tint"));
 }
-/** What an element paints over: 'primary' (a brand-coloured band), 'secondary' (the footer), or 'page'. */
+/** What an element paints over: 'primary' (a brand-colored band), 'secondary' (the footer), or 'page'. */
 var zoneOf = (el) => {
 	const z = el.closest(`[${ZONE}]`)?.getAttribute(ZONE);
 	return z === "cta" ? "primary" : z === "footer" ? "secondary" : "page";
@@ -2787,7 +2792,26 @@ var allBorders = (cs) => [
 * The roles an element plays, from its original look. `ownFill` is its own background (a hex, or
 * null if it has none worth counting) and `under` the hex of what it sits on.
 */
-function rolesOf(el, cs, ownFill, under) {
+var hslOfHex = (hex) => rgbToHsl(hexToRgb(hex));
+var hueGap$2 = (a, b) => Math.min(Math.abs(a - b), 360 - Math.abs(a - b));
+var MEANING = /(delete|remove|discard|destroy|cancel|stop|error|danger|warning|caution|confirm|approve|accept|save|done|success|retry)/i;
+/**
+* Whether a filled button carries a meaning rather than the brand: a red delete, an amber warning, a
+* green save, a blue info. Its fill isn't in the site's brand family (or, on a site with no brand,
+* it's a clearly colored status hue), so the swap keeps it as the theme's own danger, warning,
+* success or info color instead of the brand.
+*/
+function meaningful(el, fill, brand) {
+	const [h, s, l] = hslOfHex(fill);
+	if (s < .35 || l < .15 || l > .85) return false;
+	if (brand) {
+		const [bh, bs] = hslOfHex(brand);
+		if (bs >= .2 && hueGap$2(h, bh) <= 35) return false;
+		return true;
+	}
+	return MEANING.test(el.textContent) || h < 20 || h >= 340 || h >= 30 && h < 60 || h >= 90 && h < 165;
+}
+function rolesOf(el, cs, ownFill, under, brand = null) {
 	const roles = [];
 	const name = el.localName;
 	const zoneRole = el.getAttribute(ZONE);
@@ -2806,6 +2830,7 @@ function rolesOf(el, cs, ownFill, under) {
 	const filled = Boolean(ownFill) && deltaE(ownFill, under) > 12;
 	if (name === "button" || el.getAttribute("role") === "button" || name === "input" && BUTTON_INPUTS.has(type) || (name === "a" || name === "label") && (filled || allBorders(cs)) && px(cs.paddingLeft) >= 6 && cs.display !== "inline") {
 		if (!filled && !allBorders(cs)) return roles;
+		if (filled && meaningful(el, ownFill, brand)) return roles;
 		roles.push(zone === "primary" ? "btn-inv" : filled ? "btn" : "btn2");
 		return roles;
 	}
@@ -2875,7 +2900,7 @@ function rolesOf(el, cs, ownFill, under) {
 	return roles;
 }
 var readsOn = (fg, bgs, min) => bgs.every((bg) => contrastRatio(fg, bg) >= min);
-/** The first colour that reads on every background, else the theme's plain text colour. */
+/** The first color that reads on every background, else the theme's plain text color. */
 var firstReadable = (candidates, bgs, min) => candidates.find((c) => c && readsOn(c, bgs, min)) ?? candidates[candidates.length - 1];
 /** Roles Subtle paints: the accents only (buttons, links, badges, highlights), never backgrounds. */
 var ACCENT_ROLES = /* @__PURE__ */ new Set([
@@ -3095,7 +3120,7 @@ var ATTR = "data-cbm";
 /** Elements the engine never touches: the switcher itself. */
 var SKIP$1 = "colorsbymax-root";
 /**
-* How colorsbymax finds a site's logo, to keep it in its own colours: an explicit
+* How Kamiliyon finds a site's logo, to keep it in its own colors: an explicit
 * data-colorsbymax-logo, "logo" in a class, id or label (but not "logout"), or common brand classes.
 */
 var LOGO_SELECTOR = [
@@ -3112,11 +3137,11 @@ var LOGO_SELECTOR = [
 	".site-title",
 	".site-brand"
 ].join(", ");
-/** Below this HSL saturation a colour counts as a grey and follows the background→text scale. */
+/** Below this HSL saturation a color counts as a grey and follows the background→text scale. */
 var NEUTRAL_SATURATION = .12;
-/** Colours within this many degrees of a brand hue are shades of it and follow the theme's version. */
+/** Colors within this many degrees of a brand hue are shades of it and follow the theme's version. */
 var FAMILY_HUE = 35;
-/** Colours within this many degrees of a status hue (and not brand) keep that meaning. */
+/** Colors within this many degrees of a status hue (and not brand) keep that meaning. */
 var STATUS = [
 	"success",
 	"warning",
@@ -3124,7 +3149,7 @@ var STATUS = [
 	"info"
 ];
 var STATUS_HUE = 25;
-/** Everything else coloured (categories, illustrations) maps to the nearest of these. */
+/** Everything else colored (categories, illustrations) maps to the nearest of these. */
 var CATEGORIES = [
 	...STATUS,
 	"data-1",
@@ -3148,13 +3173,13 @@ var SIDES = [
 */
 var MIN_TEXT_CONTRAST = 4.5;
 var MIN_ICON_CONTRAST = 3;
-/** Painted colours that sit on a background, so are checked against it. */
+/** Painted colors that sit on a background, so are checked against it. */
 var FOREGROUND = /* @__PURE__ */ new Set([
 	"color",
 	"fill",
 	"stroke"
 ]);
-/** Whether a background-image has any colours in it (gradients), rather than just images. */
+/** Whether a background-image has any colors in it (gradients), rather than just images. */
 var HAS_COLOUR = new RegExp(COLOR_IN_GRADIENT.source, "i");
 var clamp$1 = (n, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, n));
 /** Whether an element has text of its own, rather than only icons or child elements. */
@@ -3168,7 +3193,7 @@ var hueDist = (a, b) => Math.min(Math.abs(a - b), 360 - Math.abs(a - b));
 /** How far hue `a` is from `b`, signed, in -180..180. */
 var signedHue = (a, b) => (a - b + 540) % 360 - 180;
 var hslOf$2 = (hex) => rgbToHsl(hexToRgb(hex));
-/** True when the site defines colorsbymax's variables itself, so no re-colouring is needed. */
+/** True when the site defines Kamiliyon's variables itself, so no re-coloring is needed. */
 function usesColourTokens() {
 	return withoutAppliedTheme(() => getComputedStyle(document.documentElement).getPropertyValue("--color-primary").trim() !== "");
 }
@@ -3199,7 +3224,7 @@ function createParser() {
 	};
 }
 /**
-* Starts re-colouring the page. Returns the site's own colours as tokens (`site`), `apply(tokens)`
+* Starts re-coloring the page. Returns the site's own colors as tokens (`site`), `apply(tokens)`
 * to show a theme (null restores the original look) and `stop()`.
 */
 function createRecolourer({ colourful = false } = {}) {
@@ -3213,6 +3238,7 @@ function createRecolourer({ colourful = false } = {}) {
 	let vivid = colourful;
 	let vividOpts = {};
 	const { roles } = inferRoles(collectColors());
+	const roles0 = roles;
 	const site = themeFromRoles(roles);
 	const plain = !roles.primary;
 	const siteBgL = hslOf$2(site.background)[2];
@@ -3283,7 +3309,7 @@ function createRecolourer({ colourful = false } = {}) {
 		}
 		return ids;
 	};
-	/** Tags `elements` (and optionally their descendants) with the colours they paint. */
+	/** Tags `elements` (and optionally their descendants) with the colors they paint. */
 	let pendingRules = "";
 	const tag = (roots, deep) => {
 		backdrops = /* @__PURE__ */ new WeakMap();
@@ -3304,7 +3330,7 @@ function createRecolourer({ colourful = false } = {}) {
 					const cs = getComputedStyle(el);
 					const own = parse(cs.backgroundColor);
 					const under = parse(backdropOf(el.parentElement))?.hex ?? "#ffffff";
-					const roles = rolesOf(el, cs, own && own.alpha >= .5 ? own.hex : null, under);
+					const roles = rolesOf(el, cs, own && own.alpha >= .5 ? own.hex : null, under, roles0.primary ?? null);
 					if (roles.length) el.setAttribute(ROLE, roles.join(" "));
 					else el.removeAttribute(ROLE);
 				}
@@ -3487,7 +3513,7 @@ function createRecolourer({ colourful = false } = {}) {
 	});
 	return {
 		site,
-		/** Shows `tokens` in place of the site's colours; null brings back the original look. */
+		/** Shows `tokens` in place of the site's colors; null brings back the original look. */
 		apply(tokens) {
 			theme = tokens;
 			sheet.textContent = tokens ? [...entries.values()].map(rule).join("") + logoRules() : "";
@@ -3497,7 +3523,7 @@ function createRecolourer({ colourful = false } = {}) {
 			}) : "";
 		},
 		/**
-		* How the page's parts are painted by role on top of the swaps: true (Colourful) all of them,
+		* How the page's parts are painted by role on top of the swaps: true (Colorful) all of them,
 		* 'accents' (Subtle) only buttons, links, badges and highlights, false (Balanced) none.
 		*/
 		setColourful(on, opts = {}) {
@@ -3508,7 +3534,7 @@ function createRecolourer({ colourful = false } = {}) {
 				accents: vivid === "accents"
 			}) : "";
 		},
-		/** Whether the logo is re-coloured with the rest (off keeps it in its own colours). */
+		/** Whether the logo is re-colored with the rest (off keeps it in its own colors). */
 		setLogoColouring(on) {
 			const next = on ? SKIP$1 : `${SKIP$1}, ${LOGO_SELECTOR}`;
 			if (next === skip) return;
@@ -3554,7 +3580,7 @@ function pixelsOf(img) {
 		return null;
 	}
 }
-/** The main colours in the site's logo and biggest pictures, most used first. */
+/** The main colors in the site's logo and biggest pictures, most used first. */
 function imageColours() {
 	const pictures = [...document.images].filter((img) => img.complete && img.naturalWidth >= 24 && shownArea(img) && !img.closest("colorsbymax-root, [data-colorsbymax]"));
 	const logos = pictures.filter((img) => img.closest(LOGO_SELECTOR));
@@ -3562,7 +3588,7 @@ function imageColours() {
 	const sets = [...logos.slice(0, 2), ...photos].map(pixelsOf).filter(Boolean);
 	return sets.length ? dominantColours(sets) : [];
 }
-/** The picture colour to tint with: the most used one with real colour in it (no greys, black or white). */
+/** The picture color to tint with: the most used one with real color in it (no greys, black or white). */
 function tintOf(colours) {
 	return colours.find((hex) => {
 		const [, s, l] = rgbToHsl(hexToRgb(hex));
@@ -3600,7 +3626,7 @@ var hueGap$1 = (a, b) => {
 	return Math.min(d, 360 - d);
 };
 var clampColours = (n) => Math.min(10, Math.max(5, Math.round(Number(n) || 10)));
-/** How far a colour's hue is from the theme's brand colours (0 = one of them); greys fit anything. */
+/** How far a color's hue is from the theme's brand colors (0 = one of them); greys fit anything. */
 function misfit(tokens, key) {
 	const [h, s] = hslOf$1(tokens[key]);
 	if (s < .15) return 0;
@@ -3608,7 +3634,7 @@ function misfit(tokens, key) {
 	if (!brand.length) return 90;
 	return Math.min(...brand.map(([bh]) => hueGap$1(h, bh)));
 }
-/** The swatch keys a theme keeps at `count` colours, in card order. */
+/** The swatch keys a theme keeps at `count` colors, in card order. */
 function paletteKeys(tokens, count = 10) {
 	const n = clampColours(count);
 	if (n >= 10) return SWATCH_KEYS;
@@ -3633,9 +3659,9 @@ var atLightness = (hex, l) => {
 	]));
 };
 /**
-* A theme's tokens using only `count` of its colours. Chart colours that go are painted with
-* the ones that stay (brand colours first), at their own lightness so charts keep their
-* contrast; a soft tint that goes becomes a tint of the brand colour. The colours it replaces are
+* A theme's tokens using only `count` of its colors. Chart colors that go are painted with
+* the ones that stay (brand colors first), at their own lightness so charts keep their
+* contrast; a soft tint that goes becomes a tint of the brand color. The colors it replaces are
 * then run through the contrast fixes (lightness only), so a smaller palette still reads.
 */
 function reducePalette(tokens, count = 10) {
@@ -3666,7 +3692,7 @@ function reducePalette(tokens, count = 10) {
 	for (const [key, value] of Object.entries(fixAll(out))) if (replaced.has(key)) out[key] = value;
 	return out;
 }
-/** A theme's saved colour count: its own, or the visitor's default for every theme. */
+/** A theme's saved color count: its own, or the visitor's default for every theme. */
 var coloursFor = (sizes, themeId, fallback = 10) => clampColours(sizes?.[baseId(themeId)] ?? fallback);
 /** Light and dark versions of a theme share one count. */
 var baseId = (id) => String(id).replace(/~dark$/, "");
@@ -3678,19 +3704,19 @@ var baseId = (id) => String(id).replace(/~dark$/, "");
 * @property {boolean} showPicks
 * @property {boolean} showLibrary
 * @property {boolean} showCustom      "Custom palettes" section
-* @property {boolean} showOverrides   "Override a single colour" section
+* @property {boolean} showOverrides   "Override a single color" section
 * @property {boolean} showImportExport
-* @property {boolean} draggable       Whether the colour button can be dragged
-* @property {boolean} animateDot      Whether the colour button's dot cycles through the theme's colours
+* @property {boolean} draggable       Whether the color button can be dragged
+* @property {boolean} animateDot      Whether the color button's dot cycles through the theme's colors
 * @property {number | null} panelWidth           Pixels; null is the standard width
 * @property {number | 'full' | null} panelHeight  Pixels, 'full' for all the room there is, or null to fit the content
 * @property {boolean} libraryCollapsed  Whether the library's category chips are folded away
-* @property {boolean} colourLogo  Whether themes re-colour the site's logo too (off keeps its own colours)
-* @property {number} paletteSize  How many of a theme's ten colours every theme uses (5 to 10; 5 to start, the core ones)
-* @property {'subtle' | 'balanced' | 'colourful'} colourStyle  How boldly the site takes a theme: 'subtle'
-*   keeps its own backgrounds and text, 'balanced' is the theme as designed, 'colourful' an overhaul
-* @property {number} colourStrength  How strongly Colourful paints, 0 (a light wash) to 100 (bold)
-* @property {boolean} imageTints  Whether Colourful tints the page with colours from the site's own pictures
+* @property {boolean} colourLogo  Whether themes re-color the site's logo too (off keeps its own colors)
+* @property {number} paletteSize  How many of a theme's ten colors every theme uses (5 to 10; 5 to start, the core ones)
+* @property {'subtle' | 'balanced' | 'colorful'} colourStyle  How boldly the site takes a theme: 'subtle'
+*   keeps its own backgrounds and text, 'balanced' is the theme as designed, 'colorful' an overhaul
+* @property {number} colourStrength  How strongly Colorful paints, 0 (a light wash) to 100 (bold)
+* @property {boolean} imageTints  Whether Colorful tints the page with colors from the site's own pictures
 * @property {boolean} hideButton  Hidden on this device from the finish screen (Alt+Shift+C brings it back)
 */
 /** @type {PanelSettings} */
@@ -3750,6 +3776,7 @@ function loadSettings(storageKey, defaults = DEFAULT_SETTINGS) {
 			"dark",
 			"system"
 		].includes(out.mode)) out.mode = defaults.mode;
+		if (out.colourStyle === "colorful") out.colourStyle = "colourful";
 		if (![
 			"subtle",
 			"balanced",
@@ -3771,7 +3798,7 @@ function saveSettings(storageKey, settings) {
 		window.localStorage.setItem(`${storageKey}:settings`, JSON.stringify(settings));
 	} catch {}
 }
-/** True while the device prefers dark colours. */
+/** True while the device prefers dark colors. */
 function usePrefersDark() {
 	const query = "(prefers-color-scheme: dark)";
 	const [dark, setDark] = useState(() => window.matchMedia(query).matches);
@@ -3789,13 +3816,13 @@ function usePrefersDark() {
 * @property {(patch: Partial<PanelSettings>) => void} update
 * @property {() => void} reset
 * @property {'light' | 'dark'} mode        `settings.mode` with "system" resolved
-* @property {(() => void) | null} resetButton  Moves the colour button back to its corner; null when it's there
+* @property {(() => void) | null} resetButton  Moves the color button back to its corner; null when it's there
 */
 /** @type {import('react').Context<SettingsApi | null>} */
 var SettingsContext = createContext(null);
 function useSettings() {
 	const ctx = useContext(SettingsContext);
-	if (!ctx) throw new Error("useSettings must be used inside the colorsbymax switcher");
+	if (!ctx) throw new Error("useSettings must be used inside the Kamiliyon switcher");
 	return ctx;
 }
 //#endregion
@@ -3811,10 +3838,10 @@ var VERSION = 1;
 *   resolves on load without downloading the whole library
 * @property {{ at: number, palette: string[], themes: import('./tokens.js').Theme[] } | null} scanned
 *   Result of the last site scan
-* @property {{ mode: 'all' | 'pages', pages: string[] } | null} scope  Where the colours go, chosen in
+* @property {{ mode: 'all' | 'pages', pages: string[] } | null} scope  Where the colors go, chosen in
 *   Studio (null: the site's `pages` config, else the whole site)
 * @property {string[]} seen  Pages of the site this visitor has opened, newest first, for Studio
-* @property {object[]} paints  Parts of pages coloured by pointing and clicking in Studio
+* @property {object[]} paints  Parts of pages colored by pointing and clicking in Studio
 */
 /** @returns {ThemeState} */
 var initialState = (defaultId) => ({
@@ -3855,6 +3882,7 @@ function loadState(storageKey, defaultTheme) {
 			id: c.id,
 			name: c.name,
 			custom: true,
+			...c.twin ? { twin: true } : {},
 			tokens: complete(c.tokens)
 		})) : [];
 		const snap = data.snapshot;
@@ -3895,7 +3923,7 @@ function loadState(storageKey, defaultTheme) {
 * Persists state plus the fully resolved tokens, so the pre-paint script can apply
 * them without knowing about presets, and the pages they go on (`where`, from Studio or the
 * site's `pages` config), so it leaves the other pages alone; and Studio's stylesheet for each
-* page with parts coloured by pointing and clicking (`paintCss`), so those show at once too.
+* page with parts colored by pointing and clicking (`paintCss`), so those show at once too.
 */
 function saveState(storageKey, state, resolved, where = null, paintCss = null) {
 	try {
@@ -3909,7 +3937,7 @@ function saveState(storageKey, state, resolved, where = null, paintCss = null) {
 	} catch {}
 }
 /**
-* Where the visitor dragged the colour button, as fractions (0–1) of the space it can move in,
+* Where the visitor dragged the color button, as fractions (0–1) of the space it can move in,
 * so it keeps its relative spot when the window resizes. Null means the default corner.
 * @returns {{ rx: number, ry: number } | null}
 */
@@ -3946,7 +3974,7 @@ function applyTokens(tokens) {
 	const style = document.documentElement.style;
 	for (const key of TOKEN_KEYS) style.setProperty(`--color-${key}`, tokens[key]);
 }
-/** Takes the tokens off <html> again, so the site's own stylesheet colours show. */
+/** Takes the tokens off <html> again, so the site's own stylesheet colors show. */
 var removeTokens = () => {
 	const style = document.documentElement.style;
 	for (const key of TOKEN_KEYS) style.removeProperty(`--color-${key}`);
@@ -3959,49 +3987,49 @@ var newId$1 = () => `custom-${Date.now().toString(36)}-${Math.random().toString(
 * @property {string} [siteName]      Shown as the first theme group, e.g. "Tsungi"
 * @property {string} [storageKey]    localStorage key; must match the pre-paint script
 * @property {{ name: string, tokens: Partial<import('./tokens.js').ThemeTokens> }} [defaultTheme]
-*   The site's own shipped colours
+*   The site's own shipped colors
 * @property {{ id: string, name: string, tokens: Partial<import('./tokens.js').ThemeTokens> }[]} [themes]
 *   Extra themes made for this site
 * @property {Partial<Record<import('./tokens.js').TokenKey, string>>} [usage]
 *   Where each token is used on this site, shown in the editors
-* @property {boolean} [scrollbars]  Colour the page's scrollbars from the theme (default true)
+* @property {boolean} [scrollbars]  Color the page's scrollbars from the theme (default true)
 * @property {() => Promise<any>} [pdf]  Enables PDF uploads: pass `loadPdf` from 'colorsbymax/pdf'
 * @property {'light' | 'dark' | 'system'} [defaultMode]  The mode a first-time visitor starts in
 *   (default 'light'; 'system' follows their device). Visitors can still change it.
-* @property {boolean} [colourLogo]  Whether themes colour the site's logo for a first-time visitor
-*   (default false: the logo keeps its own colours). Visitors can still change it in settings.
-* @property {boolean} [intro]  Bring the colour button in with a short pop and burst of the theme's
-*   colours, a moment after the page loads (default true). Reduced motion fades it in instead.
-* @property {boolean} [hidden]  Hide the colour button and panel; the theme still applies. Use
-*   `hidden: import.meta.env.PROD` to keep it out of production once the colours are chosen.
-* @property {'bottom-right' | 'bottom-left' | 'top-left' | 'top-right'} [position]  Where the colour
+* @property {boolean} [colourLogo]  Whether themes color the site's logo for a first-time visitor
+*   (default false: the logo keeps its own colors). Visitors can still change it in settings.
+* @property {boolean} [intro]  Bring the color button in with a short pop and burst of the theme's
+*   colors, a moment after the page loads (default true). Reduced motion fades it in instead.
+* @property {boolean} [hidden]  Hide the color button and panel; the theme still applies. Use
+*   `hidden: import.meta.env.PROD` to keep it out of production once the colors are chosen.
+* @property {'bottom-right' | 'bottom-left' | 'top-left' | 'top-right'} [position]  Where the color
 *   button starts (default 'bottom-right'). 'top-right' sits under a floating nav bar.
-* @property {'subtle' | 'balanced' | 'colourful'} [colourStyle]  How boldly the site takes a theme, for a
+* @property {'subtle' | 'balanced' | 'colorful'} [colourStyle]  How boldly the site takes a theme, for a
 *   first-time visitor. 'subtle' keeps the site's own backgrounds, cards and text and brings the theme
-*   in on buttons, links and highlights. 'balanced' is the theme as designed, every colour in its role
-*   (the default on a site painted with the --color-* variables). 'colourful' is an overhaul: tinted
+*   in on buttons, links and highlights. 'balanced' is the theme as designed, every color in its role
+*   (the default on a site painted with the --color-* variables). 'colorful' is an overhaul: tinted
 *   backgrounds, and the page's parts painted by role as a designer would (header, hero, sections,
-*   headings, cards, buttons, links and footer; the default on a site colorsbymax re-colours).
+*   headings, cards, buttons, links and footer; the default on a site Kamiliyon re-colors).
 *   Visitors can switch in the panel.
-* @property {boolean | 'dev'} [updates]  The bell in the panel: when a newer colorsbymax is out it says
+* @property {boolean | 'dev'} [updates]  The bell in the panel: when a newer Kamiliyon is out it says
 *   so, with how to update, alongside news from mrmaxdesigns. 'dev' (default) shows it only on
 *   development addresses (localhost and the like), never to a live site's visitors; true shows it
 *   everywhere, false never. It checks once a day at most.
-* @property {number} [colourStrength]  How strongly Colourful paints for a first-time visitor, 0 (a light
+* @property {number} [colourStrength]  How strongly Colorful paints for a first-time visitor, 0 (a light
 *   wash) to 100 (bold); default 50. Visitors can change it in the panel.
 * @property {Partial<Record<keyof typeof FEATURES, boolean>>} [features]  Parts of the panel to switch off
 *   for everyone, e.g. { scan: false, audit: false } (all on by default). Unlike the rest of the
 *   config it's read live, so a site can change it after loading (from its own settings).
-* @property {string[]} [pages]  Only colour these pages, e.g. ['/', '/pricing', '/blog/*'] (a path ending in
-*   /* is that section and every page under it); every other page keeps its own colours. Default:
+* @property {string[]} [pages]  Only color these pages, e.g. ['/', '/pricing', '/blog/*'] (a path ending in
+*   /* is that section and every page under it); every other page keeps its own colors. Default:
 *   the whole site. A visitor can choose differently in Studio, on their own device.
-* @property {boolean | 'auto'} [recolour]  Re-colour a site that doesn't paint with the --color-*
-*   variables, by swapping the colours actually on the page. 'auto' (default) does it only when
+* @property {boolean | 'auto'} [recolor]  Re-color a site that doesn't paint with the --color-*
+*   variables, by swapping the colors actually on the page. 'auto' (default) does it only when
 *   the site doesn't define --color-primary itself.
 */
 /**
 * Resolves a config into the site theme group. The shipped default always comes first. Without
-* one, a re-coloured site's own colours (read from the page) are its default.
+* one, a re-colored site's own colors (read from the page) are its default.
 */
 function resolveSite(config, pageColours) {
 	const siteName = config.siteName || detectSiteName();
@@ -4052,6 +4080,8 @@ var COLOUR_STYLES$1 = [
 	"balanced",
 	"colourful"
 ];
+/** A color style as a site writes it: 'colorful' and 'colourful' are the same style. */
+var styleName = (value) => value === "colorful" ? "colourful" : value;
 var FEATURES = {
 	picks: true,
 	library: true,
@@ -4065,7 +4095,8 @@ var FEATURES = {
 	addToSite: true,
 	colourStyle: true,
 	colourCount: true,
-	studio: true
+	studio: true,
+	picker: true
 };
 function ThemeProvider({ config = {}, children }) {
 	const storageKey = config.storageKey || "colorsbymax";
@@ -4149,7 +4180,7 @@ function ThemeProvider({ config = {}, children }) {
 		...DEFAULT_SETTINGS,
 		colourLogo: Boolean(initialConfig.colourLogo),
 		colourStrength: Number.isFinite(initialConfig.colourStrength) ? Math.min(100, Math.max(0, initialConfig.colourStrength)) : DEFAULT_SETTINGS.colourStrength,
-		colourStyle: COLOUR_STYLES$1.includes(initialConfig.colourStyle) ? initialConfig.colourStyle : recolours ? "colourful" : "balanced",
+		colourStyle: COLOUR_STYLES$1.includes(styleName(initialConfig.colourStyle)) ? styleName(initialConfig.colourStyle) : recolours ? "colourful" : "balanced",
 		mode: [
 			"light",
 			"dark",
@@ -4160,7 +4191,8 @@ function ThemeProvider({ config = {}, children }) {
 	useLayoutEffect(() => {
 		recolourer.current?.setLogoColouring(logoColouring);
 	}, [logoColouring, pageColours]);
-	const [colourStyle, setColourStyle] = useState(() => loadSettings(storageKey, settingDefaults).colourStyle);
+	const [colourStyle, setStyle] = useState(() => loadSettings(storageKey, settingDefaults).colourStyle);
+	const setColourStyle = useCallback((value) => setStyle(styleName(value)), []);
 	const [colourStrength, setColourStrength] = useState(() => loadSettings(storageKey, settingDefaults).colourStrength);
 	const [imageTints, setImageTints] = useState(() => loadSettings(storageKey, settingDefaults).imageTints);
 	const [pictureColours, setPictureColours] = useState([]);
@@ -4325,7 +4357,7 @@ function ThemeProvider({ config = {}, children }) {
 		});
 	}, [storageKey, settingDefaults]);
 	useLayoutEffect(() => {
-		if (base.custom) return;
+		if (base.custom && !base.twin) return;
 		if (mode === "dark" && !isDarkTheme(base.tokens)) {
 			const twin = toDark(base);
 			selectTheme(twin.id, twin);
@@ -4389,42 +4421,42 @@ function ThemeProvider({ config = {}, children }) {
 		updatesOn: initialConfig.updates === true || initialConfig.updates !== false && isDevAddress(),
 		/** True when the config hides the switcher (e.g. in production); the theme still applies. */
 		hidden: Boolean(initialConfig.hidden),
-		/** Whether the colour button makes an entrance when it first appears. */
+		/** Whether the color button makes an entrance when it first appears. */
 		intro: initialConfig.intro !== false,
-		/** True when colorsbymax is swapping the page's own colours (the site isn't wired to tokens). */
+		/** True when Kamiliyon is swapping the page's own colors (the site isn't wired to tokens). */
 		recolouring: Boolean(pageColours),
-		/** Turns re-colouring of the site's logo on or off (the switcher's "Colour the logo" setting). */
+		/** Turns re-coloring of the site's logo on or off (the switcher's "Color the logo" setting). */
 		setLogoColouring,
-		/** Sets how boldly the site takes the theme: 'subtle', 'balanced' or 'colourful'. */
+		/** Sets how boldly the site takes the theme: 'subtle', 'balanced' or 'colorful'. */
 		setColourStyle,
 		colourStyle,
-		/** Colourful's strength (0 to 100) and image tints, set from the switcher's settings. */
+		/** Colorful's strength (0 to 100) and image tints, set from the switcher's settings. */
 		setColourStrength,
 		setImageTints,
-		/** The main colours of the site's logo and pictures, and the one Colourful tints with (or null). */
+		/** The main colors of the site's logo and pictures, and the one Colorful tints with (or null). */
 		pictureColours,
 		pictureTint: imageTints ? tintOf(pictureColours) : null,
-		/** The colours as the page shows them, in the visitor's colour style. */
+		/** The colors as the page shows them, in the visitor's color style. */
 		appliedTokens: applied,
 		/** Which parts of the panel are on (config `features`). */
 		features,
-		/** Where the colours go: { mode: 'all' | 'pages', pages }, and whether this page gets them. */
+		/** Where the colors go: { mode: 'all' | 'pages', pages }, and whether this page gets them. */
 		scope,
 		inScope: here,
 		pathname,
 		/** The site's own `pages` config, or null; `scopeChosen` is true once the visitor picks their own. */
 		configPages,
 		scopeChosen: Boolean(state.scope),
-		/** Sets where the colours go (Studio), on this device; null goes back to the site's setting. */
+		/** Sets where the colors go (Studio), on this device; null goes back to the site's setting. */
 		setScope: (next) => setState((s) => ({
 			...s,
 			scope: next === null ? null : cleanScope(next)
 		})),
 		/** Pages of the site this visitor has opened, newest first. */
 		seenPages: state.seen,
-		/** Parts of pages coloured in Studio by pointing and clicking. */
+		/** Parts of pages colored in Studio by pointing and clicking. */
 		paints: state.paints,
-		/** Adds a paint, or updates the one with its id; one with no colours left is removed. */
+		/** Adds a paint, or updates the one with its id; one with no colors left is removed. */
 		savePaint: (paint) => setState((s) => {
 			const [clean] = cleanPaints([paint]);
 			const rest = s.paints.filter((p) => p.id !== paint.id);
@@ -4442,14 +4474,14 @@ function ThemeProvider({ config = {}, children }) {
 			...s,
 			paints: s.paints.filter((p) => p.id !== id)
 		})),
-		/** Clears Studio's colours, on one page or everywhere. */
+		/** Clears Studio's colors, on one page or everywhere. */
 		clearPaints: (page = null) => setState((s) => ({
 			...s,
 			paints: page ? s.paints.filter((p) => p.page !== page) : []
 		})),
-		/** How many colours a theme uses (5 to 10): its own count, or the visitor's default. */
+		/** How many colors a theme uses (5 to 10): its own count, or the visitor's default. */
 		coloursOf,
-		/** Sets one theme's colour count (light and dark share it). */
+		/** Sets one theme's color count (light and dark share it). */
 		setThemeColours: (id, n) => setState((s) => ({
 			...s,
 			paletteSizes: {
@@ -4524,7 +4556,7 @@ function ThemeProvider({ config = {}, children }) {
 		})),
 		scanned: state.scanned,
 		/**
-		* Reads the colours painted on the page (ignoring the applied theme) and adds themes built
+		* Reads the colors painted on the page (ignoring the applied theme) and adds themes built
 		* around them to the site group. Returns a short summary for the UI.
 		*/
 		runScan: async () => {
@@ -4572,12 +4604,13 @@ function ThemeProvider({ config = {}, children }) {
 				return "That isn’t valid JSON.";
 			}
 			const clean = sanitizeTokens(data?.tokens);
-			if (!Object.keys(clean).length) return "No recognised colour tokens found. Expected { \"name\": …, \"tokens\": { \"primary\": \"#…\" } }.";
+			if (!Object.keys(clean).length) return "No recognised color tokens found. Expected { \"name\": …, \"tokens\": { \"primary\": \"#…\" } }.";
 			api.addPalette(typeof data.name === "string" ? data.name : "", clean);
 			return null;
 		},
 		/** Adds tokens as a new custom palette (missing ones filled from the site) and applies it. */
-		addPalette: (name, partialTokens) => {
+		/** `twin`: give it a dark twin, like a built-in theme (for palettes Kamiliyon built itself). */
+		addPalette: (name, partialTokens, { twin = false } = {}) => {
 			const id = newId$1();
 			const clean = sanitizeTokens(partialTokens);
 			setState((s) => ({
@@ -4588,6 +4621,7 @@ function ThemeProvider({ config = {}, children }) {
 					id,
 					name: name.trim().slice(0, 60) || "Imported palette",
 					custom: true,
+					...twin ? { twin: true } : {},
 					tokens: completeTokens(clean, defaultTheme.tokens)
 				}]
 			}));
@@ -4860,22 +4894,30 @@ var ExternalLink = icon("external-link", [
 	["path", { "d": "M10 14 21 3" }],
 	["path", { "d": "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" }]
 ]);
+var Pipette = icon("pipette", [
+	["path", { "d": "m12 9-8.414 8.414A2 2 0 0 0 3 18.828v1.344a2 2 0 0 1-.586 1.414A2 2 0 0 1 3.828 21h1.344a2 2 0 0 0 1.414-.586L15 12" }],
+	["path", { "d": "m18 9 .4.4a1 1 0 1 1-3 3l-3.8-3.8a1 1 0 1 1 3-3l.4.4 3.4-3.4a1 1 0 1 1 3 3z" }],
+	["path", { "d": "m2 22 .414-.414" }]
+]);
 //#endregion
 //#region src/burst.jsx
-/** The mark for something new in the bell: a small red plus, outlined so it shows on any colour. */
-function NewMark({ className = "" }) {
+/**
+* The mark for something new in the bell: a small plus in the theme's own color (like the color
+* button's dot), outlined in the panel's background so it shows on any color.
+*/
+function NewMark({ colour, className = "" }) {
 	return /* @__PURE__ */ jsxs("svg", {
 		viewBox: "0 0 12 12",
 		"aria-hidden": "true",
 		className: `theme-new-mark pointer-events-none absolute h-3 w-3 ${className}`,
 		children: [/* @__PURE__ */ jsx("path", {
 			d: "M6 1.5v9M1.5 6h9",
-			stroke: "#ffffff",
+			style: { stroke: "var(--color-white)" },
 			strokeWidth: "4.5",
 			strokeLinecap: "round"
 		}), /* @__PURE__ */ jsx("path", {
 			d: "M6 1.5v9M1.5 6h9",
-			stroke: "#dc2626",
+			style: { stroke: colour },
 			strokeWidth: "2.4",
 			strokeLinecap: "round"
 		})]
@@ -4907,7 +4949,7 @@ var BURST_PIECES = Array.from({ length: 12 }, (_, i) => {
 		delay: i % 4 * 25
 	};
 });
-/** `spread` scales how far the pieces fly, for something wider than the colour button. */
+/** `spread` scales how far the pieces fly, for something wider than the color button. */
 function Burst({ tokens, spread = 1 }) {
 	return /* @__PURE__ */ jsx("span", {
 		"aria-hidden": "true",
@@ -4962,27 +5004,27 @@ var VITE_PROD = "import.meta.env.PROD";
 var NODE_PROD = "process.env.NODE_ENV === 'production'";
 var tokenLines = (tokens, indent) => TOKEN_KEYS.map((k) => `${indent}'${k}': '${tokens[k]}',`).join("\n");
 /**
-* Code that makes the chosen colours the site's default and hides the switcher in production.
+* Code that makes the chosen colors the site's default and hides the switcher in production.
 * @param {'auto' | 'provider'} kind  the one-line setup (autoMount) or ThemeProvider
-* @param {'subtle' | 'balanced' | 'colourful'} [style]  the colour style to keep with them
+* @param {'subtle' | 'balanced' | 'colorful'} [style]  the color style to keep with them
 */
 function keepSnippet(kind, name, tokens, prod = VITE_PROD, style = null) {
-	const styleLine = style ? `\n  // How boldly the colours paint the site: 'subtle', 'balanced' or 'colourful'.\n  colourStyle: '${style}',` : "";
-	const theme = `defaultTheme: {\n    name: ${JSON.stringify(name)},\n    tokens: {\n${tokenLines(tokens, "      ")}\n    },\n  },${styleLine}\n  // Hides the colour button in production; set to false to bring it back.\n  hidden: ${prod},`;
+	const styleLine = style ? `\n  // How boldly the colors paint the site: 'subtle', 'balanced' or 'colorful'.\n  colourStyle: '${style === "colourful" ? "colorful" : style}',` : "";
+	const theme = `defaultTheme: {\n    name: ${JSON.stringify(name)},\n    tokens: {\n${tokenLines(tokens, "      ")}\n    },\n  },${styleLine}\n  // Hides the color button in production; set to false to bring it back.\n  hidden: ${prod},`;
 	if (kind === "auto") return `// Replace \`import 'colorsbymax/auto'\` with:\nimport { autoMount } from 'colorsbymax/auto'\n\nautoMount({\n  ${theme}\n})`;
 	return `// Add to the config you pass to <ThemeProvider>:\n<ThemeProvider config={{\n  ...config,\n  ${theme}\n}}>`;
 }
 /** The theme as `--color-*` variables on :root. */
 var cssSnippet = (tokens) => `:root {\n${TOKEN_KEYS.map((k) => `  --color-${k}: ${tokens[k]};`).join("\n")}\n}`;
-var keepPrompt = (name, tokens, style = null) => `Update my colorsbymax setup so the colours I chose become my site's default and the colour switcher is hidden in production. In the colorsbymax config (the autoMount({...}) call, or the config passed to <ThemeProvider>), set defaultTheme to { name: ${JSON.stringify(name)}, tokens: ${JSON.stringify(tokens)} }${style ? `, set colourStyle: '${style}'` : ""} and set hidden: ${VITE_PROD} (use ${NODE_PROD} if this isn't a Vite project). If the site uses import 'colorsbymax/auto', replace it with import { autoMount } from 'colorsbymax/auto' and an autoMount({...}) call with that config. Don't change anything else.`;
-/** @param {boolean} recolouring  true when colorsbymax was swapping the site's hard-coded colours */
-var removePrompt = (tokens, recolouring) => recolouring ? `Remove colorsbymax from this project but keep the colours it currently shows. The site's CSS uses hard-coded colours that colorsbymax was swapping at runtime, so update the site's own CSS to use this palette instead (primary is the main brand colour, background the page, ink the text): ${JSON.stringify(tokens)}. Then uninstall the colorsbymax package and delete its import (import 'colorsbymax/auto', autoMount, ThemeProvider or ThemeSwitcher) and any colorsbymax pre-paint script in index.html.` : `Remove colorsbymax from this project but keep my colours: add these CSS variables to my global stylesheet, replacing any existing --color-* values: ${cssSnippet(tokens)} Then uninstall the colorsbymax package and delete its usage (ThemeProvider, ThemeSwitcher, autoMount or import 'colorsbymax/auto') and any colorsbymax pre-paint script in index.html. Keep colorsbymax/tokens.css only if nothing else needs it.`;
+var keepPrompt = (name, tokens, style = null) => `Update my colorsbymax setup so the colors I chose become my site's default and the color switcher is hidden in production. In the colorsbymax config (the autoMount({...}) call, or the config passed to <ThemeProvider>), set defaultTheme to { name: ${JSON.stringify(name)}, tokens: ${JSON.stringify(tokens)} }${style ? `, set colourStyle: '${style}'` : ""} and set hidden: ${VITE_PROD} (use ${NODE_PROD} if this isn't a Vite project). If the site uses import 'colorsbymax/auto', replace it with import { autoMount } from 'colorsbymax/auto' and an autoMount({...}) call with that config. Don't change anything else.`;
+/** @param {boolean} recoloring  true when colorsbymax was swapping the site's hard-coded colors */
+var removePrompt = (tokens, recolouring) => recolouring ? `Remove colorsbymax from this project but keep the colors it currently shows. The site's CSS uses hard-coded colors that colorsbymax was swapping at runtime, so update the site's own CSS to use this palette instead (primary is the main brand color, background the page, ink the text): ${JSON.stringify(tokens)}. Then uninstall the colorsbymax package and delete its import (import 'colorsbymax/auto', autoMount, ThemeProvider or ThemeSwitcher) and any colorsbymax pre-paint script in index.html.` : `Remove colorsbymax from this project but keep my colors: add these CSS variables to my global stylesheet, replacing any existing --color-* values: ${cssSnippet(tokens)} Then uninstall the colorsbymax package and delete its usage (ThemeProvider, ThemeSwitcher, autoMount or import 'colorsbymax/auto') and any colorsbymax pre-paint script in index.html. Keep colorsbymax/tokens.css only if nothing else needs it.`;
 /** The switch's markup: a sun in light mode, a moon in dark. */
 var TOGGLE_HTML = `<button type="button" class="cbm-mode-toggle" data-colorsbymax-mode="toggle" aria-label="Switch between light and dark mode">
   <svg class="cbm-mode-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
   <svg class="cbm-mode-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
 </button>`;
-/** Its styles. It takes the colour of the text around it, so it suits any top bar. */
+/** Its styles. It takes the color of the text around it, so it suits any top bar. */
 var TOGGLE_CSS = `.cbm-mode-toggle {
   display: inline-grid;
   place-items: center;
@@ -5103,7 +5145,7 @@ var hueGap = (a, b) => {
 	const d = Math.abs(hue(a) - hue(b));
 	return Math.min(d, 360 - d);
 };
-/** The three bars' colours for a theme. */
+/** The three bars' colors for a theme. */
 function logoColours(tokens) {
 	const [a, b] = [tokens["primary-alt"], tokens.primary];
 	const apart = (x) => Math.min(hueGap(x, a), hueGap(x, b));
@@ -5115,7 +5157,7 @@ function logoColours(tokens) {
 		c
 	];
 }
-/** Moves a colour towards black (on light) or white (on dark) until it reads on `background`. */
+/** Moves a color towards black (on light) or white (on dark) until it reads on `background`. */
 function standOut(hex, background) {
 	const target = contrastRatio(background, "#000000") > contrastRatio(background, "#ffffff") ? "#000000" : "#ffffff";
 	for (let t = 0; t <= 1; t += .05) {
@@ -5274,7 +5316,7 @@ var COLOURS = [
 var WORDS = [...COLOURS.map(([word]) => word), ...COLOURS.flatMap(([, aliases]) => aliases)];
 var hslOf = (hex) => rgbToHsl(hexToRgb(hex));
 /**
-* The colour test for a search, or null if it isn't a colour word. "reds" and "Red" count too.
+* The color test for a search, or null if it isn't a color word. "reds" and "Red" count too.
 * @returns {((tokens: Record<string, string>) => boolean) | null}
 */
 function colourMatcher(query) {
@@ -5289,12 +5331,311 @@ function colourMatcher(query) {
 	] : ["primary", "primary-alt"];
 	return (tokens) => keys.some((k) => tokens[k] && test(hslOf(tokens[k])));
 }
-/** Words that finish what's being typed (at most `max`), colours first, then `extra` (e.g. moods). */
+/** Words that finish what's being typed (at most `max`), colors first, then `extra` (e.g. moods). */
 function suggestWords(query, extra = [], max = 6) {
 	const q = query.trim().toLowerCase();
 	if (!q) return [];
 	const starts = [...WORDS, ...extra.map((w) => w.toLowerCase())].filter((w) => w.startsWith(q) && w !== q);
 	return [...new Set(starts)].slice(0, max);
+}
+//#endregion
+//#region src/pick.js
+var hsl = (h, s, l) => rgbToHex(hslToRgb([
+	(h % 360 + 360) % 360,
+	Math.min(1, Math.max(0, s)),
+	Math.min(1, Math.max(0, l))
+]));
+var toHsl = (hex) => rgbToHsl(hexToRgb(hex));
+/** The jobs a picked color can do, in the panel's words. */
+var PICK_ROLES = [
+	{
+		id: "brand",
+		label: "Brand",
+		note: "buttons, links and highlights"
+	},
+	{
+		id: "background",
+		label: "Background",
+		note: "the page itself"
+	},
+	{
+		id: "text",
+		label: "Text",
+		note: "headings and body text"
+	},
+	{
+		id: "surface",
+		label: "Card",
+		note: "cards and panels"
+	},
+	{
+		id: "tint",
+		label: "Tint",
+		note: "badges and soft bands"
+	}
+];
+var solidFill = (el) => {
+	const [r, g, b, a] = rgbaOf(getComputedStyle(el).backgroundColor);
+	return a > .5 ? rgbToHex([
+		r,
+		g,
+		b
+	]) : null;
+};
+var saturated = (hex) => toHsl(hex)[1] >= .28 && toHsl(hex)[2] > .12 && toHsl(hex)[2] < .9;
+/**
+* What a click on the page picked: the color, the job it does on the site, and words to describe
+* it ("Button “Sign up”, in the header"). Buttons and links give the brand; big areas the background;
+* text the text color (or the brand, when the text is colored); cards the surface; soft fills a tint.
+*/
+function readPick(el) {
+	const kind = kindOf(el);
+	const fill = solidFill(el);
+	const text = toHex(getComputedStyle(el).color);
+	const r = el.getBoundingClientRect();
+	const big = r.width * r.height > window.innerWidth * window.innerHeight * .18 || r.width > window.innerWidth * .8;
+	let colour;
+	let role;
+	if (kind === "Button") [colour, role] = fill ? [fill, "brand"] : [text, saturated(text ?? "#000") ? "brand" : "text"];
+	else if (kind === "Link" || kind === "Icon") [colour, role] = [text, saturated(text ?? "#000") ? "brand" : "text"];
+	else if (kind === "Heading" || kind === "Text") {
+		if (fill && !big) [colour, role] = [fill, saturated(fill) && toHsl(fill)[2] < .75 ? "brand" : "tint"];
+		else [colour, role] = [text, saturated(text ?? "#000") ? "brand" : "text"];
+	} else if (kind === "Card") [colour, role] = [fill ?? backgroundBehind(el), "surface"];
+	else if (fill && !big) [colour, role] = [fill, saturated(fill) && toHsl(fill)[2] < .75 ? "brand" : "tint"];
+	else [colour, role] = [fill ?? backgroundBehind(el), "background"];
+	return {
+		colour: colour ?? "#000000",
+		role,
+		kind,
+		text: textOf(el),
+		where: whereOf(el)
+	};
+}
+/** The site's own brand color, from the colors on the page, for picks that don't give one (read once a page). */
+var brandRead = null;
+function siteBrand() {
+	if (brandRead && brandRead.page === location.href) return brandRead.colour;
+	let colour = null;
+	try {
+		colour = inferRoles(collectColors()).roles.primary ?? null;
+	} catch {}
+	brandRead = {
+		page: location.href,
+		colour
+	};
+	return colour;
+}
+/** Text that reads best on a color, by lightness: white on a deep brand, near-black on a vivid yellow. */
+var textOn = (colour, H) => [
+	"#ffffff",
+	hsl(H, .3, .12),
+	"#000000"
+].reduce((best, c) => contrastRatio(c, colour) > contrastRatio(best, colour) + .4 ? c : best);
+/** The roles the picked color fixes, with the brand worked out when the pick isn't the brand. */
+function baseRoles(colour, role, brandFallback) {
+	const [H, S, L] = toHsl(colour);
+	const dark = textOn(colour, H) === "#ffffff";
+	const brandFrom = (light) => S >= .15 ? hsl(H, Math.max(S, .55), light ? .62 : .42) : brandFallback ?? hsl(250, .6, light ? .65 : .5);
+	switch (role) {
+		case "background": return dark ? {
+			background: colour,
+			surface: hsl(H, S * .7, Math.min(.3, L + .05)),
+			ink: hsl(H, .12, .93),
+			primary: brandFrom(true),
+			dark: true
+		} : {
+			background: colour,
+			surface: L > .97 ? "#ffffff" : hsl(H, S * .6, Math.min(.995, L + .02)),
+			ink: hsl(H, .2, .13),
+			primary: brandFrom(false)
+		};
+		case "text": return contrastRatio(colour, "#ffffff") >= contrastRatio(colour, hsl(H, .25, .08)) ? {
+			ink: colour,
+			primary: brandFrom(false)
+		} : {
+			ink: colour,
+			background: hsl(H, .25, .08),
+			surface: hsl(H, .22, .12),
+			primary: brandFrom(true),
+			dark: true
+		};
+		case "surface": return {
+			surface: colour,
+			background: hsl(H, S * .5, dark ? Math.max(.04, L - .04) : Math.max(.9, L - .025)),
+			...dark ? {
+				ink: hsl(H, .12, .93),
+				dark: true
+			} : {},
+			primary: brandFrom(dark)
+		};
+		case "tint": return {
+			secondary: colour,
+			"on-secondary": textOn(colour, H),
+			primary: S >= .15 ? hsl(H, Math.max(S, .55), .42) : brandFallback ?? hsl(250, .6, .5)
+		};
+		default: return contrastRatio(colour, "#ffffff") < 5.5 ? {
+			primary: colour,
+			dark: true
+		} : { primary: colour };
+	}
+}
+/** The token a picked color becomes, by its role. */
+var PICKED_KEY = {
+	brand: "primary",
+	background: "background",
+	text: "ink",
+	surface: "surface",
+	tint: "secondary"
+};
+var VARIANTS = [
+	{
+		id: "mono",
+		name: "Monochrome",
+		alt: 0,
+		mono: true
+	},
+	{
+		id: "analogous",
+		name: "Analogous",
+		alt: 32
+	},
+	{
+		id: "complement",
+		name: "Complementary",
+		alt: 180
+	},
+	{
+		id: "split",
+		name: "Split",
+		alt: 150
+	},
+	{
+		id: "triadic",
+		name: "Triadic",
+		alt: 120,
+		bold: true
+	}
+];
+/** A color moved in lightness, away from the backgrounds, until it reads on all of them (hue kept). */
+function readableOn(colour, bgs, min) {
+	const reads = (c) => bgs.every((bg) => contrastRatio(c, bg) >= min);
+	if (reads(colour)) return colour;
+	const [h, s, l] = toHsl(colour);
+	const lightPage = bgs.every((bg) => luminance(bg) > .18);
+	for (let step = .02; step <= 1; step += .02) {
+		const c = hsl(h, s, lightPage ? l - step : l + step);
+		if (reads(c)) return c;
+	}
+	return lightPage ? hsl(h, s, .08) : hsl(h, s, .95);
+}
+/** The app area (dashboards, panels inside the site): a calm field of the page, its text and links reading on it. */
+function appTokens(t, H, S, dark) {
+	const bg = dark ? mix(t.surface, t.background, .6) : mix(t.secondary, t.background, .35);
+	const [, , l] = toHsl(bg);
+	const input = hsl(H, Math.min(S, .3) * .4, dark ? l + .05 : l - .04);
+	return {
+		"app-background": bg,
+		"app-input": input,
+		"app-border": hsl(H, Math.min(S, .3) * .5, dark ? l + .12 : l - .12),
+		"app-primary": readableOn(t.primary, [bg, input], 4.5),
+		"app-shadow-dark": hsl(H, Math.min(S, .3) * .5, Math.max(0, l - .08)),
+		"app-shadow-light": hsl(H, Math.min(S, .3) * .3, Math.min(.99, l + .08)),
+		"app-ink": readableOn(t.ink, [bg, input], 4.5),
+		"app-ink-muted": readableOn(t["ink-secondary"], [bg, input], 4.5)
+	};
+}
+/** One theme: the base roles, a partner hue, and every other color derived to fit, checked. */
+function build(base, variant) {
+	const primary = base.primary;
+	const [H, S] = toHsl(primary);
+	const dark = Boolean(base.dark);
+	const sat = Math.max(S, .45);
+	const alt = variant.mono ? hsl(H, Math.max(S * .8, .35), dark ? .72 : .58) : hsl(H + variant.alt, sat, dark ? .62 : .5);
+	const [AH] = toHsl(alt);
+	const background = base.background ?? (dark ? hsl(H, .25, .09) : hsl(H, Math.min(S, .5) * (variant.bold ? .55 : .35), variant.bold ? .965 : .985));
+	const surface = base.surface ?? (dark ? hsl(H, .22, .13) : hsl(H, Math.min(S, .4) * .15, .997));
+	const ink = base.ink ?? (dark ? hsl(H, .12, .93) : hsl(H, .2, .13));
+	const tintHue = variant.mono ? H : variant.bold ? AH : H;
+	const secondary = base.secondary ?? (dark ? hsl(tintHue, Math.min(sat, .5), .2) : hsl(tintHue, Math.min(sat, .7) * .6, variant.bold ? .88 : .92));
+	const accent = dark ? hsl(AH, Math.min(sat, .5), .2) : hsl(AH, Math.min(sat, .7) * .55, .93);
+	const data = Array.from({ length: 8 }, (_, i) => variant.mono ? hsl(H, Math.max(sat - i * .04, .3), (dark ? .72 : .32) + i % 4 * (dark ? -.08 : .1)) : hsl(H + (variant.alt || 40) * (i + 1) * .5, sat, dark ? .62 : .45));
+	const tokens = completeTokens({
+		primary,
+		"primary-dark": dark ? hsl(H, Math.min(sat, .7), .78) : hsl(H, Math.min(sat, .7), .25),
+		"primary-alt": alt,
+		"on-primary": textOn(primary, H),
+		background,
+		surface,
+		secondary,
+		"on-secondary": base["on-secondary"] ?? (dark ? hsl(tintHue, .4, .88) : hsl(tintHue, Math.min(sat, .8), .25)),
+		accent,
+		"on-accent": dark ? hsl(AH, .4, .88) : hsl(AH, Math.min(sat, .8), .28),
+		border: dark ? hsl(H, .2, .22) : hsl(H, Math.min(S, .4) * .5, .88),
+		shadow: dark ? hsl(H, .5, .03) : hsl(H, .4, .12),
+		ink,
+		"ink-secondary": dark ? hsl(H, .1, .78) : hsl(H, .15, .32),
+		"ink-muted": dark ? hsl(H, .08, .68) : hsl(H, .12, .4),
+		success: dark ? "#4ade80" : "#15803d",
+		warning: dark ? "#fbbf24" : "#b45309",
+		danger: dark ? "#f87171" : "#b91c1c",
+		info: dark ? "#60a5fa" : "#1d4ed8",
+		...Object.fromEntries(data.map((hex, i) => [`data-${i + 1}`, hex]))
+	});
+	const page = [tokens.background, tokens.surface];
+	if (base.picked !== "primary") tokens.primary = readableOn(tokens.primary, page, 4.5);
+	tokens["primary-dark"] = readableOn(tokens["primary-dark"], page, 4.5);
+	tokens["primary-alt"] = readableOn(tokens["primary-alt"], page, 3);
+	for (let i = 1; i <= 8; i++) tokens[`data-${i}`] = readableOn(tokens[`data-${i}`], page, 4.5);
+	tokens["ink-secondary"] = readableOn(tokens["ink-secondary"], page, 4.5);
+	tokens["ink-muted"] = readableOn(tokens["ink-muted"], page, 4.5);
+	tokens["on-primary"] = textOn(tokens.primary, H);
+	Object.assign(tokens, appTokens(tokens, H, S, dark));
+	let fixed = {
+		...tokens,
+		...fixAll(tokens)
+	};
+	fixed = {
+		...fixed,
+		...fixAll(fixed)
+	};
+	fixed[base.picked] = base[base.picked];
+	return fixed;
+}
+/** A name for a color, from its hue: "Purple", "Teal", "Grey". */
+function colourName(hex) {
+	const [h, s, l] = toHsl(hex);
+	if (s < .12) return l > .85 ? "White" : l < .18 ? "Black" : "Grey";
+	return [
+		[15, "Red"],
+		[40, "Orange"],
+		[65, "Yellow"],
+		[90, "Lime"],
+		[150, "Green"],
+		[185, "Teal"],
+		[205, "Cyan"],
+		[240, "Blue"],
+		[255, "Indigo"],
+		[295, "Purple"],
+		[330, "Pink"],
+		[360, "Red"]
+	].find(([max]) => h <= max)[1];
+}
+/** Five themes around a picked color, its role kept. */
+function themesFromPick(colour, role) {
+	const base = {
+		...baseRoles(colour, role, role === "brand" ? null : siteBrand()),
+		picked: PICKED_KEY[role]
+	};
+	const name = colourName(colour);
+	const stamp = Date.now().toString(36);
+	return VARIANTS.map((v) => ({
+		id: `pick-${stamp}-${v.id}`,
+		name: `${name} ${v.name.toLowerCase()}`,
+		derived: true,
+		picked: true,
+		tokens: build(base, v)
+	}));
 }
 //#endregion
 //#region src/ThemePanel.jsx
@@ -5340,7 +5681,7 @@ function useSavedToYours() {
 */
 function ThemePanel({ open = true }) {
 	const theme = useTheme();
-	const { settings, mode, audit, update } = useSettings();
+	const { settings, mode, audit, update, colourPick } = useSettings();
 	const overrideCount = Object.keys(theme.state.overrides).length;
 	const { updates } = useSettings();
 	const [view, setView] = useState("main");
@@ -5427,10 +5768,10 @@ function ThemePanel({ open = true }) {
 							}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h2", {
 								id: "theme-panel-title",
 								className: "text-base font-semibold tracking-tight",
-								children: "colorsbymax"
+								children: "Kamiliyon"
 							}), /* @__PURE__ */ jsx("p", {
 								className: "text-[11px] text-zinc-500",
-								children: "by mrmaxdesigns"
+								children: "colorsbymax"
 							})] })]
 						}), /* @__PURE__ */ jsxs("div", {
 							className: "flex w-full items-center justify-center gap-1 @min-[520px]:ml-auto @min-[520px]:w-auto",
@@ -5462,7 +5803,7 @@ function ThemePanel({ open = true }) {
 									className: `${btn} shrink-0 whitespace-nowrap px-2 ${view === "studio" ? "border-zinc-900 bg-zinc-100" : "border-transparent"}`,
 									"aria-pressed": view === "studio",
 									"aria-label": "Studio",
-									"data-tip": "Studio: go deeper and choose exactly where your colours go",
+									"data-tip": "Studio: go deeper and choose exactly where your colors go",
 									children: [/* @__PURE__ */ jsx(StudioMark, { className: "w-4 h-4" }), "Studio"]
 								}),
 								updates.enabled && /* @__PURE__ */ jsxs("button", {
@@ -5471,18 +5812,21 @@ function ThemePanel({ open = true }) {
 									className: `${btn} relative px-1.5 ${view === "updates" ? "border-zinc-900 bg-zinc-100" : "border-transparent"}`,
 									"aria-label": updates.unseen ? "What’s new (something new)" : "What’s new",
 									"aria-pressed": view === "updates",
-									"data-tip": updates.update ? `colorsbymax ${updates.latest} is out` : "What’s new",
+									"data-tip": updates.update ? `Kamiliyon ${updates.latest} is out` : "What’s new",
 									children: [/* @__PURE__ */ jsx(Bell, {
 										className: "w-4 h-4",
 										"aria-hidden": "true"
-									}), updates.unseen && /* @__PURE__ */ jsx(NewMark, { className: "top-0 right-0" })]
+									}), updates.unseen && /* @__PURE__ */ jsx(NewMark, {
+										colour: theme.tokens.primary,
+										className: "top-0 right-0"
+									})]
 								}),
 								theme.features.audit && !theme.features.studio && /* @__PURE__ */ jsxs("button", {
 									type: "button",
 									onClick: audit.toggle,
 									className: `${btn} px-2 ${audit.on ? "border-zinc-900 bg-zinc-100" : "border-transparent"}`,
 									"aria-pressed": audit.on,
-									"data-tip": "Audit the page: point out what won’t look right with these colours",
+									"data-tip": "Audit the page: point out what won’t look right with these colors",
 									children: [/* @__PURE__ */ jsx(ScanSearch, {
 										className: "w-4 h-4",
 										"aria-hidden": "true"
@@ -5526,7 +5870,7 @@ function ThemePanel({ open = true }) {
 								children: [/* @__PURE__ */ jsxs("p", { children: [
 									/* @__PURE__ */ jsx("strong", {
 										className: "font-semibold",
-										children: "This page keeps its own colours."
+										children: "This page keeps its own colors."
 									}),
 									" The theme only goes on",
 									" ",
@@ -5541,7 +5885,7 @@ function ThemePanel({ open = true }) {
 											mode: "pages",
 											pages: [...theme.scope.pages, theme.pathname]
 										}),
-										children: "Colour this page too"
+										children: "Color this page too"
 									}), theme.features.studio && /* @__PURE__ */ jsxs("button", {
 										type: "button",
 										className: btn,
@@ -5554,7 +5898,7 @@ function ThemePanel({ open = true }) {
 								value: (from) => showView("contrast", from),
 								children: [
 									(theme.features.colourStyle || theme.features.scan) && /* @__PURE__ */ jsx(Section, {
-										title: theme.features.colourStyle ? "Colour style" : "Scan site",
+										title: theme.features.colourStyle ? "Color style" : "Scan site",
 										badge: theme.features.colourStyle ? COLOUR_STYLES.find((c) => c.id === settings.colourStyle)?.label : null,
 										children: /* @__PURE__ */ jsx(StyleAndScan, {})
 									}),
@@ -5564,12 +5908,17 @@ function ThemePanel({ open = true }) {
 										wideBadge: true,
 										children: /* @__PURE__ */ jsx(PresetGrid, {})
 									}),
+									theme.features.picker && /* @__PURE__ */ jsx(Section, {
+										title: "Color picker",
+										badge: colourPick?.result?.colour ?? null,
+										children: /* @__PURE__ */ jsx(PickFromSite, {})
+									}),
 									settings.showCustom && /* @__PURE__ */ jsx(Section, {
 										title: "Custom palettes",
 										children: /* @__PURE__ */ jsx(CustomPalettes, {})
 									}),
 									settings.showOverrides && /* @__PURE__ */ jsx(Section, {
-										title: "Override a single colour",
+										title: "Override a single color",
 										badge: overrideCount ? `${overrideCount} active` : null,
 										children: /* @__PURE__ */ jsx(Overrides, {})
 									}),
@@ -5616,7 +5965,7 @@ function ThemePanel({ open = true }) {
 					askedRef.current = always;
 					themeAsk.run();
 					setThemeAsk(null);
-					toast(`Kept your ${paintCount} Studio ${paintCount === 1 ? "change" : "changes"}. Theme colours in them follow the new theme.`);
+					toast(`Kept your ${paintCount} Studio ${paintCount === 1 ? "change" : "changes"}. Theme colors in them follow the new theme.`);
 				},
 				onClear: (always) => {
 					askedRef.current = always;
@@ -5632,7 +5981,7 @@ function ThemePanel({ open = true }) {
 }
 /**
 * Asked before another theme replaces the one Studio changes were made on: keep them (their theme
-* colours follow the new theme; colours picked by hand stay as they are) or clear them.
+* colors follow the new theme; colors picked by hand stay as they are) or clear them.
 */
 function StudioChangesAsk({ count, onKeep, onClear, onCancel }) {
 	const [always, setAlways] = useState(false);
@@ -5664,7 +6013,7 @@ function StudioChangesAsk({ count, onKeep, onClear, onCancel }) {
 				}),
 				/* @__PURE__ */ jsx("p", {
 					className: "text-xs leading-snug text-zinc-600",
-					children: "Keep them on the new theme, or clear them and see the theme as it is? Kept changes that use theme colours take the new theme’s colours; ones you picked by hand stay exactly as they are."
+					children: "Keep them on the new theme, or clear them and see the theme as it is? Kept changes that use theme colors take the new theme’s colors; ones you picked by hand stay exactly as they are."
 				}),
 				/* @__PURE__ */ jsxs("div", {
 					className: "grid gap-2",
@@ -5802,7 +6151,7 @@ function ModeToggleView({ onBack }) {
 			}),
 			/* @__PURE__ */ jsx("p", {
 				className: "text-xs text-zinc-600",
-				children: "Every theme has a dark version, so your whole site can switch, even if it never had a dark mode. Put a switch in your top bar and visitors can choose; colorsbymax does the rest and remembers their choice. It keeps working when the colour button is hidden."
+				children: "Every theme has a dark version, so your whole site can switch, even if it never had a dark mode. Put a switch in your top bar and visitors can choose; Kamiliyon does the rest and remembers their choice. It keeps working when the color button is hidden."
 			}),
 			/* @__PURE__ */ jsxs("div", {
 				className: "flex items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-zinc-50 p-3",
@@ -5887,12 +6236,12 @@ function ModeToggleView({ onBack }) {
 				children: [/* @__PURE__ */ jsx("strong", {
 					className: "font-semibold text-zinc-900",
 					children: "Already have a dark mode?"
-				}), " You don’t need this. The theme you pick colours your site well in light and dark, with contrast checked in both."]
+				}), " You don’t need this. The theme you pick colors your site well in light and dark, with contrast checked in both."]
 			})
 		]
 	});
 }
-/** Studio's mark: the parts of a page (header, hero, cards), each in its own colour, cycling. */
+/** Studio's mark: the parts of a page (header, hero, cards), each in its own color, cycling. */
 function StudioMark({ className = "" }) {
 	return /* @__PURE__ */ jsxs("svg", {
 		viewBox: "0 0 24 24",
@@ -5941,11 +6290,11 @@ var WHERE = [{
 }, {
 	id: "pages",
 	label: "Only some pages",
-	note: "The rest keep their own colours."
+	note: "The rest keep their own colors."
 }];
 /**
 * Studio: going deeper than a theme. Point and click any part of the page to give it its own
-* colours, and choose where the theme goes: the whole site or only some of its pages, read from
+* colors, and choose where the theme goes: the whole site or only some of its pages, read from
 * the site itself (the pages this one links to, and the ones the visitor has opened). Choices live
 * on this device; the prompt, CSS and config make them everyone's.
 */
@@ -5973,7 +6322,7 @@ function StudioView({ onBack }) {
 	const add = (page) => {
 		if (pages.includes(page)) return;
 		setPages([...pages, page]);
-		toast(`${page} now gets the colours.`);
+		toast(`${page} now gets the colors.`);
 	};
 	const remove = (page) => setPages(pages.filter((p) => p !== page));
 	const covering = pages.find((p) => p !== pathname && pageMatches(p, pathname));
@@ -6011,7 +6360,7 @@ function StudioView({ onBack }) {
 					children: "Studio"
 				}), /* @__PURE__ */ jsx("p", {
 					className: "text-xs text-zinc-600",
-					children: "Go deeper than a theme: colour any part of your site, and choose exactly where your colours go."
+					children: "Go deeper than a theme: color any part of your site, and choose exactly where your colors go."
 				})] })]
 			}),
 			/* @__PURE__ */ jsxs("section", {
@@ -6028,7 +6377,7 @@ function StudioView({ onBack }) {
 						className: "min-w-0",
 						children: [/* @__PURE__ */ jsx("h4", {
 							className: "text-xs font-semibold text-zinc-900",
-							children: "Colour any part of the page"
+							children: "Color any part of the page"
 						}), /* @__PURE__ */ jsx("p", {
 							className: "text-[11px] leading-snug text-zinc-600",
 							children: "Point and click a button, a card, a heading, the footer, anything, and give it its own background, text and border. Every part like it can change at once."
@@ -6061,7 +6410,7 @@ function StudioView({ onBack }) {
 							children: "Check the page"
 						}), /* @__PURE__ */ jsx("p", {
 							className: "text-[11px] leading-snug text-zinc-600",
-							children: "Audit points out what won’t look right in these colours: a logo that disappears, a picture whose background shows as a box, text too faint to read. The notes stay on the page until you close them."
+							children: "Audit points out what won’t look right in these colors: a logo that disappears, a picture whose background shows as a box, text too faint to read. The notes stay on the page until you close them."
 						})]
 					})]
 				}), /* @__PURE__ */ jsxs("button", {
@@ -6087,7 +6436,7 @@ function StudioView({ onBack }) {
 					/* @__PURE__ */ jsx("h4", {
 						id: `${inputId}-where`,
 						className: "text-xs font-semibold text-zinc-900",
-						children: "Where the colours go"
+						children: "Where the colors go"
 					}),
 					/* @__PURE__ */ jsx("div", {
 						role: "radiogroup",
@@ -6126,7 +6475,7 @@ function StudioView({ onBack }) {
 							}),
 							/* @__PURE__ */ jsx("span", {
 								className: `rounded-full px-2 py-0.5 text-[11px] font-semibold ${here ? "bg-emerald-50 text-emerald-900" : "bg-amber-50 text-amber-900"}`,
-								children: here ? "Gets the colours" : "Keeps its own colours"
+								children: here ? "Gets the colors" : "Keeps its own colors"
 							}),
 							onlySome && /* @__PURE__ */ jsx("div", {
 								className: "w-full",
@@ -6149,7 +6498,7 @@ function StudioView({ onBack }) {
 									type: "button",
 									className: `${btnPrimary} w-full`,
 									onClick: () => add(pathname),
-									children: "Colour this page"
+									children: "Color this page"
 								})
 							})
 						]
@@ -6159,7 +6508,7 @@ function StudioView({ onBack }) {
 							className: "space-y-1.5",
 							children: [/* @__PURE__ */ jsx("p", {
 								className: "text-[11px] font-semibold text-zinc-700",
-								children: "Pages that get the colours"
+								children: "Pages that get the colors"
 							}), pages.length ? /* @__PURE__ */ jsx("ul", {
 								className: "space-y-1",
 								children: pages.map((p) => /* @__PURE__ */ jsxs("li", {
@@ -6183,7 +6532,7 @@ function StudioView({ onBack }) {
 								}, p))
 							}) : /* @__PURE__ */ jsx("p", {
 								className: "rounded-lg bg-amber-50 p-2.5 text-[11px] text-amber-900",
-								children: "No pages yet, so the colours show nowhere. Add one below."
+								children: "No pages yet, so the colors show nowhere. Add one below."
 							})]
 						}),
 						/* @__PURE__ */ jsxs("form", {
@@ -6255,7 +6604,7 @@ function StudioView({ onBack }) {
 					configPages && /* @__PURE__ */ jsxs("p", {
 						className: "rounded-lg bg-sky-50 p-2.5 text-[11px] text-sky-900",
 						children: [
-							"Your site’s config colours ",
+							"Your site’s config colors ",
 							configPages.length === 1 ? "one page" : `${configPages.length} pages`,
 							": ",
 							configPages.join(", "),
@@ -6279,7 +6628,7 @@ function StudioView({ onBack }) {
 					}),
 					/* @__PURE__ */ jsx("p", {
 						className: "text-[11px] text-zinc-600",
-						children: "What you choose here is saved on this device. Add this to your colorsbymax config and everyone gets it."
+						children: "What you choose here is saved on this device. Add this to your Kamiliyon config and everyone gets it."
 					}),
 					/* @__PURE__ */ jsx(CopyBlock, {
 						label: "Your config",
@@ -6305,7 +6654,7 @@ function StudioView({ onBack }) {
 		]
 	});
 }
-/** What's been coloured by pointing and clicking, page by page, and how to keep it for good. */
+/** What's been colored by pointing and clicking, page by page, and how to keep it for good. */
 function StudioChanges() {
 	const { paints, removePaint, clearPaints, pathname, tokens } = useTheme();
 	const { studio } = useSettings();
@@ -6405,7 +6754,7 @@ function StudioChanges() {
 				children: [/* @__PURE__ */ jsx(MousePointerClick, {
 					className: "w-3.5 h-3.5",
 					"aria-hidden": "true"
-				}), " Colour more"]
+				}), " Color more"]
 			}),
 			/* @__PURE__ */ jsxs("div", {
 				className: "space-y-2 border-t border-zinc-200 pt-3",
@@ -6431,7 +6780,7 @@ function StudioChanges() {
 					}),
 					/* @__PURE__ */ jsx("p", {
 						className: "text-[11px] text-zinc-600",
-						children: format === "prompt" ? "Recommended. Paste it into Claude, Cursor or Copilot and it makes these changes in your site’s code, using your own colour settings where you have them." : "Plain CSS for your stylesheet. The selectors come from the page as it is now, so they can break if its layout changes; the prompt holds up better."
+						children: format === "prompt" ? "Recommended. Paste it into Claude, Cursor or Copilot and it makes these changes in your site’s code, using your own color settings where you have them." : "Plain CSS for your stylesheet. The selectors come from the page as it is now, so they can break if its layout changes; the prompt holds up better."
 					}),
 					format === "prompt" ? /* @__PURE__ */ jsx(CopyBlock, {
 						label: "Prompt for your AI editor",
@@ -6484,7 +6833,7 @@ function AddToSiteLink({ onOpen }) {
 	});
 }
 /**
-* The bell: a newer colorsbymax, with what changed and how to update (a command, or a prompt for an
+* The bell: a newer Kamiliyon, with what changed and how to update (a command, or a prompt for an
 * AI editor), and Max's news. Opening it marks everything as seen.
 */
 function UpdatesView({ updates, onBack }) {
@@ -6517,7 +6866,7 @@ function UpdatesView({ updates, onBack }) {
 					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("p", {
 						className: "text-sm font-semibold text-zinc-900",
 						children: [
-							"colorsbymax ",
+							"Kamiliyon ",
 							latest,
 							" is out"
 						]
@@ -6563,7 +6912,7 @@ function UpdatesView({ updates, onBack }) {
 				children: [/* @__PURE__ */ jsx(CheckCircle2, {
 					className: "w-4 h-4 shrink-0",
 					"aria-hidden": "true"
-				}), !checked ? "Checking for updates…" : current ? `You’re on the latest colorsbymax, ${current}.` : "You’re on the latest colorsbymax."]
+				}), !checked ? "Checking for updates…" : current ? `You’re on the latest Kamiliyon, ${current}.` : "You’re on the latest Kamiliyon."]
 			}),
 			notices.length > 0 && /* @__PURE__ */ jsxs("section", {
 				className: "space-y-2",
@@ -6607,7 +6956,7 @@ function UpdatesView({ updates, onBack }) {
 			}),
 			/* @__PURE__ */ jsx("p", {
 				className: "text-[11px] text-zinc-500",
-				children: "colorsbymax checks once a day, and only shows this where you work on your site, not to its visitors."
+				children: "Kamiliyon checks once a day, and only shows this where you work on your site, not to its visitors."
 			})
 		]
 	});
@@ -6655,8 +7004,8 @@ function CopyBlock({ label, text, copyLabel = "Copy" }) {
 var FINISH_OPTIONS = [
 	{
 		id: "keep",
-		label: "Keep these colours and hide it in production",
-		note: "Recommended. Everyone sees your colours; the button still shows while you develop."
+		label: "Keep these colors and hide it in production",
+		note: "Recommended. Everyone sees your colors; the button still shows while you develop."
 	},
 	{
 		id: "local",
@@ -6665,13 +7014,13 @@ var FINISH_OPTIONS = [
 	},
 	{
 		id: "remove",
-		label: "Remove colorsbymax",
-		note: "Uninstall it and keep the colours in your own CSS."
+		label: "Remove Kamiliyon",
+		note: "Uninstall it and keep the colors in your own CSS."
 	}
 ];
 /**
-* After "I'm done": how to keep the chosen colours for every visitor and hide the switcher, hide it
-* here only, or remove colorsbymax, each with code and a prompt for an AI editor. Cancel goes back.
+* After "I'm done": how to keep the chosen colors for every visitor and hide the switcher, hide it
+* here only, or remove Kamiliyon, each with code and a prompt for an AI editor. Cancel goes back.
 */
 function FinishView({ onBack, onAddToSite }) {
 	const { tokens: themeTokens, appliedTokens, colourStyle, active, recolouring } = useTheme();
@@ -6702,7 +7051,7 @@ function FinishView({ onBack, onAddToSite }) {
 						ref: headingRef,
 						tabIndex: -1,
 						className: "text-sm font-semibold focus:outline-none",
-						children: "Happy with your colours?"
+						children: "Happy with your colors?"
 					}),
 					/* @__PURE__ */ jsxs("p", {
 						className: "text-[11px] text-zinc-600",
@@ -6742,7 +7091,7 @@ function FinishView({ onBack, onAddToSite }) {
 				children: [
 					/* @__PURE__ */ jsx("div", {
 						role: "radiogroup",
-						"aria-label": "How colorsbymax is set up",
+						"aria-label": "How Kamiliyon is set up",
 						className: "grid grid-cols-2 gap-2",
 						children: [["auto", "One-line import"], ["provider", "ThemeProvider"]].map(([id, label]) => /* @__PURE__ */ jsx("button", {
 							type: "button",
@@ -6793,7 +7142,7 @@ function FinishView({ onBack, onAddToSite }) {
 							"."
 						] }), /* @__PURE__ */ jsx(CopyBlock, {
 							label: "Prompt to bring it back",
-							text: "Show the colorsbymax colour switcher again in production: in its config (the autoMount({...}) call or the config passed to <ThemeProvider>), set hidden to false or remove the hidden line. Don't change anything else.",
+							text: "Show the colorsbymax color switcher again in production: in its config (the autoMount({...}) call or the config passed to <ThemeProvider>), set hidden to false or remove the hidden line. Don't change anything else.",
 							copyLabel: "Copy prompt"
 						})]
 					})
@@ -6804,7 +7153,7 @@ function FinishView({ onBack, onAddToSite }) {
 				children: [
 					/* @__PURE__ */ jsx("p", {
 						className: "text-[11px] text-zinc-600",
-						children: "Hides the colour button in this browser only, and keeps showing your current colours here. It doesn’t change your code or what anyone else sees."
+						children: "Hides the color button in this browser only, and keeps showing your current colors here. It doesn’t change your code or what anyone else sees."
 					}),
 					/* @__PURE__ */ jsxs("p", {
 						className: "rounded-lg bg-zinc-100 p-2.5 text-[11px] text-zinc-700",
@@ -6875,13 +7224,13 @@ function FinishView({ onBack, onAddToSite }) {
 									className: "font-mono",
 									children: "ThemeSwitcher"
 								}),
-								") and any colorsbymax pre-paint script."
+								") and any Kamiliyon pre-paint script."
 							] }),
-							/* @__PURE__ */ jsx("li", { children: recolouring ? "Keep the colours: your site’s CSS uses its own hard-coded colours, which colorsbymax was swapping as the page ran, so they need writing into your CSS. The prompt below asks your AI editor to do that." : "Keep the colours: paste these into your global stylesheet, replacing your current --color-* values." })
+							/* @__PURE__ */ jsx("li", { children: recolouring ? "Keep the colors: your site’s CSS uses its own hard-coded colors, which Kamiliyon was swapping as the page ran, so they need writing into your CSS. The prompt below asks your AI editor to do that." : "Keep the colors: paste these into your global stylesheet, replacing your current --color-* values." })
 						]
 					}),
 					!recolouring && /* @__PURE__ */ jsx(CopyBlock, {
-						label: "CSS for your colours",
+						label: "CSS for your colors",
 						text: cssSnippet(appliedTokens)
 					}),
 					/* @__PURE__ */ jsx(CopyBlock, {
@@ -6900,7 +7249,7 @@ function FinishView({ onBack, onAddToSite }) {
 				type: "button",
 				className: `${btn} w-full`,
 				onClick: onBack,
-				children: "Cancel, keep using colorsbymax"
+				children: "Cancel, keep using Kamiliyon"
 			})
 		]
 	});
@@ -6922,7 +7271,7 @@ var MODES = [
 		Icon: Monitor
 	}
 ];
-/** The visitor's preferences for the panel and colour button. */
+/** The visitor's preferences for the panel and color button. */
 function SettingsView({ onBack, onAddToSite }) {
 	const { settings, update, reset, resetButton } = useSettings();
 	const { active, features } = useTheme();
@@ -6978,7 +7327,7 @@ function SettingsView({ onBack, onAddToSite }) {
 					}),
 					/* @__PURE__ */ jsx("p", {
 						className: "text-[11px] text-zinc-600",
-						children: "Shows every theme in light or dark colours and switches the current one to match. Auto follows your device. The panel matches too, and your own palettes stay as you made them."
+						children: "Shows every theme in light or dark colors and switches the current one to match. Auto follows your device. The panel matches too, and your own palettes stay as you made them."
 					}),
 					/* @__PURE__ */ jsx(AddToSiteLink, { onOpen: onAddToSite })
 				]
@@ -6988,7 +7337,7 @@ function SettingsView({ onBack, onAddToSite }) {
 				children: [
 					/* @__PURE__ */ jsx("legend", {
 						className: "mb-1 text-[11px] font-semibold uppercase tracking-wide text-zinc-600",
-						children: "Colours per theme"
+						children: "Colors per theme"
 					}),
 					/* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-3 rounded-xl border border-zinc-200 p-2.5",
@@ -7001,18 +7350,18 @@ function SettingsView({ onBack, onAddToSite }) {
 						}), /* @__PURE__ */ jsx(ColourStepper, {
 							value: settings.paletteSize,
 							onChange: (n) => update({ paletteSize: n }),
-							label: "Colours every theme uses",
+							label: "Colors every theme uses",
 							size: "md"
 						})]
 					}),
 					/* @__PURE__ */ jsxs("p", {
 						className: "text-[11px] text-zinc-600",
 						children: [
-							"How many colours every theme uses, from ",
+							"How many colors every theme uses, from ",
 							5,
 							" to ",
 							10,
-							". Fewer keeps a site calmer, with only a theme’s main colours; the ones that fit it best stay. You can still change it on any theme with − and + on its card."
+							". Fewer keeps a site calmer, with only a theme’s main colors; the ones that fit it best stay. You can still change it on any theme with − and + on its card."
 						]
 					})
 				]
@@ -7063,7 +7412,7 @@ function SettingsView({ onBack, onAddToSite }) {
 						checked: settings.showPicks,
 						onChange: (v) => update({ showPicks: v }),
 						label: "Max’s picks",
-						note: "Hand-tuned colorsbymax themes"
+						note: "Hand-tuned Kamiliyon themes"
 					}),
 					features.library && /* @__PURE__ */ jsx(Toggle, {
 						checked: settings.showLibrary,
@@ -7079,7 +7428,7 @@ function SettingsView({ onBack, onAddToSite }) {
 					features.overrides && /* @__PURE__ */ jsx(Toggle, {
 						checked: settings.showOverrides,
 						onChange: (v) => update({ showOverrides: v }),
-						label: "Override a single colour"
+						label: "Override a single color"
 					}),
 					features.importExport && /* @__PURE__ */ jsx(Toggle, {
 						checked: settings.showImportExport,
@@ -7096,8 +7445,8 @@ function SettingsView({ onBack, onAddToSite }) {
 				}), /* @__PURE__ */ jsx(Toggle, {
 					checked: settings.colourLogo,
 					onChange: (v) => update({ colourLogo: v }),
-					label: "Colour the logo too",
-					note: "Off keeps the site’s logo in its own colours whatever the theme"
+					label: "Color the logo too",
+					note: "Off keeps the site’s logo in its own colors whatever the theme"
 				})]
 			}),
 			/* @__PURE__ */ jsxs("fieldset", {
@@ -7105,7 +7454,7 @@ function SettingsView({ onBack, onAddToSite }) {
 				children: [
 					/* @__PURE__ */ jsx("legend", {
 						className: "mb-1 text-[11px] font-semibold uppercase tracking-wide text-zinc-600",
-						children: "Colour button"
+						children: "Color button"
 					}),
 					/* @__PURE__ */ jsx(Toggle, {
 						checked: settings.draggable,
@@ -7116,15 +7465,15 @@ function SettingsView({ onBack, onAddToSite }) {
 					/* @__PURE__ */ jsx(Toggle, {
 						checked: settings.animateDot,
 						onChange: (v) => update({ animateDot: v }),
-						label: "Cycle the dot’s colours",
-						note: "Shows the current theme’s colours in turn"
+						label: "Cycle the dot’s colors",
+						note: "Shows the current theme’s colors in turn"
 					}),
 					resetButton && /* @__PURE__ */ jsxs("button", {
 						type: "button",
 						className: `${btn} mt-1 w-full`,
 						onClick: () => {
 							resetButton();
-							toast("Moved the colour button back to its corner.");
+							toast("Moved the color button back to its corner.");
 						},
 						children: [/* @__PURE__ */ jsx(RotateCcw, {
 							className: "w-3.5 h-3.5",
@@ -7226,7 +7575,7 @@ function ContrastView({ onBack }) {
 					children: [/* @__PURE__ */ jsx(Check, {
 						className: "w-4 h-4 shrink-0",
 						"aria-hidden": "true"
-					}), "Every colour pairing meets Web Content Accessibility Guidelines (WCAG) contrast."]
+					}), "Every color pairing meets Web Content Accessibility Guidelines (WCAG) contrast."]
 				}) : /* @__PURE__ */ jsxs("div", {
 					className: "rounded-lg border border-amber-300 bg-amber-50 p-3 text-amber-950",
 					children: [
@@ -7258,7 +7607,7 @@ function ContrastView({ onBack }) {
 						}),
 						/* @__PURE__ */ jsx("p", {
 							className: "mt-2 text-[11px] text-amber-900",
-							children: "Text should meet the Web Content Accessibility Guidelines (WCAG) minimum of 4.5:1 (3:1 for large headlines and icons). Fixing adjusts only the lightness of the colour involved."
+							children: "Text should meet the Web Content Accessibility Guidelines (WCAG) minimum of 4.5:1 (3:1 for large headlines and icons). Fixing adjusts only the lightness of the color involved."
 						}),
 						/* @__PURE__ */ jsx("ul", {
 							className: "mt-2 space-y-1.5",
@@ -7296,11 +7645,11 @@ function IssuesLink() {
 			issues.length,
 			" contrast ",
 			issues.length === 1 ? "problem" : "problems",
-			" in the current colours. Review"
+			" in the current colors. Review"
 		]
 	});
 }
-/** A theme's colours as a strip: the `count` it uses (5 to 10), its most fitting ones. */
+/** A theme's colors as a strip: the `count` it uses (5 to 10), its most fitting ones. */
 function Swatches({ tokens, count = 10 }) {
 	return /* @__PURE__ */ jsx("div", {
 		className: "flex overflow-hidden rounded-md border border-zinc-200",
@@ -7312,7 +7661,7 @@ function Swatches({ tokens, count = 10 }) {
 	});
 }
 /**
-* − n + for how many colours a theme uses. Each end dims when it's as far as it goes.
+* − n + for how many colors a theme uses. Each end dims when it's as far as it goes.
 * @param {{ value: number, onChange: (n: number) => void, label: string, size?: 'sm' | 'md' }} props
 */
 function ColourStepper({ value, onChange, label, size = "sm" }) {
@@ -7330,8 +7679,8 @@ function ColourStepper({ value, onChange, label, size = "sm" }) {
 				type: "button",
 				onClick: step(-1),
 				disabled: value <= 5,
-				"aria-label": `Fewer colours (${value} now)`,
-				"data-tip": value <= 5 ? `5 is the fewest` : "Use fewer colours",
+				"aria-label": `Fewer colors (${value} now)`,
+				"data-tip": value <= 5 ? `5 is the fewest` : "Use fewer colors",
 				className: `${box} grid place-items-center rounded-full border border-zinc-300 bg-white text-zinc-800 cursor-pointer hover:border-zinc-900 disabled:cursor-default disabled:opacity-35 disabled:hover:border-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900`,
 				children: /* @__PURE__ */ jsx(Minus, {
 					className: "w-3.5 h-3.5",
@@ -7347,8 +7696,8 @@ function ColourStepper({ value, onChange, label, size = "sm" }) {
 				type: "button",
 				onClick: step(1),
 				disabled: value >= 10,
-				"aria-label": `More colours (${value} now)`,
-				"data-tip": value >= 10 ? `10 is every colour` : "Use more colours",
+				"aria-label": `More colors (${value} now)`,
+				"data-tip": value >= 10 ? `10 is every color` : "Use more colors",
 				className: `${box} grid place-items-center rounded-full border border-zinc-300 bg-white text-zinc-800 cursor-pointer hover:border-zinc-900 disabled:cursor-default disabled:opacity-35 disabled:hover:border-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900`,
 				children: /* @__PURE__ */ jsx(Plus, {
 					className: "w-3.5 h-3.5",
@@ -7373,14 +7722,14 @@ var COLOUR_STYLES = [
 	},
 	{
 		id: "colourful",
-		label: "Colourful",
+		label: "Colorful",
 		Icon: Paintbrush
 	}
 ];
 var STYLE_NOTES = {
-	subtle: "Subtle: your site keeps its own backgrounds, cards and text. The theme’s colour comes in on buttons, links and highlights, with only a quiet hint of it on badges and tints.",
+	subtle: "Subtle: your site keeps its own backgrounds, cards and text. The theme’s color comes in on buttons, links and highlights, with only a quiet hint of it on badges and tints.",
 	balanced: "Balanced: the theme in every role, with a soft wash of it across the page, cards and borders.",
-	colourful: "Colourful: an overhaul. Tinted backgrounds, and the theme paints your header, hero, sections, headings, cards, buttons and footer, like a designer would. Text is still checked for contrast."
+	colourful: "Colorful: an overhaul. Tinted backgrounds, and the theme paints your header, hero, sections, headings, cards, buttons and footer, like a designer would. Text is still checked for contrast."
 };
 function PresetGrid() {
 	const { siteName, siteThemes, presets: allPresets, customs, active, selectTheme, state, clearOverrides, tokens, recolouring, features } = useTheme();
@@ -7443,14 +7792,14 @@ function PresetGrid() {
 			label: siteName,
 			Icon: Globe,
 			count: siteThemes.length,
-			description: `${siteName}'s own colours, and themes made for it`
+			description: `${siteName}'s own colors, and themes made for it`
 		},
 		...settings.showPicks ? [{
 			id: "picks",
 			label: "Max’s picks",
 			Icon: Paintbrush,
 			count: presets.length,
-			description: "Hand-tuned colorsbymax themes that pass every contrast check"
+			description: "Hand-tuned Kamiliyon themes that pass every contrast check"
 		}] : [],
 		{
 			id: "yours",
@@ -7535,7 +7884,7 @@ function PresetGrid() {
 				className: "flex items-center justify-between gap-2 rounded-lg bg-zinc-100 px-3 py-2 text-xs text-zinc-700",
 				children: [
 					overrideCount,
-					" single-colour override",
+					" single-color override",
 					overrideCount > 1 ? "s are" : " is",
 					" applied on top of any theme.",
 					/* @__PURE__ */ jsx("button", {
@@ -7543,7 +7892,7 @@ function PresetGrid() {
 						className: btn,
 						onClick: () => {
 							clearOverrides();
-							toast(`Cleared ${overrideCount} single-colour ${overrideCount === 1 ? "override" : "overrides"}.`);
+							toast(`Cleared ${overrideCount} single-color ${overrideCount === 1 ? "override" : "overrides"}.`);
 						},
 						children: "Clear"
 					})
@@ -7785,10 +8134,10 @@ function PresetGrid() {
 		]
 	});
 }
-/** User-triggered site scan: reads the page's colours and adds themes built around them. */
+/** User-triggered site scan: reads the page's colors and adds themes built around them. */
 /**
-* Above the themes: how boldly the site takes whichever theme is on (Subtle or Colourful), and the
-* scan that builds themes from the site's own colours.
+* Above the themes: how boldly the site takes whichever theme is on (Subtle or Colorful), and the
+* scan that builds themes from the site's own colors.
 */
 function StyleAndScan() {
 	const { features, recolouring } = useTheme();
@@ -7800,7 +8149,7 @@ function StyleAndScan() {
 			children: [
 				/* @__PURE__ */ jsx("div", {
 					role: "radiogroup",
-					"aria-label": "Colour style",
+					"aria-label": "Color style",
 					className: "grid grid-cols-3 gap-1 rounded-lg bg-zinc-100 p-1",
 					children: COLOUR_STYLES.map(({ id, label, Icon }) => {
 						const on = settings.colourStyle === id;
@@ -7819,14 +8168,14 @@ function StyleAndScan() {
 				}),
 				/* @__PURE__ */ jsx("p", {
 					className: "mt-2 px-0.5 text-[11px] leading-snug text-zinc-600",
-					children: settings.colourStyle === "balanced" && recolouring ? "Balanced: every colour on your site swapped for its match in the theme." : settings.colourStyle === "colourful" && !recolouring ? "Colourful: an overhaul. Your page, cards and borders take a clear tint of the theme, and text a hint of it, wherever your design already uses colour. Text is still checked for contrast." : STYLE_NOTES[settings.colourStyle] ?? STYLE_NOTES.balanced
+					children: settings.colourStyle === "balanced" && recolouring ? "Balanced: every color on your site swapped for its match in the theme." : settings.colourStyle === "colourful" && !recolouring ? "Colorful: an overhaul. Your page, cards and borders take a clear tint of the theme, and text a hint of it, wherever your design already uses color. Text is still checked for contrast." : STYLE_NOTES[settings.colourStyle] ?? STYLE_NOTES.balanced
 				}),
 				settings.colourStyle === "colourful" && /* @__PURE__ */ jsx(ColourfulControls, {})
 			]
 		}), features.scan && /* @__PURE__ */ jsx(ScanCard, {})]
 	});
 }
-/** Colourful's strength, from a light wash to bold, and tints from the site's own pictures. */
+/** Colorful's strength, from a light wash to bold, and tints from the site's own pictures. */
 function ColourfulControls() {
 	const { pictureColours, pictureTint } = useTheme();
 	const { settings, update } = useSettings();
@@ -7875,11 +8224,11 @@ function ColourfulControls() {
 				children: [
 					/* @__PURE__ */ jsx("span", {
 						className: "font-semibold text-zinc-900",
-						children: "Tint with my pictures’ colours"
+						children: "Tint with my pictures’ colors"
 					}),
 					/* @__PURE__ */ jsx("span", {
 						className: "block text-zinc-600",
-						children: !settings.imageTints ? "The washes use the theme’s own colours." : pictureTint ? "The washes take a colour from your logo and photos, so they feel made for your site. Buttons and links keep the theme’s." : pictureColours.length ? "Your pictures are mostly greys, so the washes use the theme’s colours." : "No pictures colorsbymax can read on this page, so the washes use the theme’s colours."
+						children: !settings.imageTints ? "The washes use the theme’s own colors." : pictureTint ? "The washes take a color from your logo and photos, so they feel made for your site. Buttons and links keep the theme’s." : pictureColours.length ? "Your pictures are mostly greys, so the washes use the theme’s colors." : "No pictures Kamiliyon can read on this page, so the washes use the theme’s colors."
 					}),
 					settings.imageTints && pictureColours.length > 0 && /* @__PURE__ */ jsx("span", {
 						className: "mt-1.5 flex items-center gap-1",
@@ -7906,7 +8255,7 @@ function ScanCard() {
 		try {
 			const { colours, themes } = await runScan();
 			showGroup("site", false);
-			toast(`Found ${colours} colours and added ${themes} themes to the ${siteName} group.`, {
+			toast(`Found ${colours} colors and added ${themes} themes to the ${siteName} group.`, {
 				label: "Show",
 				run: () => showGroup("site")
 			});
@@ -7928,7 +8277,7 @@ function ScanCard() {
 						children: scanned ? `Personalised for ${siteName}` : `Personalise for ${siteName}`
 					}), /* @__PURE__ */ jsx("p", {
 						className: "mt-0.5 text-[11px] text-zinc-600",
-						children: scanned ? "Themes built from this site’s colours are in its group in Preset themes." : "Scan this page’s colours to get themes built around them."
+						children: scanned ? "Themes built from this site’s colors are in its group in Preset themes." : "Scan this page’s colors to get themes built around them."
 					})]
 				}), /* @__PURE__ */ jsxs("button", {
 					type: "button",
@@ -8044,8 +8393,209 @@ function ThemeCard({ theme: t, isActive, onSelect }) {
 				children: /* @__PURE__ */ jsx(ColourStepper, {
 					value: colours,
 					onChange: (n) => setThemeColours(t.id, n),
-					label: `Colours ${t.name} uses`
+					label: `Colors ${t.name} uses`
 				})
+			})
+		]
+	});
+}
+/**
+* Pick a color from the site and get five themes built around it, kept in the job it does there
+* (pick.js). Try any of them live; save the one you like to Yours.
+*/
+function PickFromSite() {
+	const { selectTheme, addPalette, mode, coloursOf, setThemeColours } = useTheme();
+	const { colourPick } = useSettings();
+	const { confirmTheme, toast } = usePanel();
+	const savedToYours = useSavedToYours();
+	const pick = colourPick.result;
+	const [tried, setTried] = useState(null);
+	const boxRef = useRef(null);
+	const burst = useBurst();
+	const themes = useMemo(() => pick ? themesFromPick(pick.colour, pick.role) : [], [
+		pick?.colour,
+		pick?.role,
+		pick?.at
+	]);
+	useEffect(() => {
+		if (!pick?.at || Date.now() - pick.at > 3e3) return;
+		const section = boxRef.current?.closest("details");
+		if (section) section.open = true;
+		requestAnimationFrame(() => boxRef.current?.scrollIntoView({
+			block: "start",
+			behavior: "smooth"
+		}));
+		burst.celebrate();
+		toast(`Picked ${pick.colour} from ${/^[aeiou]/i.test(pick.kind) ? "an" : "a"} ${pick.kind.toLowerCase()}. Five themes are ready, built around it.`);
+	}, [pick?.at]);
+	const role = pick && PICK_ROLES.find((r) => r.id === pick.role);
+	const article = (word) => /^[aeiou]/i.test(word) ? "an" : "a";
+	return /* @__PURE__ */ jsxs("section", {
+		ref: boxRef,
+		className: "space-y-3",
+		children: [
+			/* @__PURE__ */ jsxs("div", {
+				className: "flex items-start gap-2.5",
+				children: [/* @__PURE__ */ jsx("span", {
+					className: "grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-zinc-100 text-zinc-800",
+					children: /* @__PURE__ */ jsx(Pipette, {
+						className: "w-4 h-4",
+						"aria-hidden": "true"
+					})
+				}), /* @__PURE__ */ jsxs("div", {
+					className: "min-w-0",
+					children: [/* @__PURE__ */ jsx("h4", {
+						className: "text-xs font-semibold text-zinc-900",
+						children: "Pick a color from your site"
+					}), /* @__PURE__ */ jsx("p", {
+						className: "text-[11px] leading-snug text-zinc-600",
+						children: "Click any color on the page: a button, the background, some text. Kamiliyon works out the job it does there and builds five themes around it."
+					})]
+				})]
+			}),
+			/* @__PURE__ */ jsxs("button", {
+				type: "button",
+				className: `${pick ? btn : btnPrimary} w-full py-2`,
+				onClick: colourPick.start,
+				children: [
+					/* @__PURE__ */ jsx(Pipette, {
+						className: "w-3.5 h-3.5",
+						"aria-hidden": "true"
+					}),
+					" ",
+					pick ? "Pick another color" : "Pick from the page"
+				]
+			}),
+			pick && /* @__PURE__ */ jsxs("div", {
+				className: "space-y-3",
+				children: [
+					/* @__PURE__ */ jsxs("div", {
+						className: "flex items-center gap-2.5 rounded-lg bg-zinc-50 p-2.5",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "relative h-9 w-9 shrink-0 rounded-lg border border-black/15",
+							style: { background: pick.colour },
+							"aria-hidden": "true",
+							children: burst.bursting && themes[0] && /* @__PURE__ */ jsx(Burst, {
+								tokens: themes[0].tokens,
+								spread: 1.8
+							}, burst.burst)
+						}), /* @__PURE__ */ jsxs("p", {
+							className: "min-w-0 text-[11px] leading-snug text-zinc-700",
+							children: [
+								/* @__PURE__ */ jsx("span", {
+									className: "font-mono font-semibold text-zinc-900",
+									children: pick.colour
+								}),
+								", from ",
+								article(pick.kind),
+								" ",
+								pick.kind.toLowerCase(),
+								pick.text && /* @__PURE__ */ jsxs(Fragment, { children: [
+									" “",
+									pick.text,
+									"”"
+								] }),
+								pick.where && /* @__PURE__ */ jsxs(Fragment, { children: [" ", pick.where] }),
+								". Used as the ",
+								/* @__PURE__ */ jsx("strong", {
+									className: "font-semibold text-zinc-900",
+									children: role.label.toLowerCase()
+								}),
+								" color: ",
+								role.note,
+								"."
+							]
+						})]
+					}),
+					/* @__PURE__ */ jsx("div", {
+						role: "radiogroup",
+						"aria-label": "Use it as",
+						className: "flex flex-wrap gap-1",
+						children: PICK_ROLES.map((r) => /* @__PURE__ */ jsx("button", {
+							type: "button",
+							role: "radio",
+							"aria-checked": pick.role === r.id,
+							onClick: () => colourPick.setRole(r.id),
+							"data-tip": `Use it for ${r.note}`,
+							className: `rounded-full border px-2.5 py-1 text-[11px] font-semibold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 ${pick.role === r.id ? "border-zinc-900 bg-zinc-900 text-white" : "border-zinc-300 text-zinc-700 hover:bg-zinc-50"}`,
+							children: r.label
+						}, r.id))
+					}),
+					/* @__PURE__ */ jsx("ul", {
+						className: "space-y-2",
+						children: themes.map((t, i) => {
+							const shown = inMode(t, mode);
+							const on = tried === t.id;
+							const colours = coloursOf(t.id);
+							const short = checkTheme(shown.tokens).length;
+							return /* @__PURE__ */ jsxs("li", {
+								className: `space-y-2 rounded-lg border p-2.5 ${on ? "border-zinc-900" : "border-zinc-200"}`,
+								children: [
+									/* @__PURE__ */ jsxs("div", {
+										className: "flex items-center justify-between gap-2",
+										children: [/* @__PURE__ */ jsxs("p", {
+											className: "min-w-0 truncate text-xs font-semibold text-zinc-900",
+											children: [t.name, i === 0 && /* @__PURE__ */ jsx("span", {
+												className: "ml-1.5 font-normal text-zinc-500",
+												children: "· shades of your color"
+											})]
+										}), /* @__PURE__ */ jsxs("div", {
+											className: "flex shrink-0 gap-1",
+											children: [/* @__PURE__ */ jsx("button", {
+												type: "button",
+												className: `${btn} px-2 py-1`,
+												"aria-pressed": on,
+												onClick: () => confirmTheme(() => {
+													selectTheme(shown.id, shown);
+													setTried(t.id);
+												}),
+												children: on ? "On" : "Try"
+											}), /* @__PURE__ */ jsx("button", {
+												type: "button",
+												className: `${btnPrimary} px-2 py-1`,
+												onClick: () => {
+													const id = addPalette(t.name, t.tokens, { twin: true });
+													setThemeColours(id, colours);
+													savedToYours(t.name);
+												},
+												children: "Save"
+											})]
+										})]
+									}),
+									/* @__PURE__ */ jsxs("div", {
+										className: "flex items-center gap-2",
+										children: [/* @__PURE__ */ jsx("div", {
+											className: "min-w-0 flex-1",
+											children: /* @__PURE__ */ jsx(Swatches, {
+												tokens: shown.tokens,
+												count: colours
+											})
+										}), /* @__PURE__ */ jsx(ColourStepper, {
+											value: colours,
+											onChange: (n) => setThemeColours(t.id, n),
+											label: `Colors ${t.name} uses`
+										})]
+									}),
+									short > 0 && /* @__PURE__ */ jsxs("p", {
+										className: "flex items-start gap-1.5 text-[11px] leading-snug text-amber-900",
+										children: [
+											/* @__PURE__ */ jsx(AlertTriangle, {
+												className: "mt-px w-3 h-3 shrink-0",
+												"aria-hidden": "true"
+											}),
+											short === 1 ? "One pairing" : `${short} pairings`,
+											" can’t reach WCAG with your exact color. Try another style, or use it as a different role."
+										]
+									})
+								]
+							}, t.id);
+						})
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "text-[11px] text-zinc-600",
+						children: "Each keeps your color exactly, follows 60-30-10, checks every pairing, keeps green, amber, red and blue for what they mean, and has a dark twin. Saved ones go to Yours."
+					})
+				]
 			})
 		]
 	});
@@ -8092,7 +8642,7 @@ function CustomPalettes() {
 					}),
 					/* @__PURE__ */ jsx("p", {
 						className: "text-[11px] text-zinc-600",
-						children: "Starts from the colours you see now. Edits apply live and save automatically."
+						children: "Starts from the colors you see now. Edits apply live and save automatically."
 					})
 				]
 			}),
@@ -8154,7 +8704,7 @@ function CustomPalettes() {
 				})]
 			}) : /* @__PURE__ */ jsx("p", {
 				className: "text-xs text-zinc-600",
-				children: "Create a palette, or choose Edit on a saved one, to change its colours."
+				children: "Create a palette, or choose Edit on a saved one, to change its colors."
 			})
 		]
 	});
@@ -8170,7 +8720,7 @@ function Overrides() {
 			/* @__PURE__ */ jsxs("p", {
 				className: "text-xs text-zinc-600",
 				children: [
-					"Change individual colours on top of ",
+					"Change individual colors on top of ",
 					/* @__PURE__ */ jsx("strong", {
 						className: "font-semibold text-zinc-800",
 						children: active.name
@@ -8189,7 +8739,7 @@ function Overrides() {
 					onClick: () => {
 						const n = Object.keys(overridden).length;
 						clearOverrides();
-						toast(`Cleared ${n} single-colour ${n === 1 ? "override" : "overrides"}.`);
+						toast(`Cleared ${n} single-color ${n === 1 ? "override" : "overrides"}.`);
 					},
 					children: [/* @__PURE__ */ jsx(RotateCcw, {
 						className: "w-3.5 h-3.5",
@@ -8250,7 +8800,7 @@ function TokenRow({ token, value, onChange, isOverridden, onReset, warn, note })
 				type: "color",
 				value,
 				onChange: (e) => onChange(e.target.value),
-				"aria-label": `${token.label} colour picker`,
+				"aria-label": `${token.label} color picker`,
 				className: "h-7 w-9 shrink-0 cursor-pointer rounded border border-zinc-300 bg-white p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900"
 			}),
 			/* @__PURE__ */ jsxs("div", {
@@ -8312,9 +8862,9 @@ function TokenRow({ token, value, onChange, isOverridden, onReset, warn, note })
 	});
 }
 var FROM_NOTE = {
-	image: "Picked from the picture’s main colours.",
-	pdf: "Picked from the colours on the first pages.",
-	"pdf-text": "Found colour codes written in the PDF."
+	image: "Picked from the picture’s main colors.",
+	pdf: "Picked from the colors on the first pages.",
+	"pdf-text": "Found color codes written in the PDF."
 };
 var IS_MAC = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 /** The paste shortcut, as the visitor's keyboard shows it. */
@@ -8323,7 +8873,7 @@ var PASTED = "Pasted image";
 /** The first image (or PDF) in a clipboard's files: a screenshot, or a copied picture. */
 var fileFromClipboard = (data) => [...data?.files ?? []].find((f) => f.type.startsWith("image/") || f.type === "application/pdf");
 /**
-* Builds a custom palette from the colours in an image (uploaded, dropped or pasted from the
+* Builds a custom palette from the colors in an image (uploaded, dropped or pasted from the
 * clipboard), or a PDF where the site allows it.
 */
 function PaletteFromFile() {
@@ -8373,7 +8923,7 @@ function PaletteFromFile() {
 		});
 		try {
 			const { colours, from } = await coloursFromFile(file, { loadPdf });
-			if (!colours.length) throw new Error("Couldn’t find any colours in that file.");
+			if (!colours.length) throw new Error("Couldn’t find any colors in that file.");
 			setFound({
 				fileName: label,
 				colours,
@@ -8496,7 +9046,7 @@ function PaletteFromFile() {
 									}),
 									/* @__PURE__ */ jsx("span", {
 										className: "block",
-										children: busy ? "Reading its colours…" : "Its colours are below."
+										children: busy ? "Reading its colors…" : "Its colors are below."
 									})
 								]
 							}),
@@ -8525,7 +9075,7 @@ function PaletteFromFile() {
 						}) : /* @__PURE__ */ jsx(ImageUp, {
 							className: "w-3.5 h-3.5",
 							"aria-hidden": "true"
-						}), busy ? "Reading colours…" : picture ? "Choose another…" : `Choose ${kinds}…`]
+						}), busy ? "Reading colors…" : picture ? "Choose another…" : `Choose ${kinds}…`]
 					}),
 					" ",
 					/* @__PURE__ */ jsxs("button", {
@@ -8578,12 +9128,12 @@ function PaletteFromFile() {
 							}),
 							": ",
 							FROM_NOTE[found.from],
-							" Select a colour to leave it out."
+							" Select a color to leave it out."
 						]
 					}),
 					/* @__PURE__ */ jsx("div", {
 						role: "group",
-						"aria-label": "Colours found",
+						"aria-label": "Colors found",
 						className: "flex flex-wrap gap-1.5",
 						children: found.colours.map((hex) => {
 							const on = !off.has(hex);
@@ -8608,7 +9158,7 @@ function PaletteFromFile() {
 						children: "The palette it builds:"
 					}), /* @__PURE__ */ jsx(Swatches, { tokens: preview })] }) : /* @__PURE__ */ jsx("p", {
 						className: "text-[11px] text-zinc-600",
-						children: "Keep at least one colour to build a palette."
+						children: "Keep at least one color to build a palette."
 					}),
 					/* @__PURE__ */ jsx("label", {
 						htmlFor: nameId,
@@ -8668,7 +9218,7 @@ function ImportExport() {
 	const themeName = JSON.parse(json).name;
 	const [format, setFormat] = useState("json");
 	const out = EXPORT_FORMATS.find((f) => f.id === format);
-	const text = format === "css" ? `/* ${themeName.replace(/\*\//g, "")}, from colorsbymax */\n${cssSnippet(tokens)}\n` : json;
+	const text = format === "css" ? `/* ${themeName.replace(/\*\//g, "")}, from Kamiliyon */\n${cssSnippet(tokens)}\n` : json;
 	const [status, setStatus] = useState(null);
 	const [input, setInput] = useState("");
 	const exportId = useId();
@@ -8866,7 +9416,7 @@ var describe = (el) => {
 };
 var fmt = (r) => `${(Math.floor(r * 10) / 10).toFixed(1)}:1`;
 /**
-* Samples an image's corners and middle (for a solid background and an overall colour). Returns
+* Samples an image's corners and middle (for a solid background and an overall color). Returns
 * null when the browser won't allow reading it (a cross-origin image without CORS).
 */
 function sampleImage(img) {
@@ -8958,13 +9508,13 @@ function runAudit({ logoColouring }) {
 			if (ratio !== null && ratio < 3) add(img, {
 				kind: "logo-image",
 				title: "Logo is hard to see here",
-				message: `Your logo is a picture, which colorsbymax can’t re-colour, and it reads at only ${fmt(ratio)} on this background. Use a transparent SVG (which colorsbymax can colour), or add a version made for ${darkPage ? "dark" : "light"} backgrounds.`,
+				message: `Your logo is a picture, which Kamiliyon can’t re-color, and it reads at only ${fmt(ratio)} on this background. Use a transparent SVG (which Kamiliyon can color), or add a version made for ${darkPage ? "dark" : "light"} backgrounds.`,
 				action: "invert"
 			});
 			else if (sample === null) add(img, {
 				kind: "logo-image",
 				title: "Check your logo here",
-				message: `Your logo is a picture, which colorsbymax can’t re-colour. Check it still reads on this ${darkPage ? "dark" : "light"} background, or use a transparent SVG instead.`,
+				message: `Your logo is a picture, which Kamiliyon can’t re-color. Check it still reads on this ${darkPage ? "dark" : "light"} background, or use a transparent SVG instead.`,
 				action: "invert"
 			});
 			continue;
@@ -8977,7 +9527,7 @@ function runAudit({ logoColouring }) {
 		if (ratio < 3) add(logo, {
 			kind: "logo",
 			title: "Logo is hard to see here",
-			message: logoColouring ? `Your logo reads at only ${fmt(ratio)} on this background. Try another theme, or give the logo its own colour.` : `Your logo keeps its own colours, which read at only ${fmt(ratio)} on this background. Let colorsbymax colour it to match the theme, or pick a theme it suits.`,
+			message: logoColouring ? `Your logo reads at only ${fmt(ratio)} on this background. Try another theme, or give the logo its own color.` : `Your logo keeps its own colors, which read at only ${fmt(ratio)} on this background. Let Kamiliyon color it to match the theme, or pick a theme it suits.`,
 			action: logoColouring ? void 0 : "colour-logo"
 		});
 	}
@@ -9018,7 +9568,7 @@ function runAudit({ logoColouring }) {
 		add(el, {
 			kind: svg ? "icon" : "text",
 			title: `${svg ? "Icon" : "Text"} is hard to read`,
-			message: `${describe(el) ? `“${describe(el)}” ` : ""}reads at ${fmt(ratio)} here; ${svg ? "icons" : large ? "large text" : "text"} needs ${needed}:1. Try another theme, or adjust it under “Override a single colour”.`
+			message: `${describe(el) ? `“${describe(el)}” ` : ""}reads at ${fmt(ratio)} here; ${svg ? "icons" : large ? "large text" : "text"} needs ${needed}:1. Try another theme, or adjust it under “Override a single color”.`
 		});
 	}
 	return findings;
@@ -9036,7 +9586,7 @@ var GUESS_HEIGHT = 150;
 var COMPACT_WIDTH = 640;
 /**
 * The audit on the page: each finding outlined where it is, with a numbered card pointing at it,
-* kept in place as the page scrolls; and a bar by the colour button to re-check or close.
+* kept in place as the page scrolls; and a bar by the color button to re-check or close.
 */
 function AuditLayer({ findings, anchor, themeIssues, onRecheck, onClose, onAction }) {
 	const [rects, setRects] = useState([]);
@@ -9192,7 +9742,7 @@ function AuditLayer({ findings, anchor, themeIssues, onRecheck, onClose, onActio
 									type: "button",
 									className: "rounded-lg bg-zinc-900 px-2 py-1 text-[11px] font-medium text-white hover:bg-zinc-700 cursor-pointer",
 									onClick: () => onAction("colour-logo"),
-									children: "Colour the logo"
+									children: "Color the logo"
 								}),
 								f.action === "invert" && /* @__PURE__ */ jsxs("button", {
 									type: "button",
@@ -9230,7 +9780,7 @@ function AuditLayer({ findings, anchor, themeIssues, onRecheck, onClose, onActio
 		})]
 	});
 }
-/** The audit's summary, next to the colour button: what it found, Re-check and Close. */
+/** The audit's summary, next to the color button: what it found, Re-check and Close. */
 function AuditBar({ anchorRect, open, hiddenCount, themeIssues, onRecheck, onClose }) {
 	const ref = useRef(null);
 	const [size, setSize] = useState({
@@ -9509,7 +10059,7 @@ function StudioLayer({ onDone }) {
 							}),
 							" ",
 							coarse ? "tap" : "click",
-							" any part of the page to colour it"
+							" any part of the page to color it"
 						]
 					}), /* @__PURE__ */ jsx("button", {
 						type: "button",
@@ -9705,10 +10255,10 @@ function Editor({ picked, rect, onPickParent, canPickParent, onPickChild, canPic
 			!canPickChild && picked.text && /* @__PURE__ */ jsxs("p", {
 				className: "mt-1.5 text-[11px] text-zinc-600",
 				children: [
-					"This is the text itself. To colour its words, use ",
+					"This is the text itself. To color its words, use ",
 					/* @__PURE__ */ jsx("strong", {
 						className: "font-semibold text-zinc-800",
-						children: "Text colour"
+						children: "Text color"
 					}),
 					" below."
 				]
@@ -9761,7 +10311,7 @@ function Editor({ picked, rect, onPickParent, canPickParent, onPickChild, canPic
 			paint.everywhere && /* @__PURE__ */ jsxs("p", {
 				className: "mt-1.5 text-[11px] leading-snug text-zinc-600",
 				children: [
-					"Studio will colour every ",
+					"Studio will color every ",
 					picked.kind.toLowerCase(),
 					" like this on every page of your site, as you open them."
 				]
@@ -9774,7 +10324,7 @@ function Editor({ picked, rect, onPickParent, canPickParent, onPickChild, canPic
 			/* @__PURE__ */ jsx("div", {
 				className: "mt-3 space-y-2.5",
 				children: PROPS.map(({ key, label }) => /* @__PURE__ */ jsx(ColourRow, {
-					label: key === "text" ? "Text colour" : label,
+					label: key === "text" ? "Text color" : label,
 					hint: key === "border" && !paint.hasBorder ? "adds an outline" : key === "background" ? "behind it" : key === "text" ? "its words" : null,
 					value: paint.props[key],
 					swatches,
@@ -9868,7 +10418,7 @@ function Readability({ check, onFix, fixed }) {
 		})]
 	});
 }
-/** One colour: the theme's swatches, any colour, or none (the part's own). */
+/** One color: the theme's swatches, any color, or none (the part's own). */
 function ColourRow({ label, hint, value, swatches, onChange, inScope, readsOn }) {
 	const id = useId();
 	const current = value ? value.token && inScope ? swatches.find((s) => s.token === value.token)?.hex ?? value.hex : value.hex : null;
@@ -9917,10 +10467,10 @@ function ColourRow({ label, hint, value, swatches, onChange, inScope, readsOn })
 			}), /* @__PURE__ */ jsxs("label", {
 				className: `relative grid h-6 w-6 place-items-center overflow-hidden rounded-md border cursor-pointer ${value && !value.token ? "border-zinc-900 ring-2 ring-zinc-900 ring-offset-1" : "border-zinc-300"}`,
 				style: { background: value && !value.token ? value.hex : "conic-gradient(#f43f5e, #f59e0b, #10b981, #0ea5e9, #6366f1, #d946ef, #f43f5e)" },
-				"data-tip": "Any colour",
+				"data-tip": "Any color",
 				children: [/* @__PURE__ */ jsxs("span", {
 					className: "sr-only",
-					children: ["Any colour for the ", label.toLowerCase()]
+					children: ["Any color for the ", label.toLowerCase()]
 				}), /* @__PURE__ */ jsx("input", {
 					type: "color",
 					value: current ?? "#6366f1",
@@ -9931,9 +10481,113 @@ function ColourRow({ label, hint, value, swatches, onChange, inScope, readsOn })
 		})]
 	});
 }
+/**
+* Picking a color from the site (Custom palettes): hovering names each part, its color and the
+* job that color does ("Button · brand color · #6d28d9"); a click picks it instead of using it.
+* Escape or Cancel goes back without a pick.
+*/
+function ColourPickLayer({ onPick, onCancel }) {
+	const [hover, setHover] = useState(null);
+	const rect = useRect(hover?.el ?? null);
+	const latest = useRef({});
+	latest.current = {
+		onPick,
+		onCancel
+	};
+	const coarse = typeof matchMedia === "function" && matchMedia("(hover: none)").matches;
+	useEffect(() => {
+		const onMove = (e) => {
+			if (e.pointerType === "touch") return;
+			const el = pickTarget(e);
+			setHover((h) => h?.el === el ? h : el ? {
+				el,
+				...readPick(el)
+			} : null);
+		};
+		const block = (e) => {
+			if (!pickTarget(e)) return;
+			e.preventDefault();
+			e.stopPropagation();
+			e.stopImmediatePropagation();
+		};
+		const onClick = (e) => {
+			const el = pickTarget(e);
+			if (!el) return;
+			block(e);
+			latest.current.onPick(readPick(el));
+		};
+		const onKey = (e) => {
+			if (e.key !== "Escape") return;
+			e.preventDefault();
+			latest.current.onCancel();
+		};
+		const types = [
+			"pointerdown",
+			"mousedown",
+			"mouseup",
+			"pointerup",
+			"submit",
+			"dblclick"
+		];
+		document.addEventListener("pointermove", onMove, true);
+		for (const type of types) document.addEventListener(type, block, true);
+		document.addEventListener("click", onClick, true);
+		document.addEventListener("keydown", onKey, true);
+		document.documentElement.style.setProperty("cursor", "crosshair");
+		return () => {
+			document.removeEventListener("pointermove", onMove, true);
+			for (const type of types) document.removeEventListener(type, block, true);
+			document.removeEventListener("click", onClick, true);
+			document.removeEventListener("keydown", onKey, true);
+			document.documentElement.style.removeProperty("cursor");
+		};
+	}, []);
+	const role = hover && PICK_ROLES.find((r) => r.id === hover.role);
+	return /* @__PURE__ */ jsxs("div", {
+		className: "theme-switcher",
+		children: [hover && rect && /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Outline, {
+			rect,
+			label: `${hover.kind} · ${role.label.toLowerCase()} color`
+		}), /* @__PURE__ */ jsxs("div", {
+			"aria-hidden": "true",
+			className: "pointer-events-none fixed z-[70] flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white py-1 pr-2.5 pl-1 text-[11px] font-semibold text-zinc-900 shadow-lg",
+			style: {
+				left: Math.min(rect.left, window.innerWidth - 150),
+				top: rect.bottom + 8 > window.innerHeight - 40 ? rect.top - 34 : rect.bottom + 8
+			},
+			children: [/* @__PURE__ */ jsx("span", {
+				className: "h-5 w-5 rounded-full border border-black/15",
+				style: { background: hover.colour }
+			}), hover.colour]
+		})] }), /* @__PURE__ */ jsx("div", {
+			className: "pointer-events-none fixed inset-x-0 bottom-4 z-[70] flex justify-center px-3",
+			children: /* @__PURE__ */ jsxs("div", {
+				className: "pointer-events-auto flex max-w-full items-center gap-3 rounded-full border border-zinc-200 bg-white py-1.5 pr-1.5 pl-4 text-xs text-zinc-800 shadow-xl",
+				role: "status",
+				children: [/* @__PURE__ */ jsxs("span", {
+					className: "min-w-0",
+					children: [
+						/* @__PURE__ */ jsx("strong", {
+							className: "font-semibold text-zinc-900",
+							children: "Pick a color:"
+						}),
+						" ",
+						coarse ? "tap" : "click",
+						" anything on your site"
+					]
+				}), /* @__PURE__ */ jsx("button", {
+					type: "button",
+					onClick: onCancel,
+					className: "shrink-0 rounded-full border border-zinc-300 px-3 py-1 text-xs font-semibold text-zinc-800 cursor-pointer hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900",
+					children: "Cancel"
+				})]
+			})
+		})]
+	});
+}
 //#endregion
 //#region src/panel-css.generated.js
-var panel_css_generated_default = "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer properties{@supports (display:block){*,:before,:after,::backdrop{--tw-translate-x:0;--tw-translate-y:0;--tw-translate-z:0;--tw-scale-x:1;--tw-scale-y:1;--tw-scale-z:1;--tw-space-y-reverse:0;--tw-space-x-reverse:0;--tw-border-style:solid;--tw-leading:initial;--tw-font-weight:initial;--tw-tracking:initial;--tw-ordinal:initial;--tw-slashed-zero:initial;--tw-numeric-figure:initial;--tw-numeric-spacing:initial;--tw-numeric-fraction:initial;--tw-shadow:0 0 #0000;--tw-shadow-color:initial;--tw-shadow-alpha:100%;--tw-inset-shadow:0 0 #0000;--tw-inset-shadow-color:initial;--tw-inset-shadow-alpha:100%;--tw-ring-color:initial;--tw-ring-shadow:0 0 #0000;--tw-inset-ring-color:initial;--tw-inset-ring-shadow:0 0 #0000;--tw-ring-inset:initial;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-offset-shadow:0 0 #0000;--tw-outline-style:solid;--tw-blur:initial;--tw-brightness:initial;--tw-contrast:initial;--tw-grayscale:initial;--tw-hue-rotate:initial;--tw-invert:initial;--tw-opacity:initial;--tw-saturate:initial;--tw-sepia:initial;--tw-drop-shadow:initial;--tw-drop-shadow-color:initial;--tw-drop-shadow-alpha:100%;--tw-drop-shadow-size:initial;--tw-backdrop-blur:initial;--tw-backdrop-brightness:initial;--tw-backdrop-contrast:initial;--tw-backdrop-grayscale:initial;--tw-backdrop-hue-rotate:initial;--tw-backdrop-invert:initial;--tw-backdrop-opacity:initial;--tw-backdrop-saturate:initial;--tw-backdrop-sepia:initial;--tw-duration:initial;--tw-ease:initial}}}@layer theme{:root,:host{--font-sans:-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", \"Noto Sans\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\";--font-mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace;--color-red-600:oklch(57.7% .245 27.325);--color-red-700:oklch(50.5% .213 27.518);--color-amber-50:oklch(98.7% .022 95.277);--color-amber-100:oklch(96.2% .059 95.617);--color-amber-200:oklch(92.4% .12 95.746);--color-amber-300:oklch(87.9% .169 91.605);--color-amber-400:oklch(82.8% .189 84.429);--color-amber-500:oklch(76.9% .188 70.08);--color-amber-700:oklch(55.5% .163 48.998);--color-amber-800:oklch(47.3% .137 46.201);--color-amber-900:oklch(41.4% .112 45.904);--color-amber-950:oklch(27.9% .077 45.635);--color-emerald-50:oklch(97.9% .021 166.113);--color-emerald-800:oklch(43.2% .095 166.913);--color-emerald-900:oklch(37.8% .077 168.94);--color-sky-50:oklch(97.7% .013 236.62);--color-sky-100:oklch(95.1% .026 236.824);--color-sky-900:oklch(39.1% .09 240.876);--color-zinc-50:oklch(98.5% 0 none);--color-zinc-100:oklch(96.7% .001 286.375);--color-zinc-200:oklch(92% .004 286.32);--color-zinc-300:oklch(87.1% .006 286.286);--color-zinc-400:oklch(70.5% .015 286.067);--color-zinc-500:oklch(55.2% .016 285.938);--color-zinc-600:oklch(44.2% .017 285.786);--color-zinc-700:oklch(37% .013 285.805);--color-zinc-800:oklch(27.4% .006 286.033);--color-zinc-900:oklch(21% .006 285.885);--color-black:#000;--color-white:#fff;--spacing:4px;--text-xs:12px;--text-xs--line-height:calc(1 / .75);--text-sm:14px;--text-sm--line-height:calc(1.25 / .875);--text-base:16px;--text-base--line-height:calc(1.5 / 1);--font-weight-normal:400;--font-weight-medium:500;--font-weight-semibold:600;--font-weight-bold:700;--tracking-tight:-.025em;--tracking-wide:.025em;--leading-tight:1.25;--leading-snug:1.375;--radius-md:6px;--radius-lg:8px;--radius-xl:12px;--radius-2xl:16px;--ease-in-out:cubic-bezier(.4, 0, .2, 1);--animate-spin:spin 1s linear infinite;--default-transition-duration:.15s;--default-transition-timing-function:cubic-bezier(.4, 0, .2, 1);--default-font-family:var(--font-sans);--default-mono-font-family:var(--font-mono)}}@layer base{*,:after,:before,::backdrop{box-sizing:border-box;border:0 solid;margin:0;padding:0}::file-selector-button{box-sizing:border-box;border:0 solid;margin:0;padding:0}html,:host{-webkit-text-size-adjust:100%;tab-size:4;line-height:1.5;font-family:var(--default-font-family,-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", \"Noto Sans\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\");font-feature-settings:var(--default-font-feature-settings,normal);font-variation-settings:var(--default-font-variation-settings,normal);-webkit-tap-highlight-color:transparent}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;-webkit-text-decoration:inherit;-webkit-text-decoration:inherit;-webkit-text-decoration:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:var(--default-mono-font-family,ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace);font-feature-settings:var(--default-mono-font-feature-settings,normal);font-variation-settings:var(--default-mono-font-variation-settings,normal);font-size:1em}small{font-size:80%}sub,sup{vertical-align:baseline;font-size:75%;line-height:0;position:relative}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}:-moz-focusring:where(:not(iframe)){outline:auto}progress{vertical-align:baseline}summary{display:list-item}ol,ul,menu{list-style:none}img,svg,video,canvas,audio,iframe,embed,object{vertical-align:middle;display:block}img,video{max-width:100%;height:auto}button,input,select,optgroup,textarea{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}::file-selector-button{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}:where(select:is([multiple],[size])) optgroup{font-weight:bolder}:where(select:is([multiple],[size])) optgroup option{padding-inline-start:20px}::file-selector-button{margin-inline-end:4px}::placeholder{opacity:1}@supports (not ((-webkit-appearance:-apple-pay-button))) or (contain-intrinsic-size:1px){::placeholder{color:currentColor}@supports (color:color-mix(in lab, red, red)){::placeholder{color:color-mix(in oklab, currentcolor 50%, transparent)}}}textarea{resize:vertical}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-date-and-time-value{min-height:1lh;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-datetime-edit{padding-block:0}::-webkit-datetime-edit-year-field{padding-block:0}::-webkit-datetime-edit-month-field{padding-block:0}::-webkit-datetime-edit-day-field{padding-block:0}::-webkit-datetime-edit-hour-field{padding-block:0}::-webkit-datetime-edit-minute-field{padding-block:0}::-webkit-datetime-edit-second-field{padding-block:0}::-webkit-datetime-edit-millisecond-field{padding-block:0}::-webkit-datetime-edit-meridiem-field{padding-block:0}::-webkit-calendar-picker-indicator{line-height:1}:-moz-ui-invalid{box-shadow:none}button,input:where([type=button],[type=reset],[type=submit]){appearance:button}::file-selector-button{appearance:button}::-webkit-inner-spin-button{height:auto}::-webkit-outer-spin-button{height:auto}[hidden]:where(:not([hidden=until-found])){display:none!important}.theme-switcher{letter-spacing:normal;color:var(--color-zinc-900);font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:16px;line-height:1.5}}@layer components;@layer utilities{.\\@container{container-type:inline-size}.pointer-events-auto{pointer-events:auto}.pointer-events-none{pointer-events:none}.invisible{visibility:hidden}.visible{visibility:visible}.sr-only{clip-path:inset(50%);white-space:nowrap;border-width:0;width:1px;height:1px;margin:-1px;padding:0;position:absolute;overflow:hidden}.absolute{position:absolute}.fixed{position:fixed}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0}.inset-x-0{inset-inline:0}.inset-x-3{inset-inline:calc(var(--spacing) * 3)}.inset-x-5{inset-inline:calc(var(--spacing) * 5)}.inset-y-5{inset-block:calc(var(--spacing) * 5)}.-top-1{top:calc(var(--spacing) * -1)}.-top-2{top:calc(var(--spacing) * -2)}.-top-\\[6px\\]{top:-6px}.top-0{top:0}.top-1\\.5{top:calc(var(--spacing) * 1.5)}.top-1\\/2{top:50%}.top-5{top:calc(var(--spacing) * 5)}.top-\\[84px\\]{top:84px}.-right-0\\.5{right:calc(var(--spacing) * -.5)}.-right-1{right:calc(var(--spacing) * -1)}.-right-2{right:calc(var(--spacing) * -2)}.right-0{right:0}.right-1\\.5{right:calc(var(--spacing) * 1.5)}.right-2{right:calc(var(--spacing) * 2)}.right-5{right:calc(var(--spacing) * 5)}.right-6{right:calc(var(--spacing) * 6)}.right-full{right:100%}.-bottom-0\\.5{bottom:calc(var(--spacing) * -.5)}.-bottom-2{bottom:calc(var(--spacing) * -2)}.-bottom-\\[6px\\]{bottom:-6px}.bottom-2{bottom:calc(var(--spacing) * 2)}.bottom-3{bottom:calc(var(--spacing) * 3)}.bottom-4{bottom:calc(var(--spacing) * 4)}.bottom-5{bottom:calc(var(--spacing) * 5)}.-left-1{left:calc(var(--spacing) * -1)}.-left-2{left:calc(var(--spacing) * -2)}.left-0{left:0}.left-5{left:calc(var(--spacing) * 5)}.left-full{left:100%}.z-10{z-index:10}.z-20{z-index:20}.z-30{z-index:30}.z-\\[55\\]{z-index:55}.z-\\[56\\]{z-index:56}.z-\\[57\\]{z-index:57}.z-\\[60\\]{z-index:60}.z-\\[61\\]{z-index:61}.z-\\[62\\]{z-index:62}.z-\\[65\\]{z-index:65}.z-\\[70\\]{z-index:70}.container{width:100%}@media (min-width:640px){.container{max-width:640px}}@media (min-width:768px){.container{max-width:768px}}@media (min-width:1024px){.container{max-width:1024px}}@media (min-width:1280px){.container{max-width:1280px}}@media (min-width:1536px){.container{max-width:1536px}}.mx-4{margin-inline:calc(var(--spacing) * 4)}.-mt-1{margin-top:calc(var(--spacing) * -1)}.mt-0\\.5{margin-top:calc(var(--spacing) * .5)}.mt-1{margin-top:var(--spacing)}.mt-1\\.5{margin-top:calc(var(--spacing) * 1.5)}.mt-2{margin-top:calc(var(--spacing) * 2)}.mt-2\\.5{margin-top:calc(var(--spacing) * 2.5)}.mt-3{margin-top:calc(var(--spacing) * 3)}.mt-px{margin-top:1px}.-mr-1{margin-right:calc(var(--spacing) * -1)}.mr-2{margin-right:calc(var(--spacing) * 2)}.mb-1{margin-bottom:var(--spacing)}.mb-2\\.5{margin-bottom:calc(var(--spacing) * 2.5)}.ml-1{margin-left:var(--spacing)}.ml-1\\.5{margin-left:calc(var(--spacing) * 1.5)}.ml-2{margin-left:calc(var(--spacing) * 2)}.ml-auto{margin-left:auto}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.inline-flex{display:inline-flex}.h-2\\.5{height:calc(var(--spacing) * 2.5)}.h-3{height:calc(var(--spacing) * 3)}.h-3\\.5{height:calc(var(--spacing) * 3.5)}.h-4{height:calc(var(--spacing) * 4)}.h-5{height:calc(var(--spacing) * 5)}.h-6{height:calc(var(--spacing) * 6)}.h-7{height:calc(var(--spacing) * 7)}.h-8{height:calc(var(--spacing) * 8)}.h-9{height:calc(var(--spacing) * 9)}.h-16{height:calc(var(--spacing) * 16)}.h-full{height:100%}.max-h-40{max-height:calc(var(--spacing) * 40)}.min-h-0{min-height:0}.min-h-12{min-height:calc(var(--spacing) * 12)}.w-2\\.5{width:calc(var(--spacing) * 2.5)}.w-3{width:calc(var(--spacing) * 3)}.w-3\\.5{width:calc(var(--spacing) * 3.5)}.w-4{width:calc(var(--spacing) * 4)}.w-5{width:calc(var(--spacing) * 5)}.w-6{width:calc(var(--spacing) * 6)}.w-7{width:calc(var(--spacing) * 7)}.w-8{width:calc(var(--spacing) * 8)}.w-9{width:calc(var(--spacing) * 9)}.w-16{width:calc(var(--spacing) * 16)}.w-24{width:calc(var(--spacing) * 24)}.w-\\[5\\.5rem\\]{width:88px}.w-auto{width:auto}.w-full{width:100%}.max-w-\\[50\\%\\]{max-width:50%}.max-w-\\[240px\\]{max-width:240px}.max-w-\\[320px\\]{max-width:320px}.max-w-\\[calc\\(100vw-80px\\)\\]{max-width:calc(100vw - 80px)}.max-w-full{max-width:100%}.min-w-0{min-width:0}.min-w-\\[1\\.25rem\\]{min-width:20px}.flex-1{flex:1}.shrink-0{flex-shrink:0}.-translate-y-1\\/2{--tw-translate-y:calc(calc(1 / 2 * 100%) * -1);translate:var(--tw-translate-x) var(--tw-translate-y)}.scale-110{--tw-scale-x:110%;--tw-scale-y:110%;--tw-scale-z:110%;scale:var(--tw-scale-x) var(--tw-scale-y)}.rotate-45{rotate:45deg}.rotate-90{rotate:90deg}.animate-spin{animation:var(--animate-spin)}.cursor-ew-resize{cursor:ew-resize}.cursor-grabbing{cursor:grabbing}.cursor-nesw-resize{cursor:nesw-resize}.cursor-ns-resize{cursor:ns-resize}.cursor-nwse-resize{cursor:nwse-resize}.cursor-pointer{cursor:pointer}.touch-none{touch-action:none}.resize{resize:both}.scroll-mt-3{scroll-margin-top:calc(var(--spacing) * 3)}.list-decimal{list-style-type:decimal}.list-disc{list-style-type:disc}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.place-items-center{place-items:center}.items-center{align-items:center}.items-start{align-items:flex-start}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.gap-0\\.5{gap:calc(var(--spacing) * .5)}.gap-1{gap:var(--spacing)}.gap-1\\.5{gap:calc(var(--spacing) * 1.5)}.gap-2{gap:calc(var(--spacing) * 2)}.gap-2\\.5{gap:calc(var(--spacing) * 2.5)}.gap-3{gap:calc(var(--spacing) * 3)}:where(.space-y-0\\.5>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * .5) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * .5) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-1>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(var(--spacing) * var(--tw-space-y-reverse));margin-block-end:calc(var(--spacing) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-1\\.5>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-2>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-2\\.5>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 2.5) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 2.5) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-3>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-4>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)))}.gap-x-3{column-gap:calc(var(--spacing) * 3)}:where(.-space-x-1>:not(:last-child)){--tw-space-x-reverse:0;margin-inline-start:calc(calc(var(--spacing) * -1) * var(--tw-space-x-reverse));margin-inline-end:calc(calc(var(--spacing) * -1) * calc(1 - var(--tw-space-x-reverse)))}.gap-y-3\\.5{row-gap:calc(var(--spacing) * 3.5)}.truncate{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.overflow-auto{overflow:auto}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.overscroll-contain{overscroll-behavior:contain}.rounded{border-radius:4px}.rounded-2xl{border-radius:var(--radius-2xl)}.rounded-\\[inherit\\]{border-radius:inherit}.rounded-full{border-radius:3.40282e38px}.rounded-lg{border-radius:var(--radius-lg)}.rounded-md{border-radius:var(--radius-md)}.rounded-xl{border-radius:var(--radius-xl)}.border{border-style:var(--tw-border-style);border-width:1px}.border-2{border-style:var(--tw-border-style);border-width:2px}.border-t{border-top-style:var(--tw-border-style);border-top-width:1px}.border-r{border-right-style:var(--tw-border-style);border-right-width:1px}.border-b{border-bottom-style:var(--tw-border-style);border-bottom-width:1px}.border-l{border-left-style:var(--tw-border-style);border-left-width:1px}.border-dashed{--tw-border-style:dashed;border-style:dashed}.border-amber-200{border-color:var(--color-amber-200)}.border-amber-300{border-color:var(--color-amber-300)}.border-amber-400{border-color:var(--color-amber-400)}.border-black\\/15{border-color:#00000026}@supports (color:color-mix(in lab, red, red)){.border-black\\/15{border-color:color-mix(in oklab, var(--color-black) 15%, transparent)}}.border-red-600{border-color:var(--color-red-600)}.border-transparent{border-color:#0000}.border-white{border-color:var(--color-white)}.border-zinc-200{border-color:var(--color-zinc-200)}.border-zinc-300{border-color:var(--color-zinc-300)}.border-zinc-900{border-color:var(--color-zinc-900)}.bg-amber-50{background-color:var(--color-amber-50)}.bg-amber-100{background-color:var(--color-amber-100)}.bg-amber-400{background-color:var(--color-amber-400)}.bg-amber-500{background-color:var(--color-amber-500)}.bg-amber-900{background-color:var(--color-amber-900)}.bg-emerald-50{background-color:var(--color-emerald-50)}.bg-sky-50{background-color:var(--color-sky-50)}.bg-sky-100{background-color:var(--color-sky-100)}.bg-white{background-color:var(--color-white)}.bg-white\\/90{background-color:#ffffffe6}@supports (color:color-mix(in lab, red, red)){.bg-white\\/90{background-color:color-mix(in oklab, var(--color-white) 90%, transparent)}}.bg-zinc-50{background-color:var(--color-zinc-50)}.bg-zinc-100{background-color:var(--color-zinc-100)}.bg-zinc-900{background-color:var(--color-zinc-900)}.bg-zinc-900\\/40{background-color:#18181b66}@supports (color:color-mix(in lab, red, red)){.bg-zinc-900\\/40{background-color:color-mix(in oklab, var(--color-zinc-900) 40%, transparent)}}.object-contain{object-fit:contain}.p-0\\.5{padding:calc(var(--spacing) * .5)}.p-1{padding:var(--spacing)}.p-2{padding:calc(var(--spacing) * 2)}.p-2\\.5{padding:calc(var(--spacing) * 2.5)}.p-3{padding:calc(var(--spacing) * 3)}.p-4{padding:calc(var(--spacing) * 4)}.px-0\\.5{padding-inline:calc(var(--spacing) * .5)}.px-1{padding-inline:var(--spacing)}.px-1\\.5{padding-inline:calc(var(--spacing) * 1.5)}.px-2{padding-inline:calc(var(--spacing) * 2)}.px-2\\.5{padding-inline:calc(var(--spacing) * 2.5)}.px-3{padding-inline:calc(var(--spacing) * 3)}.px-4{padding-inline:calc(var(--spacing) * 4)}.py-0\\.5{padding-block:calc(var(--spacing) * .5)}.py-1{padding-block:var(--spacing)}.py-1\\.5{padding-block:calc(var(--spacing) * 1.5)}.py-2{padding-block:calc(var(--spacing) * 2)}.py-2\\.5{padding-block:calc(var(--spacing) * 2.5)}.py-3{padding-block:calc(var(--spacing) * 3)}.py-5{padding-block:calc(var(--spacing) * 5)}.py-6{padding-block:calc(var(--spacing) * 6)}.pt-3{padding-top:calc(var(--spacing) * 3)}.pr-1\\.5{padding-right:calc(var(--spacing) * 1.5)}.pr-12{padding-right:calc(var(--spacing) * 12)}.pb-4{padding-bottom:calc(var(--spacing) * 4)}.pl-1{padding-left:var(--spacing)}.pl-3{padding-left:calc(var(--spacing) * 3)}.pl-4{padding-left:calc(var(--spacing) * 4)}.text-center{text-align:center}.text-left{text-align:left}.font-mono{font-family:var(--font-mono)}.font-sans{font-family:var(--font-sans)}.text-base{font-size:var(--text-base);line-height:var(--tw-leading,var(--text-base--line-height))}.text-sm{font-size:var(--text-sm);line-height:var(--tw-leading,var(--text-sm--line-height))}.text-xs{font-size:var(--text-xs);line-height:var(--tw-leading,var(--text-xs--line-height))}.text-\\[8px\\]{font-size:8px}.text-\\[10px\\]{font-size:10px}.text-\\[11px\\]{font-size:11px}.leading-none{--tw-leading:1;line-height:1}.leading-snug{--tw-leading:var(--leading-snug);line-height:var(--leading-snug)}.leading-tight{--tw-leading:var(--leading-tight);line-height:var(--leading-tight)}.font-bold{--tw-font-weight:var(--font-weight-bold);font-weight:var(--font-weight-bold)}.font-medium{--tw-font-weight:var(--font-weight-medium);font-weight:var(--font-weight-medium)}.font-normal{--tw-font-weight:var(--font-weight-normal);font-weight:var(--font-weight-normal)}.font-semibold{--tw-font-weight:var(--font-weight-semibold);font-weight:var(--font-weight-semibold)}.tracking-tight{--tw-tracking:var(--tracking-tight);letter-spacing:var(--tracking-tight)}.tracking-wide{--tw-tracking:var(--tracking-wide);letter-spacing:var(--tracking-wide)}.break-words{overflow-wrap:break-word}.break-all{word-break:break-all}.whitespace-nowrap{white-space:nowrap}.whitespace-pre-line{white-space:pre-line}.whitespace-pre-wrap{white-space:pre-wrap}.text-amber-50{color:var(--color-amber-50)}.text-amber-700{color:var(--color-amber-700)}.text-amber-800{color:var(--color-amber-800)}.text-amber-900{color:var(--color-amber-900)}.text-amber-950{color:var(--color-amber-950)}.text-emerald-800{color:var(--color-emerald-800)}.text-emerald-900{color:var(--color-emerald-900)}.text-red-700{color:var(--color-red-700)}.text-sky-900{color:var(--color-sky-900)}.text-white{color:var(--color-white)}.text-white\\/80{color:#fffc}@supports (color:color-mix(in lab, red, red)){.text-white\\/80{color:color-mix(in oklab, var(--color-white) 80%, transparent)}}.text-zinc-300{color:var(--color-zinc-300)}.text-zinc-500{color:var(--color-zinc-500)}.text-zinc-600{color:var(--color-zinc-600)}.text-zinc-700{color:var(--color-zinc-700)}.text-zinc-800{color:var(--color-zinc-800)}.text-zinc-900{color:var(--color-zinc-900)}.capitalize{text-transform:capitalize}.uppercase{text-transform:uppercase}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,)}.underline{text-decoration-line:underline}.underline-offset-2{text-underline-offset:2px}.accent-zinc-900{accent-color:var(--color-zinc-900)}.opacity-0{opacity:0}.opacity-25{opacity:.25}.opacity-70{opacity:.7}.shadow{--tw-shadow:0 1px 3px 0 var(--tw-shadow-color,#0000001a), 0 1px 2px -1px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.shadow-2xl{--tw-shadow:0 25px 50px -12px var(--tw-shadow-color,#00000040);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px var(--tw-shadow-color,#0000001a), 0 4px 6px -4px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px var(--tw-shadow-color,#0000001a), 0 2px 4px -2px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 3px 0 var(--tw-shadow-color,#0000001a), 0 1px 2px -1px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px var(--tw-shadow-color,#0000001a), 0 8px 10px -6px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.ring-1{--tw-ring-shadow:var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.ring-2{--tw-ring-shadow:var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.ring-white{--tw-ring-color:var(--color-white)}.ring-zinc-900{--tw-ring-color:var(--color-zinc-900)}.ring-offset-1{--tw-ring-offset-width:1px;--tw-ring-offset-shadow:var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color)}.outline{outline-style:var(--tw-outline-style);outline-width:1px}.invert{--tw-invert:invert(100%);filter:var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,)}.filter{filter:var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);backdrop-filter:var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,)}.transition-\\[color\\,background-color\\,box-shadow\\,scale\\]{transition-property:color,background-color,box-shadow,scale;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.transition-colors{transition-property:color,background-color,border-color,outline-color,text-decoration-color,fill,stroke,--tw-gradient-from,--tw-gradient-via,--tw-gradient-to;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.transition-shadow{transition-property:box-shadow;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.transition-transform{transition-property:transform,translate,scale,rotate;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.duration-700{--tw-duration:.7s;transition-duration:.7s}.ease-in-out{--tw-ease:var(--ease-in-out);transition-timing-function:var(--ease-in-out)}.select-none{-webkit-user-select:none;user-select:none}.placeholder\\:text-zinc-500::placeholder{color:var(--color-zinc-500)}@media (hover:hover){.hover\\:border-zinc-900:hover{border-color:var(--color-zinc-900)}.hover\\:bg-amber-200:hover{background-color:var(--color-amber-200)}.hover\\:bg-white:hover{background-color:var(--color-white)}.hover\\:bg-zinc-50:hover{background-color:var(--color-zinc-50)}.hover\\:bg-zinc-100:hover{background-color:var(--color-zinc-100)}.hover\\:bg-zinc-200:hover{background-color:var(--color-zinc-200)}.hover\\:bg-zinc-400\\/30:hover{background-color:#9f9fa94d}@supports (color:color-mix(in lab, red, red)){.hover\\:bg-zinc-400\\/30:hover{background-color:color-mix(in oklab, var(--color-zinc-400) 30%, transparent)}}.hover\\:bg-zinc-700:hover{background-color:var(--color-zinc-700)}.hover\\:text-amber-950:hover{color:var(--color-amber-950)}.hover\\:text-zinc-900:hover{color:var(--color-zinc-900)}.hover\\:no-underline:hover{text-decoration-line:none}.hover\\:opacity-100:hover{opacity:1}}.focus\\:outline-none:focus{--tw-outline-style:none;outline-style:none}.focus-visible\\:ring-2:focus-visible{--tw-ring-shadow:var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.focus-visible\\:ring-amber-900:focus-visible{--tw-ring-color:var(--color-amber-900)}.focus-visible\\:ring-white:focus-visible{--tw-ring-color:var(--color-white)}.focus-visible\\:ring-zinc-900:focus-visible{--tw-ring-color:var(--color-zinc-900)}.focus-visible\\:ring-offset-1:focus-visible{--tw-ring-offset-width:1px;--tw-ring-offset-shadow:var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color)}.focus-visible\\:ring-offset-2:focus-visible{--tw-ring-offset-width:2px;--tw-ring-offset-shadow:var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color)}.focus-visible\\:outline-none:focus-visible{--tw-outline-style:none;outline-style:none}.focus-visible\\:ring-inset:focus-visible{--tw-ring-inset:inset}.disabled\\:cursor-default:disabled{cursor:default}.disabled\\:opacity-35:disabled{opacity:.35}.disabled\\:opacity-45:disabled{opacity:.45}.disabled\\:opacity-50:disabled{opacity:.5}@media (hover:hover){.disabled\\:hover\\:border-zinc-300:disabled:hover{border-color:var(--color-zinc-300)}.disabled\\:hover\\:bg-transparent:disabled:hover{background-color:#0000}}@media (prefers-reduced-motion:reduce){.motion-reduce\\:animate-none{animation:none}.motion-reduce\\:transition-none{transition-property:none}}@media (min-width:1200px){.min-\\[1200px\\]\\:top-\\[27px\\]{top:27px}.min-\\[1200px\\]\\:right-4{right:calc(var(--spacing) * 4)}}@media (min-width:640px){.sm\\:inline{display:inline}}@container (min-width:380px){.\\@min-\\[380px\\]\\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}@container (min-width:400px){.\\@min-\\[400px\\]\\:inline{display:inline}}@container (min-width:460px){.\\@min-\\[460px\\]\\:inline{display:inline}.\\@min-\\[460px\\]\\:h-10{height:calc(var(--spacing) * 10)}.\\@min-\\[460px\\]\\:min-h-0{min-height:0}.\\@min-\\[460px\\]\\:flex-row{flex-direction:row}.\\@min-\\[460px\\]\\:justify-start{justify-content:flex-start}.\\@min-\\[460px\\]\\:gap-1\\.5{gap:calc(var(--spacing) * 1.5)}.\\@min-\\[460px\\]\\:truncate{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.\\@min-\\[460px\\]\\:px-2\\.5{padding-inline:calc(var(--spacing) * 2.5)}.\\@min-\\[460px\\]\\:py-0{padding-block:0}.\\@min-\\[460px\\]\\:text-left{text-align:left}.\\@min-\\[460px\\]\\:text-xs{font-size:var(--text-xs);line-height:var(--tw-leading,var(--text-xs--line-height))}}@container (min-width:520px){.\\@min-\\[520px\\]\\:ml-auto{margin-left:auto}.\\@min-\\[520px\\]\\:w-auto{width:auto}.\\@min-\\[520px\\]\\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.\\@min-\\[520px\\]\\:justify-start{justify-content:flex-start}}}:host{all:initial}.cbm-dark{color-scheme:dark;--color-white:oklch(21% .006 285.885);--color-zinc-50:oklch(24.5% .006 286);--color-zinc-100:oklch(27.4% .006 286.033);--color-zinc-200:oklch(33% .01 285.9);--color-zinc-300:oklch(42% .015 285.8);--color-zinc-400:oklch(52% .016 285.9);--color-zinc-500:oklch(68% .015 286.067);--color-zinc-600:oklch(74% .012 286);--color-zinc-700:oklch(82% .008 286.2);--color-zinc-800:oklch(88% .006 286.3);--color-zinc-900:oklch(96.7% .001 286.375);--color-zinc-950:oklch(98.5% 0 0);--color-amber-50:oklch(27.9% .077 45.635);--color-amber-100:oklch(33% .09 46);--color-amber-200:oklch(41.4% .112 45.904);--color-amber-300:oklch(55.5% .163 48.998);--color-amber-700:oklch(87.9% .169 91.605);--color-amber-800:oklch(92.4% .12 95.746);--color-amber-900:oklch(96.2% .059 95.617);--color-amber-950:oklch(98.7% .022 95.277);--color-emerald-50:oklch(26.2% .051 172.552);--color-emerald-800:oklch(90.5% .093 164.15);--color-emerald-900:oklch(95% .052 163.051);--color-sky-50:oklch(29.3% .066 243.157);--color-sky-100:oklch(39.1% .09 240.876);--color-sky-900:oklch(95.1% .026 236.824);--color-red-600:oklch(70.4% .191 22.216);--color-red-700:oklch(80.8% .114 19.571)}.cbm-dark *{--tw-ring-offset-color:oklch(21% .006 285.885)}.theme-scroll{--cbm-thumb:var(--color-primary,oklch(55.2% .016 285.938))}@supports (color:color-mix(in lab, red, red)){.theme-scroll{--cbm-thumb:color-mix(in srgb, var(--color-primary,var(--color-zinc-500)) 55%, var(--color-white))}}.theme-scroll{--cbm-thumb-hover:var(--color-primary,oklch(55.2% .016 285.938))}@supports (color:color-mix(in lab, red, red)){.theme-scroll{--cbm-thumb-hover:color-mix(in srgb, var(--color-primary,var(--color-zinc-500)) 80%, var(--color-white))}}.theme-scroll{scrollbar-width:thin;scrollbar-color:var(--cbm-thumb) transparent}.theme-scroll:hover{scrollbar-color:var(--cbm-thumb-hover) transparent}.theme-scroll::-webkit-scrollbar{width:6px}.theme-scroll::-webkit-scrollbar-track{background:0 0}.theme-scroll::-webkit-scrollbar-thumb{background:var(--cbm-thumb);border-radius:9999px}.theme-scroll:hover::-webkit-scrollbar-thumb{background:var(--cbm-thumb-hover)}.theme-panel{transform-origin:100% 0;animation:.16s ease-out theme-panel-in}@keyframes theme-panel-in{0%{opacity:0;transform:translateY(-6px)scale(.98)}}.theme-hint{animation:.12s ease-out theme-hint-in}.theme-toast{animation:.18s ease-out theme-toast-in}@keyframes theme-toast-in{0%{opacity:0;transform:translateY(8px)}}@keyframes theme-hint-in{0%{opacity:0}}.theme-arrive{animation:.62s cubic-bezier(.34,1.56,.64,1) both theme-arrive}@keyframes theme-arrive{0%{opacity:0;transform:scale(.2)rotate(-45deg)}60%{opacity:1;transform:scale(1.16)rotate(8deg)}to{transform:scale(1)rotate(0)}}.theme-burst-piece{line-height:0;animation:.95s cubic-bezier(.15,.75,.3,1) both theme-burst-piece;display:block;position:absolute;top:50%;left:50%}@keyframes theme-burst-piece{0%{opacity:0;transform:translate(-50%, -50%) rotate(var(--r)) scale(.3)}12%{opacity:1}65%{opacity:1}to{opacity:0;transform:translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(calc(var(--r) + 150deg)) scale(1)}}.theme-piece-dot{background:currentColor;border-radius:9999px;width:6px;height:6px}.theme-piece-dash{background:currentColor;border-radius:9999px;width:10px;height:3px}.theme-studio-mark{animation:9s linear infinite theme-studio-hue}@keyframes theme-studio-hue{0%{filter:hue-rotate()}to{filter:hue-rotate(360deg)}}.theme-new-mark{animation:.5s cubic-bezier(.34,1.56,.64,1) both theme-new-in}@keyframes theme-new-in{0%{transform:scale(0)rotate(-90deg)}to{transform:scale(1)rotate(0)}}@media (prefers-reduced-motion:reduce){.theme-new-mark,.theme-studio-mark,.theme-panel,.theme-hint,.theme-toast{animation:none}.theme-arrive{animation:.3s ease-out both theme-hint-in}.theme-burst{display:none}}.theme-panel summary{list-style:none}.theme-panel summary::-webkit-details-marker{display:none}.theme-panel details[open]>summary .theme-chevron{transform:rotate(90deg)}@keyframes spin{to{transform:rotate(360deg)}}";
+var panel_css_generated_default = "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer properties{@supports (display:block){*,:before,:after,::backdrop{--tw-translate-x:0;--tw-translate-y:0;--tw-translate-z:0;--tw-scale-x:1;--tw-scale-y:1;--tw-scale-z:1;--tw-space-y-reverse:0;--tw-space-x-reverse:0;--tw-border-style:solid;--tw-leading:initial;--tw-font-weight:initial;--tw-tracking:initial;--tw-ordinal:initial;--tw-slashed-zero:initial;--tw-numeric-figure:initial;--tw-numeric-spacing:initial;--tw-numeric-fraction:initial;--tw-shadow:0 0 #0000;--tw-shadow-color:initial;--tw-shadow-alpha:100%;--tw-inset-shadow:0 0 #0000;--tw-inset-shadow-color:initial;--tw-inset-shadow-alpha:100%;--tw-ring-color:initial;--tw-ring-shadow:0 0 #0000;--tw-inset-ring-color:initial;--tw-inset-ring-shadow:0 0 #0000;--tw-ring-inset:initial;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-offset-shadow:0 0 #0000;--tw-outline-style:solid;--tw-blur:initial;--tw-brightness:initial;--tw-contrast:initial;--tw-grayscale:initial;--tw-hue-rotate:initial;--tw-invert:initial;--tw-opacity:initial;--tw-saturate:initial;--tw-sepia:initial;--tw-drop-shadow:initial;--tw-drop-shadow-color:initial;--tw-drop-shadow-alpha:100%;--tw-drop-shadow-size:initial;--tw-backdrop-blur:initial;--tw-backdrop-brightness:initial;--tw-backdrop-contrast:initial;--tw-backdrop-grayscale:initial;--tw-backdrop-hue-rotate:initial;--tw-backdrop-invert:initial;--tw-backdrop-opacity:initial;--tw-backdrop-saturate:initial;--tw-backdrop-sepia:initial;--tw-duration:initial;--tw-ease:initial}}}@layer theme{:root,:host{--font-sans:-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", \"Noto Sans\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\";--font-mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace;--color-red-600:oklch(57.7% .245 27.325);--color-red-700:oklch(50.5% .213 27.518);--color-amber-50:oklch(98.7% .022 95.277);--color-amber-100:oklch(96.2% .059 95.617);--color-amber-200:oklch(92.4% .12 95.746);--color-amber-300:oklch(87.9% .169 91.605);--color-amber-400:oklch(82.8% .189 84.429);--color-amber-500:oklch(76.9% .188 70.08);--color-amber-700:oklch(55.5% .163 48.998);--color-amber-800:oklch(47.3% .137 46.201);--color-amber-900:oklch(41.4% .112 45.904);--color-amber-950:oklch(27.9% .077 45.635);--color-emerald-50:oklch(97.9% .021 166.113);--color-emerald-800:oklch(43.2% .095 166.913);--color-emerald-900:oklch(37.8% .077 168.94);--color-sky-50:oklch(97.7% .013 236.62);--color-sky-100:oklch(95.1% .026 236.824);--color-sky-900:oklch(39.1% .09 240.876);--color-zinc-50:oklch(98.5% 0 none);--color-zinc-100:oklch(96.7% .001 286.375);--color-zinc-200:oklch(92% .004 286.32);--color-zinc-300:oklch(87.1% .006 286.286);--color-zinc-400:oklch(70.5% .015 286.067);--color-zinc-500:oklch(55.2% .016 285.938);--color-zinc-600:oklch(44.2% .017 285.786);--color-zinc-700:oklch(37% .013 285.805);--color-zinc-800:oklch(27.4% .006 286.033);--color-zinc-900:oklch(21% .006 285.885);--color-black:#000;--color-white:#fff;--spacing:4px;--text-xs:12px;--text-xs--line-height:calc(1 / .75);--text-sm:14px;--text-sm--line-height:calc(1.25 / .875);--text-base:16px;--text-base--line-height:calc(1.5 / 1);--font-weight-normal:400;--font-weight-medium:500;--font-weight-semibold:600;--font-weight-bold:700;--tracking-tight:-.025em;--tracking-wide:.025em;--leading-tight:1.25;--leading-snug:1.375;--radius-md:6px;--radius-lg:8px;--radius-xl:12px;--radius-2xl:16px;--ease-in-out:cubic-bezier(.4, 0, .2, 1);--animate-spin:spin 1s linear infinite;--default-transition-duration:.15s;--default-transition-timing-function:cubic-bezier(.4, 0, .2, 1);--default-font-family:var(--font-sans);--default-mono-font-family:var(--font-mono)}}@layer base{*,:after,:before,::backdrop{box-sizing:border-box;border:0 solid;margin:0;padding:0}::file-selector-button{box-sizing:border-box;border:0 solid;margin:0;padding:0}html,:host{-webkit-text-size-adjust:100%;tab-size:4;line-height:1.5;font-family:var(--default-font-family,-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", \"Noto Sans\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\");font-feature-settings:var(--default-font-feature-settings,normal);font-variation-settings:var(--default-font-variation-settings,normal);-webkit-tap-highlight-color:transparent}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;-webkit-text-decoration:inherit;-webkit-text-decoration:inherit;-webkit-text-decoration:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:var(--default-mono-font-family,ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace);font-feature-settings:var(--default-mono-font-feature-settings,normal);font-variation-settings:var(--default-mono-font-variation-settings,normal);font-size:1em}small{font-size:80%}sub,sup{vertical-align:baseline;font-size:75%;line-height:0;position:relative}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}:-moz-focusring:where(:not(iframe)){outline:auto}progress{vertical-align:baseline}summary{display:list-item}ol,ul,menu{list-style:none}img,svg,video,canvas,audio,iframe,embed,object{vertical-align:middle;display:block}img,video{max-width:100%;height:auto}button,input,select,optgroup,textarea{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}::file-selector-button{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}:where(select:is([multiple],[size])) optgroup{font-weight:bolder}:where(select:is([multiple],[size])) optgroup option{padding-inline-start:20px}::file-selector-button{margin-inline-end:4px}::placeholder{opacity:1}@supports (not ((-webkit-appearance:-apple-pay-button))) or (contain-intrinsic-size:1px){::placeholder{color:currentColor}@supports (color:color-mix(in lab, red, red)){::placeholder{color:color-mix(in oklab, currentcolor 50%, transparent)}}}textarea{resize:vertical}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-date-and-time-value{min-height:1lh;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-datetime-edit{padding-block:0}::-webkit-datetime-edit-year-field{padding-block:0}::-webkit-datetime-edit-month-field{padding-block:0}::-webkit-datetime-edit-day-field{padding-block:0}::-webkit-datetime-edit-hour-field{padding-block:0}::-webkit-datetime-edit-minute-field{padding-block:0}::-webkit-datetime-edit-second-field{padding-block:0}::-webkit-datetime-edit-millisecond-field{padding-block:0}::-webkit-datetime-edit-meridiem-field{padding-block:0}::-webkit-calendar-picker-indicator{line-height:1}:-moz-ui-invalid{box-shadow:none}button,input:where([type=button],[type=reset],[type=submit]){appearance:button}::file-selector-button{appearance:button}::-webkit-inner-spin-button{height:auto}::-webkit-outer-spin-button{height:auto}[hidden]:where(:not([hidden=until-found])){display:none!important}.theme-switcher{letter-spacing:normal;color:var(--color-zinc-900);font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:16px;line-height:1.5}}@layer components;@layer utilities{.\\@container{container-type:inline-size}.pointer-events-auto{pointer-events:auto}.pointer-events-none{pointer-events:none}.invisible{visibility:hidden}.visible{visibility:visible}.sr-only{clip-path:inset(50%);white-space:nowrap;border-width:0;width:1px;height:1px;margin:-1px;padding:0;position:absolute;overflow:hidden}.absolute{position:absolute}.fixed{position:fixed}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0}.inset-x-0{inset-inline:0}.inset-x-3{inset-inline:calc(var(--spacing) * 3)}.inset-x-5{inset-inline:calc(var(--spacing) * 5)}.inset-y-5{inset-block:calc(var(--spacing) * 5)}.-top-1{top:calc(var(--spacing) * -1)}.-top-2{top:calc(var(--spacing) * -2)}.-top-\\[6px\\]{top:-6px}.top-0{top:0}.top-1\\.5{top:calc(var(--spacing) * 1.5)}.top-1\\/2{top:50%}.top-5{top:calc(var(--spacing) * 5)}.top-\\[84px\\]{top:84px}.-right-0\\.5{right:calc(var(--spacing) * -.5)}.-right-1{right:calc(var(--spacing) * -1)}.-right-2{right:calc(var(--spacing) * -2)}.right-0{right:0}.right-1\\.5{right:calc(var(--spacing) * 1.5)}.right-2{right:calc(var(--spacing) * 2)}.right-5{right:calc(var(--spacing) * 5)}.right-6{right:calc(var(--spacing) * 6)}.right-full{right:100%}.-bottom-0\\.5{bottom:calc(var(--spacing) * -.5)}.-bottom-2{bottom:calc(var(--spacing) * -2)}.-bottom-\\[6px\\]{bottom:-6px}.bottom-2{bottom:calc(var(--spacing) * 2)}.bottom-3{bottom:calc(var(--spacing) * 3)}.bottom-4{bottom:calc(var(--spacing) * 4)}.bottom-5{bottom:calc(var(--spacing) * 5)}.-left-2{left:calc(var(--spacing) * -2)}.left-0{left:0}.left-5{left:calc(var(--spacing) * 5)}.left-full{left:100%}.z-10{z-index:10}.z-20{z-index:20}.z-30{z-index:30}.z-\\[55\\]{z-index:55}.z-\\[56\\]{z-index:56}.z-\\[57\\]{z-index:57}.z-\\[60\\]{z-index:60}.z-\\[61\\]{z-index:61}.z-\\[62\\]{z-index:62}.z-\\[65\\]{z-index:65}.z-\\[70\\]{z-index:70}.container{width:100%}@media (min-width:640px){.container{max-width:640px}}@media (min-width:768px){.container{max-width:768px}}@media (min-width:1024px){.container{max-width:1024px}}@media (min-width:1280px){.container{max-width:1280px}}@media (min-width:1536px){.container{max-width:1536px}}.mx-4{margin-inline:calc(var(--spacing) * 4)}.-mt-1{margin-top:calc(var(--spacing) * -1)}.mt-0\\.5{margin-top:calc(var(--spacing) * .5)}.mt-1{margin-top:var(--spacing)}.mt-1\\.5{margin-top:calc(var(--spacing) * 1.5)}.mt-2{margin-top:calc(var(--spacing) * 2)}.mt-2\\.5{margin-top:calc(var(--spacing) * 2.5)}.mt-3{margin-top:calc(var(--spacing) * 3)}.mt-px{margin-top:1px}.-mr-1{margin-right:calc(var(--spacing) * -1)}.mr-2{margin-right:calc(var(--spacing) * 2)}.mb-1{margin-bottom:var(--spacing)}.mb-2\\.5{margin-bottom:calc(var(--spacing) * 2.5)}.ml-1{margin-left:var(--spacing)}.ml-1\\.5{margin-left:calc(var(--spacing) * 1.5)}.ml-2{margin-left:calc(var(--spacing) * 2)}.ml-auto{margin-left:auto}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.inline-flex{display:inline-flex}.h-2\\.5{height:calc(var(--spacing) * 2.5)}.h-3{height:calc(var(--spacing) * 3)}.h-3\\.5{height:calc(var(--spacing) * 3.5)}.h-4{height:calc(var(--spacing) * 4)}.h-5{height:calc(var(--spacing) * 5)}.h-6{height:calc(var(--spacing) * 6)}.h-7{height:calc(var(--spacing) * 7)}.h-8{height:calc(var(--spacing) * 8)}.h-9{height:calc(var(--spacing) * 9)}.h-16{height:calc(var(--spacing) * 16)}.h-full{height:100%}.max-h-40{max-height:calc(var(--spacing) * 40)}.min-h-0{min-height:0}.min-h-12{min-height:calc(var(--spacing) * 12)}.w-2\\.5{width:calc(var(--spacing) * 2.5)}.w-3{width:calc(var(--spacing) * 3)}.w-3\\.5{width:calc(var(--spacing) * 3.5)}.w-4{width:calc(var(--spacing) * 4)}.w-5{width:calc(var(--spacing) * 5)}.w-6{width:calc(var(--spacing) * 6)}.w-7{width:calc(var(--spacing) * 7)}.w-8{width:calc(var(--spacing) * 8)}.w-9{width:calc(var(--spacing) * 9)}.w-16{width:calc(var(--spacing) * 16)}.w-24{width:calc(var(--spacing) * 24)}.w-\\[5\\.5rem\\]{width:88px}.w-auto{width:auto}.w-full{width:100%}.max-w-\\[50\\%\\]{max-width:50%}.max-w-\\[240px\\]{max-width:240px}.max-w-\\[320px\\]{max-width:320px}.max-w-\\[calc\\(100vw-80px\\)\\]{max-width:calc(100vw - 80px)}.max-w-full{max-width:100%}.min-w-0{min-width:0}.min-w-\\[1\\.25rem\\]{min-width:20px}.flex-1{flex:1}.shrink-0{flex-shrink:0}.-translate-y-1\\/2{--tw-translate-y:calc(calc(1 / 2 * 100%) * -1);translate:var(--tw-translate-x) var(--tw-translate-y)}.scale-110{--tw-scale-x:110%;--tw-scale-y:110%;--tw-scale-z:110%;scale:var(--tw-scale-x) var(--tw-scale-y)}.rotate-45{rotate:45deg}.rotate-90{rotate:90deg}.animate-spin{animation:var(--animate-spin)}.cursor-ew-resize{cursor:ew-resize}.cursor-grabbing{cursor:grabbing}.cursor-nesw-resize{cursor:nesw-resize}.cursor-ns-resize{cursor:ns-resize}.cursor-nwse-resize{cursor:nwse-resize}.cursor-pointer{cursor:pointer}.touch-none{touch-action:none}.resize{resize:both}.scroll-mt-3{scroll-margin-top:calc(var(--spacing) * 3)}.list-decimal{list-style-type:decimal}.list-disc{list-style-type:disc}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.place-items-center{place-items:center}.items-center{align-items:center}.items-start{align-items:flex-start}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.gap-0\\.5{gap:calc(var(--spacing) * .5)}.gap-1{gap:var(--spacing)}.gap-1\\.5{gap:calc(var(--spacing) * 1.5)}.gap-2{gap:calc(var(--spacing) * 2)}.gap-2\\.5{gap:calc(var(--spacing) * 2.5)}.gap-3{gap:calc(var(--spacing) * 3)}:where(.space-y-0\\.5>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * .5) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * .5) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-1>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(var(--spacing) * var(--tw-space-y-reverse));margin-block-end:calc(var(--spacing) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-1\\.5>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-2>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-2\\.5>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 2.5) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 2.5) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-3>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-4>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)))}.gap-x-3{column-gap:calc(var(--spacing) * 3)}:where(.-space-x-1>:not(:last-child)){--tw-space-x-reverse:0;margin-inline-start:calc(calc(var(--spacing) * -1) * var(--tw-space-x-reverse));margin-inline-end:calc(calc(var(--spacing) * -1) * calc(1 - var(--tw-space-x-reverse)))}.gap-y-3\\.5{row-gap:calc(var(--spacing) * 3.5)}.truncate{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.overflow-auto{overflow:auto}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.overscroll-contain{overscroll-behavior:contain}.rounded{border-radius:4px}.rounded-2xl{border-radius:var(--radius-2xl)}.rounded-\\[inherit\\]{border-radius:inherit}.rounded-full{border-radius:3.40282e38px}.rounded-lg{border-radius:var(--radius-lg)}.rounded-md{border-radius:var(--radius-md)}.rounded-xl{border-radius:var(--radius-xl)}.border{border-style:var(--tw-border-style);border-width:1px}.border-2{border-style:var(--tw-border-style);border-width:2px}.border-t{border-top-style:var(--tw-border-style);border-top-width:1px}.border-r{border-right-style:var(--tw-border-style);border-right-width:1px}.border-b{border-bottom-style:var(--tw-border-style);border-bottom-width:1px}.border-l{border-left-style:var(--tw-border-style);border-left-width:1px}.border-dashed{--tw-border-style:dashed;border-style:dashed}.border-amber-200{border-color:var(--color-amber-200)}.border-amber-300{border-color:var(--color-amber-300)}.border-amber-400{border-color:var(--color-amber-400)}.border-black\\/15{border-color:#00000026}@supports (color:color-mix(in lab, red, red)){.border-black\\/15{border-color:color-mix(in oklab, var(--color-black) 15%, transparent)}}.border-red-600{border-color:var(--color-red-600)}.border-transparent{border-color:#0000}.border-white{border-color:var(--color-white)}.border-zinc-200{border-color:var(--color-zinc-200)}.border-zinc-300{border-color:var(--color-zinc-300)}.border-zinc-900{border-color:var(--color-zinc-900)}.bg-amber-50{background-color:var(--color-amber-50)}.bg-amber-100{background-color:var(--color-amber-100)}.bg-amber-400{background-color:var(--color-amber-400)}.bg-amber-500{background-color:var(--color-amber-500)}.bg-amber-900{background-color:var(--color-amber-900)}.bg-emerald-50{background-color:var(--color-emerald-50)}.bg-sky-50{background-color:var(--color-sky-50)}.bg-sky-100{background-color:var(--color-sky-100)}.bg-white{background-color:var(--color-white)}.bg-white\\/90{background-color:#ffffffe6}@supports (color:color-mix(in lab, red, red)){.bg-white\\/90{background-color:color-mix(in oklab, var(--color-white) 90%, transparent)}}.bg-zinc-50{background-color:var(--color-zinc-50)}.bg-zinc-100{background-color:var(--color-zinc-100)}.bg-zinc-900{background-color:var(--color-zinc-900)}.bg-zinc-900\\/40{background-color:#18181b66}@supports (color:color-mix(in lab, red, red)){.bg-zinc-900\\/40{background-color:color-mix(in oklab, var(--color-zinc-900) 40%, transparent)}}.object-contain{object-fit:contain}.p-0\\.5{padding:calc(var(--spacing) * .5)}.p-1{padding:var(--spacing)}.p-2{padding:calc(var(--spacing) * 2)}.p-2\\.5{padding:calc(var(--spacing) * 2.5)}.p-3{padding:calc(var(--spacing) * 3)}.p-4{padding:calc(var(--spacing) * 4)}.px-0\\.5{padding-inline:calc(var(--spacing) * .5)}.px-1{padding-inline:var(--spacing)}.px-1\\.5{padding-inline:calc(var(--spacing) * 1.5)}.px-2{padding-inline:calc(var(--spacing) * 2)}.px-2\\.5{padding-inline:calc(var(--spacing) * 2.5)}.px-3{padding-inline:calc(var(--spacing) * 3)}.px-4{padding-inline:calc(var(--spacing) * 4)}.py-0\\.5{padding-block:calc(var(--spacing) * .5)}.py-1{padding-block:var(--spacing)}.py-1\\.5{padding-block:calc(var(--spacing) * 1.5)}.py-2{padding-block:calc(var(--spacing) * 2)}.py-2\\.5{padding-block:calc(var(--spacing) * 2.5)}.py-3{padding-block:calc(var(--spacing) * 3)}.py-5{padding-block:calc(var(--spacing) * 5)}.py-6{padding-block:calc(var(--spacing) * 6)}.pt-3{padding-top:calc(var(--spacing) * 3)}.pr-1\\.5{padding-right:calc(var(--spacing) * 1.5)}.pr-2\\.5{padding-right:calc(var(--spacing) * 2.5)}.pr-12{padding-right:calc(var(--spacing) * 12)}.pb-4{padding-bottom:calc(var(--spacing) * 4)}.pl-1{padding-left:var(--spacing)}.pl-3{padding-left:calc(var(--spacing) * 3)}.pl-4{padding-left:calc(var(--spacing) * 4)}.text-center{text-align:center}.text-left{text-align:left}.font-mono{font-family:var(--font-mono)}.font-sans{font-family:var(--font-sans)}.text-base{font-size:var(--text-base);line-height:var(--tw-leading,var(--text-base--line-height))}.text-sm{font-size:var(--text-sm);line-height:var(--tw-leading,var(--text-sm--line-height))}.text-xs{font-size:var(--text-xs);line-height:var(--tw-leading,var(--text-xs--line-height))}.text-\\[8px\\]{font-size:8px}.text-\\[10px\\]{font-size:10px}.text-\\[11px\\]{font-size:11px}.leading-none{--tw-leading:1;line-height:1}.leading-snug{--tw-leading:var(--leading-snug);line-height:var(--leading-snug)}.leading-tight{--tw-leading:var(--leading-tight);line-height:var(--leading-tight)}.font-bold{--tw-font-weight:var(--font-weight-bold);font-weight:var(--font-weight-bold)}.font-medium{--tw-font-weight:var(--font-weight-medium);font-weight:var(--font-weight-medium)}.font-normal{--tw-font-weight:var(--font-weight-normal);font-weight:var(--font-weight-normal)}.font-semibold{--tw-font-weight:var(--font-weight-semibold);font-weight:var(--font-weight-semibold)}.tracking-tight{--tw-tracking:var(--tracking-tight);letter-spacing:var(--tracking-tight)}.tracking-wide{--tw-tracking:var(--tracking-wide);letter-spacing:var(--tracking-wide)}.break-words{overflow-wrap:break-word}.break-all{word-break:break-all}.whitespace-nowrap{white-space:nowrap}.whitespace-pre-line{white-space:pre-line}.whitespace-pre-wrap{white-space:pre-wrap}.text-amber-50{color:var(--color-amber-50)}.text-amber-700{color:var(--color-amber-700)}.text-amber-800{color:var(--color-amber-800)}.text-amber-900{color:var(--color-amber-900)}.text-amber-950{color:var(--color-amber-950)}.text-emerald-800{color:var(--color-emerald-800)}.text-emerald-900{color:var(--color-emerald-900)}.text-red-700{color:var(--color-red-700)}.text-sky-900{color:var(--color-sky-900)}.text-white{color:var(--color-white)}.text-white\\/80{color:#fffc}@supports (color:color-mix(in lab, red, red)){.text-white\\/80{color:color-mix(in oklab, var(--color-white) 80%, transparent)}}.text-zinc-300{color:var(--color-zinc-300)}.text-zinc-500{color:var(--color-zinc-500)}.text-zinc-600{color:var(--color-zinc-600)}.text-zinc-700{color:var(--color-zinc-700)}.text-zinc-800{color:var(--color-zinc-800)}.text-zinc-900{color:var(--color-zinc-900)}.capitalize{text-transform:capitalize}.uppercase{text-transform:uppercase}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,)}.underline{text-decoration-line:underline}.underline-offset-2{text-underline-offset:2px}.accent-zinc-900{accent-color:var(--color-zinc-900)}.opacity-0{opacity:0}.opacity-25{opacity:.25}.opacity-70{opacity:.7}.shadow{--tw-shadow:0 1px 3px 0 var(--tw-shadow-color,#0000001a), 0 1px 2px -1px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.shadow-2xl{--tw-shadow:0 25px 50px -12px var(--tw-shadow-color,#00000040);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px var(--tw-shadow-color,#0000001a), 0 4px 6px -4px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px var(--tw-shadow-color,#0000001a), 0 2px 4px -2px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 3px 0 var(--tw-shadow-color,#0000001a), 0 1px 2px -1px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px var(--tw-shadow-color,#0000001a), 0 8px 10px -6px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.ring-1{--tw-ring-shadow:var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.ring-2{--tw-ring-shadow:var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.ring-white{--tw-ring-color:var(--color-white)}.ring-zinc-900{--tw-ring-color:var(--color-zinc-900)}.ring-offset-1{--tw-ring-offset-width:1px;--tw-ring-offset-shadow:var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color)}.outline{outline-style:var(--tw-outline-style);outline-width:1px}.invert{--tw-invert:invert(100%);filter:var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,)}.filter{filter:var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);backdrop-filter:var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,)}.transition-\\[color\\,background-color\\,box-shadow\\,scale\\]{transition-property:color,background-color,box-shadow,scale;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.transition-colors{transition-property:color,background-color,border-color,outline-color,text-decoration-color,fill,stroke,--tw-gradient-from,--tw-gradient-via,--tw-gradient-to;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.transition-shadow{transition-property:box-shadow;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.transition-transform{transition-property:transform,translate,scale,rotate;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.duration-700{--tw-duration:.7s;transition-duration:.7s}.ease-in-out{--tw-ease:var(--ease-in-out);transition-timing-function:var(--ease-in-out)}.select-none{-webkit-user-select:none;user-select:none}.placeholder\\:text-zinc-500::placeholder{color:var(--color-zinc-500)}@media (hover:hover){.hover\\:border-zinc-900:hover{border-color:var(--color-zinc-900)}.hover\\:bg-amber-200:hover{background-color:var(--color-amber-200)}.hover\\:bg-white:hover{background-color:var(--color-white)}.hover\\:bg-zinc-50:hover{background-color:var(--color-zinc-50)}.hover\\:bg-zinc-100:hover{background-color:var(--color-zinc-100)}.hover\\:bg-zinc-200:hover{background-color:var(--color-zinc-200)}.hover\\:bg-zinc-400\\/30:hover{background-color:#9f9fa94d}@supports (color:color-mix(in lab, red, red)){.hover\\:bg-zinc-400\\/30:hover{background-color:color-mix(in oklab, var(--color-zinc-400) 30%, transparent)}}.hover\\:bg-zinc-700:hover{background-color:var(--color-zinc-700)}.hover\\:text-amber-950:hover{color:var(--color-amber-950)}.hover\\:text-zinc-900:hover{color:var(--color-zinc-900)}.hover\\:no-underline:hover{text-decoration-line:none}.hover\\:opacity-100:hover{opacity:1}}.focus\\:outline-none:focus{--tw-outline-style:none;outline-style:none}.focus-visible\\:ring-2:focus-visible{--tw-ring-shadow:var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.focus-visible\\:ring-amber-900:focus-visible{--tw-ring-color:var(--color-amber-900)}.focus-visible\\:ring-white:focus-visible{--tw-ring-color:var(--color-white)}.focus-visible\\:ring-zinc-900:focus-visible{--tw-ring-color:var(--color-zinc-900)}.focus-visible\\:ring-offset-1:focus-visible{--tw-ring-offset-width:1px;--tw-ring-offset-shadow:var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color)}.focus-visible\\:ring-offset-2:focus-visible{--tw-ring-offset-width:2px;--tw-ring-offset-shadow:var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color)}.focus-visible\\:outline-none:focus-visible{--tw-outline-style:none;outline-style:none}.focus-visible\\:ring-inset:focus-visible{--tw-ring-inset:inset}.disabled\\:cursor-default:disabled{cursor:default}.disabled\\:opacity-35:disabled{opacity:.35}.disabled\\:opacity-45:disabled{opacity:.45}.disabled\\:opacity-50:disabled{opacity:.5}@media (hover:hover){.disabled\\:hover\\:border-zinc-300:disabled:hover{border-color:var(--color-zinc-300)}.disabled\\:hover\\:bg-transparent:disabled:hover{background-color:#0000}}@media (prefers-reduced-motion:reduce){.motion-reduce\\:animate-none{animation:none}.motion-reduce\\:transition-none{transition-property:none}}@media (min-width:1200px){.min-\\[1200px\\]\\:top-\\[27px\\]{top:27px}.min-\\[1200px\\]\\:right-4{right:calc(var(--spacing) * 4)}}@media (min-width:640px){.sm\\:inline{display:inline}}@container (min-width:380px){.\\@min-\\[380px\\]\\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}@container (min-width:400px){.\\@min-\\[400px\\]\\:inline{display:inline}}@container (min-width:460px){.\\@min-\\[460px\\]\\:inline{display:inline}.\\@min-\\[460px\\]\\:h-10{height:calc(var(--spacing) * 10)}.\\@min-\\[460px\\]\\:min-h-0{min-height:0}.\\@min-\\[460px\\]\\:flex-row{flex-direction:row}.\\@min-\\[460px\\]\\:justify-start{justify-content:flex-start}.\\@min-\\[460px\\]\\:gap-1\\.5{gap:calc(var(--spacing) * 1.5)}.\\@min-\\[460px\\]\\:truncate{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.\\@min-\\[460px\\]\\:px-2\\.5{padding-inline:calc(var(--spacing) * 2.5)}.\\@min-\\[460px\\]\\:py-0{padding-block:0}.\\@min-\\[460px\\]\\:text-left{text-align:left}.\\@min-\\[460px\\]\\:text-xs{font-size:var(--text-xs);line-height:var(--tw-leading,var(--text-xs--line-height))}}@container (min-width:520px){.\\@min-\\[520px\\]\\:ml-auto{margin-left:auto}.\\@min-\\[520px\\]\\:w-auto{width:auto}.\\@min-\\[520px\\]\\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.\\@min-\\[520px\\]\\:justify-start{justify-content:flex-start}}}:host{all:initial}.cbm-dark{color-scheme:dark;--color-white:oklch(21% .006 285.885);--color-zinc-50:oklch(24.5% .006 286);--color-zinc-100:oklch(27.4% .006 286.033);--color-zinc-200:oklch(33% .01 285.9);--color-zinc-300:oklch(42% .015 285.8);--color-zinc-400:oklch(52% .016 285.9);--color-zinc-500:oklch(68% .015 286.067);--color-zinc-600:oklch(74% .012 286);--color-zinc-700:oklch(82% .008 286.2);--color-zinc-800:oklch(88% .006 286.3);--color-zinc-900:oklch(96.7% .001 286.375);--color-zinc-950:oklch(98.5% 0 0);--color-amber-50:oklch(27.9% .077 45.635);--color-amber-100:oklch(33% .09 46);--color-amber-200:oklch(41.4% .112 45.904);--color-amber-300:oklch(55.5% .163 48.998);--color-amber-700:oklch(87.9% .169 91.605);--color-amber-800:oklch(92.4% .12 95.746);--color-amber-900:oklch(96.2% .059 95.617);--color-amber-950:oklch(98.7% .022 95.277);--color-emerald-50:oklch(26.2% .051 172.552);--color-emerald-800:oklch(90.5% .093 164.15);--color-emerald-900:oklch(95% .052 163.051);--color-sky-50:oklch(29.3% .066 243.157);--color-sky-100:oklch(39.1% .09 240.876);--color-sky-900:oklch(95.1% .026 236.824);--color-red-600:oklch(70.4% .191 22.216);--color-red-700:oklch(80.8% .114 19.571)}.cbm-dark *{--tw-ring-offset-color:oklch(21% .006 285.885)}.theme-scroll{--cbm-thumb:var(--color-primary,oklch(55.2% .016 285.938))}@supports (color:color-mix(in lab, red, red)){.theme-scroll{--cbm-thumb:color-mix(in srgb, var(--color-primary,var(--color-zinc-500)) 55%, var(--color-white))}}.theme-scroll{--cbm-thumb-hover:var(--color-primary,oklch(55.2% .016 285.938))}@supports (color:color-mix(in lab, red, red)){.theme-scroll{--cbm-thumb-hover:color-mix(in srgb, var(--color-primary,var(--color-zinc-500)) 80%, var(--color-white))}}.theme-scroll{scrollbar-width:thin;scrollbar-color:var(--cbm-thumb) transparent}.theme-scroll:hover{scrollbar-color:var(--cbm-thumb-hover) transparent}.theme-scroll::-webkit-scrollbar{width:6px}.theme-scroll::-webkit-scrollbar-track{background:0 0}.theme-scroll::-webkit-scrollbar-thumb{background:var(--cbm-thumb);border-radius:9999px}.theme-scroll:hover::-webkit-scrollbar-thumb{background:var(--cbm-thumb-hover)}.theme-panel{transform-origin:100% 0;animation:.16s ease-out theme-panel-in}@keyframes theme-panel-in{0%{opacity:0;transform:translateY(-6px)scale(.98)}}.theme-hint{animation:.12s ease-out theme-hint-in}.theme-toast{animation:.18s ease-out theme-toast-in}@keyframes theme-toast-in{0%{opacity:0;transform:translateY(8px)}}@keyframes theme-hint-in{0%{opacity:0}}.theme-arrive{animation:.62s cubic-bezier(.34,1.56,.64,1) both theme-arrive}@keyframes theme-arrive{0%{opacity:0;transform:scale(.2)rotate(-45deg)}60%{opacity:1;transform:scale(1.16)rotate(8deg)}to{transform:scale(1)rotate(0)}}.theme-burst-piece{line-height:0;animation:.95s cubic-bezier(.15,.75,.3,1) both theme-burst-piece;display:block;position:absolute;top:50%;left:50%}@keyframes theme-burst-piece{0%{opacity:0;transform:translate(-50%, -50%) rotate(var(--r)) scale(.3)}12%{opacity:1}65%{opacity:1}to{opacity:0;transform:translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(calc(var(--r) + 150deg)) scale(1)}}.theme-piece-dot{background:currentColor;border-radius:9999px;width:6px;height:6px}.theme-piece-dash{background:currentColor;border-radius:9999px;width:10px;height:3px}.theme-studio-mark{animation:9s linear infinite theme-studio-hue}@keyframes theme-studio-hue{0%{filter:hue-rotate()}to{filter:hue-rotate(360deg)}}.theme-new-mark{animation:.5s cubic-bezier(.34,1.56,.64,1) both theme-new-in}@keyframes theme-new-in{0%{transform:scale(0)rotate(-90deg)}to{transform:scale(1)rotate(0)}}@media (prefers-reduced-motion:reduce){.theme-new-mark,.theme-studio-mark,.theme-panel,.theme-hint,.theme-toast{animation:none}.theme-arrive{animation:.3s ease-out both theme-hint-in}.theme-burst{display:none}}.theme-panel summary{list-style:none}.theme-panel summary::-webkit-details-marker{display:none}.theme-panel details[open]>summary .theme-chevron{transform:rotate(90deg)}@keyframes spin{to{transform:rotate(360deg)}}";
 //#endregion
 //#region src/ThemeSwitcher.jsx
 var CORNERS = {
@@ -10021,6 +10675,8 @@ function Switcher() {
 	useEffect(() => setImageTints(settings.imageTints), [settings.imageTints, setImageTints]);
 	const [auditOn, setAuditOn] = useState(false);
 	const [picking, setPicking] = useState(false);
+	const [colourPicking, setColourPicking] = useState(false);
+	const [colourPick, setColourPick] = useState(null);
 	const [findings, setFindings] = useState([]);
 	const recheck = useCallback(() => {
 		requestAnimationFrame(() => setFindings(runAudit({ logoColouring: settingsRef.current.colourLogo })));
@@ -10232,6 +10888,20 @@ function Switcher() {
 				}
 			}
 		},
+		colourPick: {
+			picking: colourPicking,
+			result: colourPick,
+			start() {
+				setOpen(false);
+				setColourPicking(true);
+			},
+			/** Changes the job the picked color does (brand, background, text, card, tint). */
+			setRole: (role) => setColourPick((p) => p ? {
+				...p,
+				role
+			} : p),
+			clear: () => setColourPick(null)
+		},
 		studio: {
 			picking,
 			start() {
@@ -10305,7 +10975,7 @@ function Switcher() {
 				/* @__PURE__ */ jsxs("button", {
 					ref: buttonRef,
 					type: "button",
-					"aria-label": `colorsbymax theme settings${issues.length ? ` (${issues.length} contrast issues)` : ""}${updates.unseen ? " (something new in the bell)" : ""}`,
+					"aria-label": `Kamiliyon theme settings${issues.length ? ` (${issues.length} contrast issues)` : ""}`,
 					"aria-haspopup": "dialog",
 					"aria-expanded": open,
 					"aria-controls": "theme-panel",
@@ -10335,7 +11005,6 @@ function Switcher() {
 							tokens,
 							animate: settings.animateDot
 						}),
-						updates.unseen && /* @__PURE__ */ jsx(NewMark, { className: "-top-1 -left-1" }),
 						bursting && /* @__PURE__ */ jsx(Burst, { tokens }, burst),
 						hint && !open && !dragPoint && /* @__PURE__ */ jsx("span", {
 							"aria-hidden": "true",
@@ -10378,6 +11047,20 @@ function Switcher() {
 					setPicking(false);
 					setOpen(true);
 				} }),
+				colourPicking && /* @__PURE__ */ jsx(ColourPickLayer, {
+					onPick: (pick) => {
+						setColourPick({
+							...pick,
+							at: Date.now()
+						});
+						setColourPicking(false);
+						setOpen(true);
+					},
+					onCancel: () => {
+						setColourPicking(false);
+						setOpen(true);
+					}
+				}),
 				/* @__PURE__ */ jsx(TooltipLayer, { rootRef: layerRef })
 			]
 		})
@@ -10397,8 +11080,8 @@ var DOT_KEYS = [
 	"data-8"
 ];
 /**
-* The dot on the colour button: drifts through the current theme's colours, overrides
-* included, in random order. Held on the primary colour when animation is off or reduced.
+* The dot on the color button: drifts through the current theme's colors, overrides
+* included, in random order. Held on the primary color when animation is off or reduced.
 */
 function CyclingDot({ tokens, animate }) {
 	const reduceMotion = usePrefersReducedMotion();
@@ -10431,7 +11114,7 @@ function usePrefersReducedMotion() {
 }
 /**
 * Themed tooltips for the panel: anything with `data-tip` gets one on hover, or on keyboard
-* focus, drawn in the panel's own colours instead of the browser's plain tooltip. It sits
+* focus, drawn in the panel's own colors instead of the browser's plain tooltip. It sits
 * above its element (below when there's no room) and stays on screen.
 */
 function TooltipLayer({ rootRef }) {
@@ -10509,7 +11192,7 @@ function TooltipLayer({ rootRef }) {
 /** Viewport size without scrollbars: the area fixed elements are placed in. */
 /**
 * How far a bar the site pins to the top of the page (above its nav, e.g. an announcement) pushes
-* the colour button and panel down: the CSS variable --colorsbymax-offset-top on <html>, in px.
+* the color button and panel down: the CSS variable --colorsbymax-offset-top on <html>, in px.
 */
 function useTopOffset() {
 	const read = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--colorsbymax-offset-top")) || 0;

@@ -25,7 +25,7 @@ export function Community() {
               Tell Max what you think
             </h2>
             <p className="mt-3 max-w-xl leading-relaxed text-ink-secondary">
-              colorsbymax gets better with every report. Bugs, praise, ideas and questions are all welcome, and every one is read. The{' '}
+              Kamiliyon gets better with every report. Bugs, praise, ideas and questions are all welcome, and every one is read. The{' '}
               <strong className="text-ink">Feedback</strong> button in the top bar is always there too.
             </p>
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -62,7 +62,7 @@ export function Community() {
             <span className="grid h-14 w-14 place-items-center rounded-2xl bg-on-primary/15">
               <Coffee className="h-7 w-7" aria-hidden="true" />
             </span>
-            <h2 className="mt-5 font-display text-3xl font-bold tracking-tight">Enjoying colorsbymax?</h2>
+            <h2 className="mt-5 font-display text-3xl font-bold tracking-tight">Enjoying Kamiliyon?</h2>
             <p className="mt-3 leading-relaxed opacity-90">It’s free and open source, made by one designer. A coffee or a star keeps it going.</p>
             {/* Side by side where the card is wide, stacked where it's narrow; labels never wrap. */}
             <div className="mt-auto grid gap-3 pt-8 sm:grid-cols-2 lg:grid-cols-1">
@@ -103,10 +103,10 @@ export function Support() {
           <Coffee className="h-7 w-7" aria-hidden="true" />
         </span>
         <h1 className="mt-5 font-display text-5xl font-extrabold tracking-tight text-ink md:text-6xl">
-          Support <span className="text-gradient">colorsbymax</span>
+          Support <span className="text-gradient">Kamiliyon</span>
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-ink-secondary">
-          colorsbymax is free and open source, designed and built by Max Muyalwa at mrmaxdesigns. If it saved you time, here’s how to say thanks.
+          Kamiliyon is free and open source, designed and built by Max Muyalwa at mrmaxdesigns. If it saved you time, here’s how to say thanks.
         </p>
       </div>
 
@@ -133,7 +133,7 @@ export function Support() {
         <Reveal delay={90} className="flex flex-col rounded-[2rem] border border-border bg-surface p-6 text-left">
           <Star className="h-7 w-7 text-warning" aria-hidden="true" />
           <h2 className="mt-4 font-display text-xl font-bold text-ink">Star it on GitHub</h2>
-          <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-secondary">Stars help other developers find colorsbymax. It takes one click.</p>
+          <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-secondary">Stars help other developers find Kamiliyon. It takes one click.</p>
           <a href={REPO} target="_blank" rel="noopener" className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition hover:-translate-y-0.5">
             <GitHubIcon className="h-4 w-4" /> Star on GitHub
           </a>
@@ -141,7 +141,7 @@ export function Support() {
         <Reveal delay={180} className="flex flex-col rounded-[2rem] border border-border bg-surface p-6 text-left">
           <MessageSquarePlus className="h-7 w-7 text-primary-alt" aria-hidden="true" />
           <h2 className="mt-4 font-display text-xl font-bold text-ink">Send feedback</h2>
-          <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-secondary">Bugs, praise, ideas and questions all make colorsbymax better.</p>
+          <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-secondary">Bugs, praise, ideas and questions all make Kamiliyon better.</p>
           <button type="button" onClick={() => openFeedback()} className="mt-5 inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border border-border bg-background px-4 py-2.5 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:border-primary">
             Send feedback
           </button>

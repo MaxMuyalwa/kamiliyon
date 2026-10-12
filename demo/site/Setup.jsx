@@ -3,8 +3,8 @@ import { CodeBlock, Reveal, REPO, SectionHeading, Tabs } from './ui.jsx'
 
 const FLOW = [
   { Icon: Package, title: 'Install', text: 'One package, no stylesheet to add.' },
-  { Icon: MousePointerClick, title: 'Pick', text: 'Open the colour button and try themes on your real pages.' },
-  { Icon: Rocket, title: 'Ship', text: 'Keep the colours you love as your site’s default.' },
+  { Icon: MousePointerClick, title: 'Pick', text: 'Open the color button and try themes on your real pages.' },
+  { Icon: Rocket, title: 'Ship', text: 'Keep the colors you love as your site’s default.' },
 ]
 
 function Step({ n, title, children }) {
@@ -33,9 +33,9 @@ const TABS = [
         <Step n={2} title="Add one line to your app’s entry file">
           <CodeBlock title="main.jsx" code={`import 'colorsbymax/auto'`} />
           <Note>
-            That’s all. The colour button appears once the page loads. If your site uses hard-coded colours, colorsbymax reads what’s on the page
-            and swaps each colour for its role in the chosen theme: greys follow the theme’s background and text, brand shades follow its brand,
-            and success and error colours keep their meaning.
+            That’s all. The color button appears once the page loads. If your site uses hard-coded colors, Kamiliyon reads what’s on the page
+            and swaps each color for its role in the chosen theme: greys follow the theme’s background and text, brand shades follow its brand,
+            and success and error colors keep their meaning.
           </Note>
         </Step>
       </ol>
@@ -46,15 +46,15 @@ const TABS = [
     icon: Layers,
     content: (
       <ol className="space-y-6">
-        <Step n={1} title="Paint your site with colour tokens">
-          <Note>Use the token variables wherever you set a colour. With Tailwind CSS v4, import the defaults and use utilities like bg-primary and text-ink:</Note>
+        <Step n={1} title="Paint your site with color tokens">
+          <Note>Use the token variables wherever you set a color. With Tailwind CSS v4, import the defaults and use utilities like bg-primary and text-ink:</Note>
           <CodeBlock
             title="app.css"
             code={`@import "tailwindcss";
 @import "colorsbymax/tokens.css";
 
 @theme static {
-  --color-primary: #5b3df5; /* your colours */
+  --color-primary: #5b3df5; /* your colors */
 }`}
           />
           <Note>With plain CSS, define the variables yourself and use var(--color-primary) and friends.</Note>
@@ -66,7 +66,7 @@ const TABS = [
 
 <ThemeProvider config={{
   siteName: 'Your site',
-  defaultTheme: { name: 'Your colours', tokens: { primary: '#5b3df5' } },
+  defaultTheme: { name: 'Your colors', tokens: { primary: '#5b3df5' } },
 }}>
   <App />
   <ThemeSwitcher />
@@ -116,7 +116,7 @@ export default function ColorsByMax() {
   import 'https://esm.sh/colorsbymax/auto'
 </script>`}
           />
-          <Note>Plain HTML sites load colorsbymax and React from a CDN. Put it before {'</body>'} on each page that should have the button.</Note>
+          <Note>Plain HTML sites load Kamiliyon and React from a CDN. Put it before {'</body>'} on each page that should have the button.</Note>
         </Step>
       </ol>
     ),
@@ -135,7 +135,7 @@ export default function ColorsByMax() {
         <Step n={2} title="Give visitors a light and dark switch">
           <CodeBlock title="your nav bar" code={'<button data-colorsbymax-mode="toggle">Light / dark</button>'} />
           <Note>
-            Put it wherever you like and style it your way: colorsbymax wires it up and remembers each visitor’s choice. It keeps working when
+            Put it wherever you like and style it your way: Kamiliyon wires it up and remembers each visitor’s choice. It keeps working when
             the switcher is hidden in production. Use "light", "dark" or "system" instead of "toggle" for buttons that set one mode.
           </Note>
         </Step>
@@ -146,7 +146,7 @@ export default function ColorsByMax() {
   filter: brightness(0.9);
 }`}
           />
-          <Note>The page is marked with the current mode, so anything colorsbymax can’t re-colour, like photos, can be adjusted.</Note>
+          <Note>The page is marked with the current mode, so anything Kamiliyon can’t re-color, like photos, can be adjusted.</Note>
         </Step>
       </ol>
     ),
@@ -157,19 +157,19 @@ export default function ColorsByMax() {
     content: (
       <ol className="space-y-6">
         <Step n={1} title="Press “I’m done” in the panel">
-          <Note>It shows your colours and three ways to finish, each with code to copy and a prompt for your AI editor.</Note>
+          <Note>It shows your colors and three ways to finish, each with code to copy and a prompt for your AI editor.</Note>
         </Step>
-        <Step n={2} title="Keep your colours and hide the switcher in production">
+        <Step n={2} title="Keep your colors and hide the switcher in production">
           <CodeBlock
             title="main.jsx"
             code={`import { autoMount } from 'colorsbymax/auto'
 
 autoMount({
-  defaultTheme: { name: 'Ocean', tokens: { /* every colour, filled in by the panel */ } },
+  defaultTheme: { name: 'Ocean', tokens: { /* every color, filled in by the panel */ } },
   hidden: import.meta.env.PROD,
 })`}
           />
-          <Note>Everyone gets your colours; the button still shows while you develop. Set hidden: false to bring it back.</Note>
+          <Note>Everyone gets your colors; the button still shows while you develop. Set hidden: false to bring it back.</Note>
         </Step>
       </ol>
     ),
@@ -181,7 +181,7 @@ export function Setup() {
     <section aria-labelledby="setup-title" id="setup" className="relative px-6 py-24">
       <div className="mx-auto max-w-6xl">
         <SectionHeading id="setup-title" eyebrow="How it works" title="Set it up your way">
-          Every colour is one of 35 tokens, exposed as CSS variables. Picking a theme sets those variables, so the whole page changes instantly,
+          Every color is one of 35 tokens, exposed as CSS variables. Picking a theme sets those variables, so the whole page changes instantly,
           with no rebuild.
         </SectionHeading>
 
@@ -203,7 +203,7 @@ export function Setup() {
         </Reveal>
 
         <Reveal className="rounded-[2rem] border border-border bg-surface/70 p-5 shadow-sm backdrop-blur md:p-8">
-          <Tabs label="Ways to set up colorsbymax" tabs={TABS} />
+          <Tabs label="Ways to set up Kamiliyon" tabs={TABS} />
           <p className="mt-8 text-sm text-ink-muted">
             Every option, the full config and the TypeScript API are in the{' '}
             <a href={REPO} className="font-semibold text-primary underline decoration-2 underline-offset-2">

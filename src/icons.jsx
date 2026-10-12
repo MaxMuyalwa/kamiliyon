@@ -62,3 +62,4 @@ export const ArrowUpLeft = icon('arrow-up-left', [["path",{"d":"M7 17V7h10"}],["
 export const ArrowDownRight = icon('arrow-down-right', [["path",{"d":"m7 7 10 10"}],["path",{"d":"M17 7v10H7"}]])
 export const Bell = icon('bell', [["path",{"d":"M10.268 21a2 2 0 0 0 3.464 0"}],["path",{"d":"M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"}]])
 export const ExternalLink = icon('external-link', [["path",{"d":"M15 3h6v6"}],["path",{"d":"M10 14 21 3"}],["path",{"d":"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"}]])
+export const Pipette = icon('pipette', [["path",{"d":"m12 9-8.414 8.414A2 2 0 0 0 3 18.828v1.344a2 2 0 0 1-.586 1.414A2 2 0 0 1 3.828 21h1.344a2 2 0 0 0 1.414-.586L15 12"}],["path",{"d":"m18 9 .4.4a1 1 0 1 1-3 3l-3.8-3.8a1 1 0 1 1 3-3l.4.4 3.4-3.4a1 1 0 1 1 3 3z"}],["path",{"d":"m2 22 .414-.414"}]])

@@ -1,12 +1,12 @@
-// The contrast guard: colorsbymax's last word on readability, on every site and in every colour
-// style. After the colours change, it checks every piece of text and every icon on the page
+// The contrast guard: Kamiliyon's last word on readability, on every site and in every color
+// style. After the colors change, it checks every piece of text and every icon on the page
 // against what it actually sits on (its own background and every see-through one behind it, or
-// the colours of a gradient), and fixes any that the theme made hard to read.
+// the colors of a gradient), and fixes any that the theme made hard to read.
 //
 // Every pair is brought up to the WCAG target (4.5:1 for text, 3:1 for large text and icons): its
-// own colour made lighter or darker first, so status colours keep their meaning, else the theme
-// colour closest to it, else black or white. Anything marked data-colorsbymax-contrast="keep" (an
-// example of poor contrast, say) is left alone, as are hidden, disabled and decorative parts. It runs when the colours or the page's content change,
+// own color made lighter or darker first, so status colors keep their meaning, else the theme
+// color closest to it, else black or white. Anything marked data-colorsbymax-contrast="keep" (an
+// example of poor contrast, say) is left alone, as are hidden, disabled and decorative parts. It runs when the colors or the page's content change,
 // never while the page scrolls, so it costs nothing in between.
 
 import { contrastRatio, deltaE, lightness, withLightness } from './color.js'
@@ -24,7 +24,7 @@ const hex = (rgb) => `#${rgb.map((n) => Math.round(Math.min(255, Math.max(0, n))
 const over = ([r, g, b, a], under) => under.map((u, i) => [r, g, b][i] * a + u * (1 - a))
 const hasGradient = (cs) => cs.backgroundImage && cs.backgroundImage !== 'none' && /gradient/.test(cs.backgroundImage)
 
-/** Elements that hold words of their own, and icons drawn in the text colour. */
+/** Elements that hold words of their own, and icons drawn in the text color. */
 function holders() {
   const out = []
   const seen = new Set()
@@ -51,8 +51,8 @@ function holders() {
 }
 
 /**
- * The solid colours an element's text could sit on: its background with every see-through one
- * behind it laid over each other, or each colour of a gradient behind it.
+ * The solid colors an element's text could sit on: its background with every see-through one
+ * behind it laid over each other, or each color of a gradient behind it.
  */
 function backgroundsOf(el, cache) {
   if (cache.has(el)) return cache.get(el)
@@ -84,7 +84,7 @@ function behind(el, cache) {
  * The element whose solid fill a piece of text sits on (a button, a pill), or null when it's on the
  * page itself, a gradient or see-through layers. Light text on such a fill is kept light, and the
  * fill deepened, rather than the text turned dark: what a designer would do, and what the
- * re-colouring engine does with any other theme.
+ * re-coloring engine does with any other theme.
  */
 function fillOwner(el) {
   for (let node = el; node && node !== document.body && node !== document.documentElement; ) {
@@ -101,7 +101,7 @@ function fillOwner(el) {
   return null
 }
 
-/** How readable each element is right now: its worst ratio, what it needs, its colour and backgrounds. */
+/** How readable each element is right now: its worst ratio, what it needs, its color and backgrounds. */
 function readAll(elements) {
   const cache = new Map()
   const out = new Map()
@@ -119,7 +119,7 @@ function readAll(elements) {
   return out
 }
 
-/** Reads with transitions held, so colours that animate report where they're going. */
+/** Reads with transitions held, so colors that animate report where they're going. */
 function steady(fn) {
   const freeze = document.createElement('style')
   freeze.textContent = '*,*::before,*::after{transition:none!important}'
@@ -132,9 +132,9 @@ function steady(fn) {
 }
 
 /**
- * The colour a hard-to-read element should take. Its own colour first, made lighter or darker
+ * The color a hard-to-read element should take. Its own color first, made lighter or darker
  * until it reads, so a green "Paid" stays green and a red "Failed" red; else the theme's nearest
- * colour that reads, else the strongest.
+ * color that reads, else the strongest.
  */
 function fixFor({ text, bgs }, target, tokens) {
   const worstOf = (c) => Math.min(...bgs.map((bg) => contrastRatio(c, bg)))
@@ -226,7 +226,7 @@ export function createGuard() {
   }
   document.addEventListener('click', afterClick, true)
 
-  // New content is checked as it appears, and so is a part of the page that sets colour variables
+  // New content is checked as it appears, and so is a part of the page that sets color variables
   // of its own (a theme preview, say). Other class and style changes (scroll effects) aren't.
   const isOurs = (node) => node.closest?.('colorsbymax-root, [data-colorsbymax]')
   const observer = new MutationObserver((records) => {
@@ -242,7 +242,7 @@ export function createGuard() {
   window.addEventListener('load', schedule)
 
   return {
-    /** Checks the page soon against these colours (the ones the page now shows). */
+    /** Checks the page soon against these colors (the ones the page now shows). */
     check(next) {
       tokens = next
       schedule()

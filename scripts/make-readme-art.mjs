@@ -1,4 +1,4 @@
-// Draws the README's artwork as SVGs in docs/readme/: the hero banner, a colour-coded banner for
+// Draws the README's artwork as SVGs in docs/readme/: the hero banner, a color-coded banner for
 // each group of sections, and the matching navigation chips. The README links them from GitHub
 // so they also show on npm.
 //
@@ -23,11 +23,11 @@ const PICKS = {
 
 // Section groups: gradient from → to (both keep white text above 4.5:1), and the swatches shown.
 export const GROUPS = [
-  { id: 'start', label: 'Get started', kicker: 'Get started', title: 'Two steps to a live colour switcher', sub: 'Install it, add one line, and the colour button appears.', from: '#0d6b84', to: '#0e7490', swatches: ['#0d6b84', '#0891b2', '#67e8f9', '#dff3f8', '#122126'] },
-  { id: 'agents', label: 'Coding agents', kicker: 'Coding agents', title: 'Let Claude, Cursor or Copilot do it', sub: 'The colorsbymax MCP server sets it up, picks themes and finishes.', from: '#5b21b6', to: '#86198f', swatches: ['#5b21b6', '#7c3aed', '#c026d3', '#f0abfc', '#ede9fe'] },
+  { id: 'start', label: 'Get started', kicker: 'Get started', title: 'Two steps to a live color switcher', sub: 'Install it, add one line, and the color button appears.', from: '#0d6b84', to: '#0e7490', swatches: ['#0d6b84', '#0891b2', '#67e8f9', '#dff3f8', '#122126'] },
+  { id: 'agents', label: 'Coding agents', kicker: 'Coding agents', title: 'Let Claude, Cursor or Copilot do it', sub: 'The Kamiliyon MCP server sets it up, picks themes and finishes.', from: '#5b21b6', to: '#86198f', swatches: ['#5b21b6', '#7c3aed', '#c026d3', '#f0abfc', '#ede9fe'] },
   { id: 'inside', label: 'Features', kicker: 'What’s inside', title: 'Everything in the panel', sub: '720 themes, contrast checks, palettes from images, and an Audit.', from: '#9d174d', to: '#be185d', swatches: ['#b7175a', '#db2777', '#f9a8d4', '#fce4ef', '#2b1520'] },
-  { id: 'control', label: 'Full control', kicker: 'Full control', title: 'Paint with colour tokens', sub: 'Decide exactly which colour goes where, with 35 CSS variables.', from: '#127136', to: '#15803d', swatches: ['#127136', '#159c47', '#86efac', '#e1f3e6', '#17231b'] },
-  { id: 'ship', label: 'Ship it', kicker: 'Ship it', title: 'Keep your colours and go live', sub: 'Make your pick the default, hide the switcher, stay up to date.', from: '#9a3412', to: '#c2410c', swatches: ['#ac3a0b', '#ea580c', '#fdba74', '#fde8dc', '#2a1a12'] },
+  { id: 'control', label: 'Full control', kicker: 'Full control', title: 'Paint with color tokens', sub: 'Decide exactly which color goes where, with 35 CSS variables.', from: '#127136', to: '#15803d', swatches: ['#127136', '#159c47', '#86efac', '#e1f3e6', '#17231b'] },
+  { id: 'ship', label: 'Ship it', kicker: 'Ship it', title: 'Keep your colors and go live', sub: 'Make your pick the default, hide the switcher, stay up to date.', from: '#9a3412', to: '#c2410c', swatches: ['#ac3a0b', '#ea580c', '#fdba74', '#fde8dc', '#2a1a12'] },
   { id: 'hood', label: 'Under the hood', kicker: 'Under the hood', title: 'Build, regenerate, contribute', sub: 'How the package, panel styles and theme library are built.', from: '#1e293b', to: '#475569', swatches: ['#334155', '#64748b', '#94a3b8', '#e2e8f0', '#0f172a'] },
 ]
 
@@ -73,7 +73,7 @@ GROUPS.forEach((g, i) => {
 
 // ---------------------------------------------------------------- hero
 
-/** A small web page painted in one theme, for the hero's fan of re-coloured sites. */
+/** A small web page painted in one theme, for the hero's fan of re-colored sites. */
 const miniSite = ([primary, alt, tint, bg, ink], x, y, angle) => `
   <g transform="rotate(${angle} ${x + 120} ${y + 85})">
     <rect x="${x}" y="${y + 6}" width="240" height="170" rx="14" fill="#000000" opacity="0.28"/>
@@ -91,7 +91,7 @@ const miniSite = ([primary, alt, tint, bg, ink], x, y, angle) => `
     <rect x="${x + 124}" y="${y + 134}" width="98" height="24" rx="7" fill="${tint}"/>
   </g>`
 
-// The colour button: a ring of the picks' primaries around a white dot.
+// The color button: a ring of the picks' primaries around a white dot.
 const button = (cx, cy) => {
   const colours = Object.values(PICKS).map((p) => p[1])
   const r = 24
@@ -127,11 +127,11 @@ const hero = `
     ${miniSite(PICKS.ocean, 548, 96, -2)}
     ${button(810, 246)}
   </g>
-  <text x="46" y="92" ${FONT} font-size="54" font-weight="800" fill="#ffffff" letter-spacing="-1">colorsbymax</text>
-  <text x="48" y="122" ${FONT} font-size="15" font-weight="600" letter-spacing="1.5" fill="#cbd5e1">BY MRMAXDESIGNS</text>
-  <text x="48" y="170" ${FONT} font-size="25" font-weight="700" fill="#ffffff">Re-colour any website, live.</text>
+  <text x="46" y="92" ${FONT} font-size="54" font-weight="800" fill="#ffffff" letter-spacing="-1">Kamiliyon</text>
+  <text x="48" y="122" ${FONT} font-size="15" font-weight="600" letter-spacing="1.5" fill="#cbd5e1">COLORSBYMAX · BY MRMAXDESIGNS</text>
+  <text x="48" y="170" ${FONT} font-size="25" font-weight="700" fill="#ffffff">Re-color any website, live.</text>
   <text x="48" y="200" ${FONT} font-size="15" fill="#e2e8f0">720 themes · WCAG contrast checks · works with your coding agent</text>
   ${strip}`
-writeFileSync(new URL('hero.svg', dir), svg(880, 300, hero, 'colorsbymax by mrmaxdesigns: re-colour any website, live.'))
+writeFileSync(new URL('hero.svg', dir), svg(880, 300, hero, 'Kamiliyon (colorsbymax) by mrmaxdesigns: re-color any website, live.'))
 
 console.log(`Wrote docs/readme/: hero.svg, ${GROUPS.length} section banners and ${GROUPS.length} nav chips`)

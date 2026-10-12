@@ -1,10 +1,10 @@
 # Third-party notices
 
-colorsbymax includes material from the following projects. Their licences require these notices to ship with every copy of the product.
+Kamiliyon includes material from the following projects. Their licences require these notices to ship with every copy of the product.
 
 ## nice-color-palettes
 
-The theme library (`src/library.generated.json`) is generated from the palettes in [nice-color-palettes](https://github.com/Jam3/nice-color-palettes), which collects top community palettes from ColourLovers.com. colorsbymax adapts each palette into a full theme and adjusts colours to pass contrast checks.
+The theme library (`src/library.generated.json`) is generated from the palettes in [nice-color-palettes](https://github.com/Jam3/nice-color-palettes), which collects top community palettes from ColourLovers.com. Kamiliyon adapts each palette into a full theme and adjusts colors to pass contrast checks.
 
 ```
 The MIT License (MIT)

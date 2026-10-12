@@ -1,4 +1,4 @@
-// The feedback inbox: every report Max's sites' feedback forms send (colorsbymax, and later
+// The feedback inbox: every report Max's sites' feedback forms send (Kamiliyon, and later
 // mrmaxdesigns.com), kept in one PRIVATE GitHub repo, never a public one: reports hold people's
 // names, emails and screenshots. One folder per report: report.json, which says which site it
 // came from, plus each screenshot as a file beside it.

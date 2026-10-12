@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { AlertTriangle, Bell, Check, ExternalLink, CheckCircle2, ChevronRight, ClipboardPaste, Copy, Download, ArrowLeft, Globe, ImageUp, Loader2, Monitor, Moon, MousePointerClick, Palette, RotateCcw, ScanLine, ScanSearch, Settings, Shuffle, Paintbrush, Sun, ToggleRight, Trash2, Upload, UserRound, Wand2, X, LibraryBig, Contrast, Minus, Plus } from './icons.jsx'
+import { AlertTriangle, Bell, Check, ExternalLink, CheckCircle2, ChevronRight, ClipboardPaste, Copy, Download, ArrowLeft, Globe, ImageUp, Loader2, Monitor, Moon, MousePointerClick, Palette, Pipette, RotateCcw, ScanLine, ScanSearch, Settings, Shuffle, Paintbrush, Sun, ToggleRight, Trash2, Upload, UserRound, Wand2, X, LibraryBig, Contrast, Minus, Plus } from './icons.jsx'
 import { normalizeHex } from './color.js'
 import { checkTheme } from './contrast.js'
 import { coloursFromFile, themeFromPalette } from './extract.js'
@@ -18,6 +18,7 @@ import { PANEL_PRESETS, useSettings } from './settings.js'
 import { linkedPages, normalPath, pageMatches, pagesPrompt, pagesSnippet } from './scope.js'
 import { PROPS, pageOf, paintsCssExport, paintsPrompt } from './studio.js'
 import { CHANGELOG_PAGE, UPDATE_COMMAND, updatePrompt } from './updates.js'
+import { PICK_ROLES, themesFromPick } from './pick.js'
 import { useTheme } from './ThemeProvider.jsx'
 import { TOKEN_GROUPS, TOKEN_LABELS } from './tokens.js'
 
@@ -60,9 +61,9 @@ function useSavedToYours() {
  */
 export default function ThemePanel({ open = true }) {
   const theme = useTheme()
-  const { settings, mode, audit, update } = useSettings()
+  const { settings, mode, audit, update, colourPick } = useSettings()
   const overrideCount = Object.keys(theme.state.overrides).length
-  // Checked by the switcher itself (it's always there), so the colour button can show the dot too.
+  // Checked by the switcher itself (it's always there), so the color button can show the dot too.
   const { updates } = useSettings()
   const [view, setView] = useState('main')
   // "Add to site" opens from Settings and the finish screen, and goes back to whichever it was.
@@ -120,7 +121,7 @@ export default function ThemePanel({ open = true }) {
   const resetToDefault = () =>
     confirmTheme(() => {
       theme.resetToDefault()
-      // In dark mode, "default" is the dark version of the site's own colours.
+      // In dark mode, "default" is the dark version of the site's own colors.
       const target = inMode(theme.defaultTheme, mode)
       if (mode === 'dark') theme.selectTheme(target.id, target)
       toast(`Back to ${target.name}, with no overrides.`)
@@ -145,9 +146,9 @@ export default function ThemePanel({ open = true }) {
           <LogoMark tokens={theme.tokens} background={mode === 'dark' ? PANEL_DARK : '#ffffff'} className="h-7 w-auto shrink-0" />
           <div>
             <h2 id="theme-panel-title" className="text-base font-semibold tracking-tight">
-              colorsbymax
+              Kamiliyon
             </h2>
-            <p className="text-[11px] text-zinc-500">by mrmaxdesigns</p>
+            <p className="text-[11px] text-zinc-500">colorsbymax</p>
           </div>
         </div>
         <div className="flex w-full items-center justify-center gap-1 @min-[520px]:ml-auto @min-[520px]:w-auto">
@@ -180,7 +181,7 @@ export default function ThemePanel({ open = true }) {
           className={`${btn} shrink-0 whitespace-nowrap px-2 ${view === 'studio' ? 'border-zinc-900 bg-zinc-100' : 'border-transparent'}`}
           aria-pressed={view === 'studio'}
           aria-label="Studio"
-          data-tip="Studio: go deeper and choose exactly where your colours go"
+          data-tip="Studio: go deeper and choose exactly where your colors go"
         >
           <StudioMark className="w-4 h-4" />
           Studio
@@ -193,10 +194,10 @@ export default function ThemePanel({ open = true }) {
           className={`${btn} relative px-1.5 ${view === 'updates' ? 'border-zinc-900 bg-zinc-100' : 'border-transparent'}`}
           aria-label={updates.unseen ? 'What’s new (something new)' : 'What’s new'}
           aria-pressed={view === 'updates'}
-          data-tip={updates.update ? `colorsbymax ${updates.latest} is out` : 'What’s new'}
+          data-tip={updates.update ? `Kamiliyon ${updates.latest} is out` : 'What’s new'}
         >
           <Bell className="w-4 h-4" aria-hidden="true" />
-          {updates.unseen && <NewMark className="top-0 right-0" />}
+          {updates.unseen && <NewMark colour={theme.tokens.primary} className="top-0 right-0" />}
         </button>
         )}
         {/* Audit lives in Studio; a site that switches Studio off keeps it up here. */}
@@ -206,7 +207,7 @@ export default function ThemePanel({ open = true }) {
           onClick={audit.toggle}
           className={`${btn} px-2 ${audit.on ? 'border-zinc-900 bg-zinc-100' : 'border-transparent'}`}
           aria-pressed={audit.on}
-          data-tip="Audit the page: point out what won’t look right with these colours"
+          data-tip="Audit the page: point out what won’t look right with these colors"
         >
           <ScanSearch className="w-4 h-4" aria-hidden="true" />
           Audit
@@ -237,12 +238,12 @@ export default function ThemePanel({ open = true }) {
       {!theme.inScope && (
         <div className="mx-4 mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
           <p>
-            <strong className="font-semibold">This page keeps its own colours.</strong> The theme only goes on{' '}
+            <strong className="font-semibold">This page keeps its own colors.</strong> The theme only goes on{' '}
             {theme.scope.pages.length === 1 ? 'one page' : `${theme.scope.pages.length} pages`} of your site.
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
             <button type="button" className={btnPrimary} onClick={() => theme.setScope({ mode: 'pages', pages: [...theme.scope.pages, theme.pathname] })}>
-              Colour this page too
+              Color this page too
             </button>
             {theme.features.studio && (
               <button type="button" className={btn} onClick={(e) => showView('studio', e.currentTarget)}>
@@ -255,20 +256,25 @@ export default function ThemePanel({ open = true }) {
       <ContrastNav.Provider value={(from) => showView('contrast', from)}>
       {/* Every section starts folded, so a first look isn't overwhelming; each opens with a tap. */}
       {(theme.features.colourStyle || theme.features.scan) && (
-        <Section title={theme.features.colourStyle ? 'Colour style' : 'Scan site'} badge={theme.features.colourStyle ? COLOUR_STYLES.find((c) => c.id === settings.colourStyle)?.label : null}>
+        <Section title={theme.features.colourStyle ? 'Color style' : 'Scan site'} badge={theme.features.colourStyle ? COLOUR_STYLES.find((c) => c.id === settings.colourStyle)?.label : null}>
           <StyleAndScan />
         </Section>
       )}
       <Section title="Preset themes" badge={theme.active.name} wideBadge>
         <PresetGrid />
       </Section>
+      {theme.features.picker && (
+        <Section title="Color picker" badge={colourPick?.result?.colour ?? null}>
+          <PickFromSite />
+        </Section>
+      )}
       {settings.showCustom && (
         <Section title="Custom palettes">
           <CustomPalettes />
         </Section>
       )}
       {settings.showOverrides && (
-        <Section title="Override a single colour" badge={overrideCount ? `${overrideCount} active` : null}>
+        <Section title="Override a single color" badge={overrideCount ? `${overrideCount} active` : null}>
           <Overrides />
         </Section>
       )}
@@ -301,7 +307,7 @@ export default function ThemePanel({ open = true }) {
           askedRef.current = always
           themeAsk.run()
           setThemeAsk(null)
-          toast(`Kept your ${paintCount} Studio ${paintCount === 1 ? 'change' : 'changes'}. Theme colours in them follow the new theme.`)
+          toast(`Kept your ${paintCount} Studio ${paintCount === 1 ? 'change' : 'changes'}. Theme colors in them follow the new theme.`)
         }}
         onClear={(always) => {
           askedRef.current = always
@@ -319,7 +325,7 @@ export default function ThemePanel({ open = true }) {
 
 /**
  * Asked before another theme replaces the one Studio changes were made on: keep them (their theme
- * colours follow the new theme; colours picked by hand stay as they are) or clear them.
+ * colors follow the new theme; colors picked by hand stay as they are) or clear them.
  */
 function StudioChangesAsk({ count, onKeep, onClear, onCancel }) {
   const [always, setAlways] = useState(false)
@@ -336,7 +342,7 @@ function StudioChangesAsk({ count, onKeep, onClear, onCancel }) {
           </h3>
         </div>
         <p className="text-xs leading-snug text-zinc-600">
-          Keep them on the new theme, or clear them and see the theme as it is? Kept changes that use theme colours take the new theme’s colours; ones you
+          Keep them on the new theme, or clear them and see the theme as it is? Kept changes that use theme colors take the new theme’s colors; ones you
           picked by hand stay exactly as they are.
         </p>
         <div className="grid gap-2">
@@ -446,7 +452,7 @@ function ModeToggleView({ onBack }) {
       </h3>
       <p className="text-xs text-zinc-600">
         Every theme has a dark version, so your whole site can switch, even if it never had a dark mode. Put a switch in your top bar and
-        visitors can choose; colorsbymax does the rest and remembers their choice. It keeps working when the colour button is hidden.
+        visitors can choose; Kamiliyon does the rest and remembers their choice. It keeps working when the color button is hidden.
       </p>
 
       <div className="flex items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-zinc-50 p-3">
@@ -506,7 +512,7 @@ function ModeToggleView({ onBack }) {
         <CopyBlock label="Or ask Claude, Cursor or Copilot" text={TOGGLE_PROMPT} copyLabel="Copy prompt" />
       </div>
       <p className="rounded-lg bg-zinc-100 p-2.5 text-[11px] text-zinc-700">
-        <strong className="font-semibold text-zinc-900">Already have a dark mode?</strong> You don’t need this. The theme you pick colours your
+        <strong className="font-semibold text-zinc-900">Already have a dark mode?</strong> You don’t need this. The theme you pick colors your
         site well in light and dark, with contrast checked in both.
       </p>
     </div>
@@ -515,7 +521,7 @@ function ModeToggleView({ onBack }) {
 
 // ---------------------------------------------------------------- Studio
 
-/** Studio's mark: the parts of a page (header, hero, cards), each in its own colour, cycling. */
+/** Studio's mark: the parts of a page (header, hero, cards), each in its own color, cycling. */
 function StudioMark({ className = '' }) {
   return (
     <svg viewBox="0 0 24 24" className={`theme-studio-mark shrink-0 ${className}`} aria-hidden="true">
@@ -529,12 +535,12 @@ function StudioMark({ className = '' }) {
 
 const WHERE = [
   { id: 'all', label: 'Whole site', note: 'Every page takes the theme.' },
-  { id: 'pages', label: 'Only some pages', note: 'The rest keep their own colours.' },
+  { id: 'pages', label: 'Only some pages', note: 'The rest keep their own colors.' },
 ]
 
 /**
  * Studio: going deeper than a theme. Point and click any part of the page to give it its own
- * colours, and choose where the theme goes: the whole site or only some of its pages, read from
+ * colors, and choose where the theme goes: the whole site or only some of its pages, read from
  * the site itself (the pages this one links to, and the ones the visitor has opened). Choices live
  * on this device; the prompt, CSS and config make them everyone's.
  */
@@ -558,7 +564,7 @@ function StudioView({ onBack }) {
   const add = (page) => {
     if (pages.includes(page)) return
     setPages([...pages, page])
-    toast(`${page} now gets the colours.`)
+    toast(`${page} now gets the colors.`)
   }
   const remove = (page) => setPages(pages.filter((p) => p !== page))
   const covering = pages.find((p) => p !== pathname && pageMatches(p, pathname))
@@ -585,7 +591,7 @@ function StudioView({ onBack }) {
           <h3 ref={headingRef} tabIndex={-1} className="text-base font-semibold tracking-tight focus:outline-none">
             Studio
           </h3>
-          <p className="text-xs text-zinc-600">Go deeper than a theme: colour any part of your site, and choose exactly where your colours go.</p>
+          <p className="text-xs text-zinc-600">Go deeper than a theme: color any part of your site, and choose exactly where your colors go.</p>
         </div>
       </div>
 
@@ -595,7 +601,7 @@ function StudioView({ onBack }) {
             <MousePointerClick className="w-4 h-4" aria-hidden="true" />
           </span>
           <div className="min-w-0">
-            <h4 className="text-xs font-semibold text-zinc-900">Colour any part of the page</h4>
+            <h4 className="text-xs font-semibold text-zinc-900">Color any part of the page</h4>
             <p className="text-[11px] leading-snug text-zinc-600">
               Point and click a button, a card, a heading, the footer, anything, and give it its own background, text and border. Every part like it
               can change at once.
@@ -616,7 +622,7 @@ function StudioView({ onBack }) {
             <div className="min-w-0">
               <h4 className="text-xs font-semibold text-zinc-900">Check the page</h4>
               <p className="text-[11px] leading-snug text-zinc-600">
-                Audit points out what won’t look right in these colours: a logo that disappears, a picture whose background shows as a box, text too
+                Audit points out what won’t look right in these colors: a logo that disappears, a picture whose background shows as a box, text too
                 faint to read. The notes stay on the page until you close them.
               </p>
             </div>
@@ -630,7 +636,7 @@ function StudioView({ onBack }) {
       <StudioChanges />
 
       <section aria-labelledby={`${inputId}-where`} className="space-y-3 rounded-xl border border-zinc-200 p-3">
-        <h4 id={`${inputId}-where`} className="text-xs font-semibold text-zinc-900">Where the colours go</h4>
+        <h4 id={`${inputId}-where`} className="text-xs font-semibold text-zinc-900">Where the colors go</h4>
         <div role="radiogroup" aria-labelledby={`${inputId}-where`} className="grid grid-cols-2 gap-2">
           {WHERE.map((w) => {
             const on = scope.mode === w.id
@@ -659,7 +665,7 @@ function StudioView({ onBack }) {
             <p className="truncate font-mono text-[11px] font-semibold text-zinc-900">{pathname}</p>
           </div>
           <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${here ? 'bg-emerald-50 text-emerald-900' : 'bg-amber-50 text-amber-900'}`}>
-            {here ? 'Gets the colours' : 'Keeps its own colours'}
+            {here ? 'Gets the colors' : 'Keeps its own colors'}
           </span>
           {onlySome && (
             <div className="w-full">
@@ -673,7 +679,7 @@ function StudioView({ onBack }) {
                 </button>
               ) : (
                 <button type="button" className={`${btnPrimary} w-full`} onClick={() => add(pathname)}>
-                  Colour this page
+                  Color this page
                 </button>
               )}
             </div>
@@ -683,7 +689,7 @@ function StudioView({ onBack }) {
         {onlySome && (
           <>
             <div className="space-y-1.5">
-              <p className="text-[11px] font-semibold text-zinc-700">Pages that get the colours</p>
+              <p className="text-[11px] font-semibold text-zinc-700">Pages that get the colors</p>
               {pages.length ? (
                 <ul className="space-y-1">
                   {pages.map((p) => (
@@ -699,7 +705,7 @@ function StudioView({ onBack }) {
                   ))}
                 </ul>
               ) : (
-                <p className="rounded-lg bg-amber-50 p-2.5 text-[11px] text-amber-900">No pages yet, so the colours show nowhere. Add one below.</p>
+                <p className="rounded-lg bg-amber-50 p-2.5 text-[11px] text-amber-900">No pages yet, so the colors show nowhere. Add one below.</p>
               )}
             </div>
 
@@ -743,7 +749,7 @@ function StudioView({ onBack }) {
 
         {configPages && (
           <p className="rounded-lg bg-sky-50 p-2.5 text-[11px] text-sky-900">
-            Your site’s config colours {configPages.length === 1 ? 'one page' : `${configPages.length} pages`}: {configPages.join(', ')}.
+            Your site’s config colors {configPages.length === 1 ? 'one page' : `${configPages.length} pages`}: {configPages.join(', ')}.
             {scopeChosen && (
               <>
                 {' '}
@@ -759,7 +765,7 @@ function StudioView({ onBack }) {
       {onlySome && pages.length > 0 && (
         <section className="space-y-2">
           <p className="text-xs font-semibold text-zinc-900">Make it the same for every visitor</p>
-          <p className="text-[11px] text-zinc-600">What you choose here is saved on this device. Add this to your colorsbymax config and everyone gets it.</p>
+          <p className="text-[11px] text-zinc-600">What you choose here is saved on this device. Add this to your Kamiliyon config and everyone gets it.</p>
           <CopyBlock label="Your config" text={pagesSnippet(pages)} />
           <CopyBlock label="Or ask Claude, Cursor or Copilot" text={pagesPrompt(pages)} copyLabel="Copy prompt" />
         </section>
@@ -775,7 +781,7 @@ function StudioView({ onBack }) {
   )
 }
 
-/** What's been coloured by pointing and clicking, page by page, and how to keep it for good. */
+/** What's been colored by pointing and clicking, page by page, and how to keep it for good. */
 function StudioChanges() {
   const { paints, removePaint, clearPaints, pathname, tokens } = useTheme()
   const { studio } = useSettings()
@@ -828,7 +834,7 @@ function StudioChanges() {
         </div>
       ))}
       <button type="button" className={`${btn} w-full`} onClick={studio.start}>
-        <MousePointerClick className="w-3.5 h-3.5" aria-hidden="true" /> Colour more
+        <MousePointerClick className="w-3.5 h-3.5" aria-hidden="true" /> Color more
       </button>
 
       <div className="space-y-2 border-t border-zinc-200 pt-3">
@@ -856,7 +862,7 @@ function StudioChanges() {
         </div>
         <p className="text-[11px] text-zinc-600">
           {format === 'prompt'
-            ? 'Recommended. Paste it into Claude, Cursor or Copilot and it makes these changes in your site’s code, using your own colour settings where you have them.'
+            ? 'Recommended. Paste it into Claude, Cursor or Copilot and it makes these changes in your site’s code, using your own color settings where you have them.'
             : 'Plain CSS for your stylesheet. The selectors come from the page as it is now, so they can break if its layout changes; the prompt holds up better.'}
         </p>
         {format === 'prompt' ? (
@@ -893,7 +899,7 @@ function AddToSiteLink({ onOpen }) {
 }
 
 /**
- * The bell: a newer colorsbymax, with what changed and how to update (a command, or a prompt for an
+ * The bell: a newer Kamiliyon, with what changed and how to update (a command, or a prompt for an
  * AI editor), and Max's news. Opening it marks everything as seen.
  */
 function UpdatesView({ updates, onBack }) {
@@ -914,7 +920,7 @@ function UpdatesView({ updates, onBack }) {
       {update ? (
         <section className="space-y-3 rounded-xl border border-zinc-900 p-3">
           <div>
-            <p className="text-sm font-semibold text-zinc-900">colorsbymax {latest} is out</p>
+            <p className="text-sm font-semibold text-zinc-900">Kamiliyon {latest} is out</p>
             <p className="text-[11px] text-zinc-600">This site has {current ?? 'an older version'}.</p>
           </div>
           {notes.length > 0 && (
@@ -933,7 +939,7 @@ function UpdatesView({ updates, onBack }) {
       ) : (
         <p className="flex items-center gap-2 rounded-xl bg-emerald-50 p-3 text-xs text-emerald-900">
           <CheckCircle2 className="w-4 h-4 shrink-0" aria-hidden="true" />
-          {!checked ? 'Checking for updates…' : current ? `You’re on the latest colorsbymax, ${current}.` : 'You’re on the latest colorsbymax.'}
+          {!checked ? 'Checking for updates…' : current ? `You’re on the latest Kamiliyon, ${current}.` : 'You’re on the latest Kamiliyon.'}
         </p>
       )}
 
@@ -958,7 +964,7 @@ function UpdatesView({ updates, onBack }) {
       )}
 
       <p className="text-[11px] text-zinc-500">
-        colorsbymax checks once a day, and only shows this where you work on your site, not to its visitors.
+        Kamiliyon checks once a day, and only shows this where you work on your site, not to its visitors.
       </p>
     </div>
   )
@@ -995,19 +1001,19 @@ function CopyBlock({ label, text, copyLabel = 'Copy' }) {
 }
 
 const FINISH_OPTIONS = [
-  { id: 'keep', label: 'Keep these colours and hide it in production', note: 'Recommended. Everyone sees your colours; the button still shows while you develop.' },
+  { id: 'keep', label: 'Keep these colors and hide it in production', note: 'Recommended. Everyone sees your colors; the button still shows while you develop.' },
   { id: 'local', label: 'Hide it on this device only', note: 'Quick and undoable. Nothing changes for anyone else.' },
-  { id: 'remove', label: 'Remove colorsbymax', note: 'Uninstall it and keep the colours in your own CSS.' },
+  { id: 'remove', label: 'Remove Kamiliyon', note: 'Uninstall it and keep the colors in your own CSS.' },
 ]
 
 /**
- * After "I'm done": how to keep the chosen colours for every visitor and hide the switcher, hide it
- * here only, or remove colorsbymax, each with code and a prompt for an AI editor. Cancel goes back.
+ * After "I'm done": how to keep the chosen colors for every visitor and hide the switcher, hide it
+ * here only, or remove Kamiliyon, each with code and a prompt for an AI editor. Cancel goes back.
  */
 function FinishView({ onBack, onAddToSite }) {
   const { tokens: themeTokens, appliedTokens, colourStyle, active, recolouring } = useTheme()
   const { settings, update } = useSettings()
-  // The colours as the page shows them. Colourful keeps the theme's own and says so in the config,
+  // The colors as the page shows them. Colorful keeps the theme's own and says so in the config,
   // since its painting by role happens on the page; Subtle's mix is kept as it is.
   const tokens = colourStyle === 'colourful' ? themeTokens : appliedTokens
   const style = colourStyle === 'colourful' ? 'colourful' : 'balanced'
@@ -1023,7 +1029,7 @@ function FinishView({ onBack, onAddToSite }) {
         <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" /> Back
       </button>
       <div className="space-y-1.5">
-        <h3 ref={headingRef} tabIndex={-1} className="text-sm font-semibold focus:outline-none">Happy with your colours?</h3>
+        <h3 ref={headingRef} tabIndex={-1} className="text-sm font-semibold focus:outline-none">Happy with your colors?</h3>
         <p className="text-[11px] text-zinc-600">
           Your pick, <strong className="font-semibold text-zinc-900">{active.name}</strong>, is only saved in this browser. To show it to every visitor and keep the button out of production, put it in your code:
         </p>
@@ -1050,7 +1056,7 @@ function FinishView({ onBack, onAddToSite }) {
 
       {choice === 'keep' && (
         <div className="space-y-3">
-          <div role="radiogroup" aria-label="How colorsbymax is set up" className="grid grid-cols-2 gap-2">
+          <div role="radiogroup" aria-label="How Kamiliyon is set up" className="grid grid-cols-2 gap-2">
             {[
               ['auto', 'One-line import'],
               ['provider', 'ThemeProvider'],
@@ -1084,7 +1090,7 @@ function FinishView({ onBack, onAddToSite }) {
       {choice === 'local' && (
         <div className="space-y-2">
           <p className="text-[11px] text-zinc-600">
-            Hides the colour button in this browser only, and keeps showing your current colours here. It doesn’t change your code or what anyone else sees.
+            Hides the color button in this browser only, and keeps showing your current colors here. It doesn’t change your code or what anyone else sees.
           </p>
           <p className="rounded-lg bg-zinc-100 p-2.5 text-[11px] text-zinc-700">
             <strong className="font-semibold text-zinc-900">To bring it back:</strong> press <kbd className="font-mono">Alt</kbd>+<kbd className="font-mono">Shift</kbd>+<kbd className="font-mono">C</kbd> on the page, or open it with <code className="font-mono">?colorsbymax</code> at the end of the address.
@@ -1099,14 +1105,14 @@ function FinishView({ onBack, onAddToSite }) {
         <div className="space-y-3">
           <ol className="list-decimal space-y-1 pl-4 text-[11px] text-zinc-700">
             <li>Uninstall it: <code className="font-mono">npm uninstall colorsbymax</code></li>
-            <li>Delete its import (<code className="font-mono">import 'colorsbymax/auto'</code>, <code className="font-mono">autoMount</code>, or <code className="font-mono">ThemeProvider</code> and <code className="font-mono">ThemeSwitcher</code>) and any colorsbymax pre-paint script.</li>
+            <li>Delete its import (<code className="font-mono">import 'colorsbymax/auto'</code>, <code className="font-mono">autoMount</code>, or <code className="font-mono">ThemeProvider</code> and <code className="font-mono">ThemeSwitcher</code>) and any Kamiliyon pre-paint script.</li>
             <li>
               {recolouring
-                ? 'Keep the colours: your site’s CSS uses its own hard-coded colours, which colorsbymax was swapping as the page ran, so they need writing into your CSS. The prompt below asks your AI editor to do that.'
-                : 'Keep the colours: paste these into your global stylesheet, replacing your current --color-* values.'}
+                ? 'Keep the colors: your site’s CSS uses its own hard-coded colors, which Kamiliyon was swapping as the page ran, so they need writing into your CSS. The prompt below asks your AI editor to do that.'
+                : 'Keep the colors: paste these into your global stylesheet, replacing your current --color-* values.'}
             </li>
           </ol>
-          {!recolouring && <CopyBlock label="CSS for your colours" text={cssSnippet(appliedTokens)} />}
+          {!recolouring && <CopyBlock label="CSS for your colors" text={cssSnippet(appliedTokens)} />}
           <CopyBlock label="Or ask Claude, Cursor or Copilot" text={removePrompt(tokens, recolouring)} copyLabel="Copy prompt" />
           <p className="text-[11px] text-zinc-600">To bring it back later, install it again and follow the Quick start in the README.</p>
         </div>
@@ -1115,7 +1121,7 @@ function FinishView({ onBack, onAddToSite }) {
       {choice !== 'remove' && <AddToSiteLink onOpen={onAddToSite} />}
 
       <button type="button" className={`${btn} w-full`} onClick={onBack}>
-        Cancel, keep using colorsbymax
+        Cancel, keep using Kamiliyon
       </button>
     </div>
   )
@@ -1127,7 +1133,7 @@ const MODES = [
   { id: 'system', label: 'Auto', Icon: Monitor },
 ]
 
-/** The visitor's preferences for the panel and colour button. */
+/** The visitor's preferences for the panel and color button. */
 function SettingsView({ onBack, onAddToSite }) {
   const { settings, update, reset, resetButton } = useSettings()
   const { active, features } = useTheme()
@@ -1167,23 +1173,23 @@ function SettingsView({ onBack, onAddToSite }) {
           })}
         </div>
         <p className="text-[11px] text-zinc-600">
-          Shows every theme in light or dark colours and switches the current one to match. Auto follows your device. The panel matches too, and your own palettes stay as you made them.
+          Shows every theme in light or dark colors and switches the current one to match. Auto follows your device. The panel matches too, and your own palettes stay as you made them.
         </p>
         <AddToSiteLink onOpen={onAddToSite} />
       </fieldset>
 
       {features.colourCount && (
       <fieldset className="space-y-1.5">
-        <legend className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-zinc-600">Colours per theme</legend>
+        <legend className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-zinc-600">Colors per theme</legend>
         {/* A sample: the current theme's colours at the chosen count. */}
         <div className="flex items-center gap-3 rounded-xl border border-zinc-200 p-2.5">
           <div className="min-w-0 flex-1">
             <Swatches tokens={active.tokens} count={settings.paletteSize} />
           </div>
-          <ColourStepper value={settings.paletteSize} onChange={(n) => update({ paletteSize: n })} label="Colours every theme uses" size="md" />
+          <ColourStepper value={settings.paletteSize} onChange={(n) => update({ paletteSize: n })} label="Colors every theme uses" size="md" />
         </div>
         <p className="text-[11px] text-zinc-600">
-          How many colours every theme uses, from {MIN_COLOURS} to {MAX_COLOURS}. Fewer keeps a site calmer, with only a theme’s main colours; the ones that fit it best
+          How many colors every theme uses, from {MIN_COLOURS} to {MAX_COLOURS}. Fewer keeps a site calmer, with only a theme’s main colors; the ones that fit it best
           stay. You can still change it on any theme with − and + on its card.
         </p>
       </fieldset>
@@ -1219,10 +1225,10 @@ function SettingsView({ onBack, onAddToSite }) {
 
       <fieldset className="space-y-1">
         <legend className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-zinc-600">Show</legend>
-        {features.picks && <Toggle checked={settings.showPicks} onChange={(v) => update({ showPicks: v })} label="Max’s picks" note="Hand-tuned colorsbymax themes" />}
+        {features.picks && <Toggle checked={settings.showPicks} onChange={(v) => update({ showPicks: v })} label="Max’s picks" note="Hand-tuned Kamiliyon themes" />}
         {features.library && <Toggle checked={settings.showLibrary} onChange={(v) => update({ showLibrary: v })} label="Theme library" note="Hundreds of themes in categories, with search" />}
         {features.custom && <Toggle checked={settings.showCustom} onChange={(v) => update({ showCustom: v })} label="Custom palettes" />}
-        {features.overrides && <Toggle checked={settings.showOverrides} onChange={(v) => update({ showOverrides: v })} label="Override a single colour" />}
+        {features.overrides && <Toggle checked={settings.showOverrides} onChange={(v) => update({ showOverrides: v })} label="Override a single color" />}
         {features.importExport && <Toggle checked={settings.showImportExport} onChange={(v) => update({ showImportExport: v })} label="Import / export" />}
       </fieldset>
 
@@ -1231,22 +1237,22 @@ function SettingsView({ onBack, onAddToSite }) {
         <Toggle
           checked={settings.colourLogo}
           onChange={(v) => update({ colourLogo: v })}
-          label="Colour the logo too"
-          note="Off keeps the site’s logo in its own colours whatever the theme"
+          label="Color the logo too"
+          note="Off keeps the site’s logo in its own colors whatever the theme"
         />
       </fieldset>
 
       <fieldset className="space-y-1">
-        <legend className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-zinc-600">Colour button</legend>
+        <legend className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-zinc-600">Color button</legend>
         <Toggle checked={settings.draggable} onChange={(v) => update({ draggable: v })} label="Drag to move" note="Hold and drag the button anywhere on the screen" />
-        <Toggle checked={settings.animateDot} onChange={(v) => update({ animateDot: v })} label="Cycle the dot’s colours" note="Shows the current theme’s colours in turn" />
+        <Toggle checked={settings.animateDot} onChange={(v) => update({ animateDot: v })} label="Cycle the dot’s colors" note="Shows the current theme’s colors in turn" />
         {resetButton && (
           <button
             type="button"
             className={`${btn} mt-1 w-full`}
             onClick={() => {
               resetButton()
-              toast('Moved the colour button back to its corner.')
+              toast('Moved the color button back to its corner.')
             }}
           >
             <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" /> Move the button back to the corner
@@ -1323,7 +1329,7 @@ function ContrastView({ onBack }) {
         {issues.length === 0 ? (
           <p className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-900">
             <Check className="w-4 h-4 shrink-0" aria-hidden="true" />
-            Every colour pairing meets Web Content Accessibility Guidelines (WCAG) contrast.
+            Every color pairing meets Web Content Accessibility Guidelines (WCAG) contrast.
           </p>
         ) : (
           <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-amber-950">
@@ -1346,7 +1352,7 @@ function ContrastView({ onBack }) {
             </div>
             <p className="mt-2 text-[11px] text-amber-900">
               Text should meet the Web Content Accessibility Guidelines (WCAG) minimum of 4.5:1 (3:1 for large headlines and icons).
-              Fixing adjusts only the lightness of the colour involved.
+              Fixing adjusts only the lightness of the color involved.
             </p>
             <ul className="mt-2 space-y-1.5">
               {issues.map((issue) => (
@@ -1382,12 +1388,12 @@ function IssuesLink() {
       className="flex items-center gap-1.5 text-xs font-medium text-amber-800 underline underline-offset-2 hover:text-amber-950 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 rounded"
     >
       <AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />
-      {issues.length} contrast {issues.length === 1 ? 'problem' : 'problems'} in the current colours. Review
+      {issues.length} contrast {issues.length === 1 ? 'problem' : 'problems'} in the current colors. Review
     </button>
   )
 }
 
-/** A theme's colours as a strip: the `count` it uses (5 to 10), its most fitting ones. */
+/** A theme's colors as a strip: the `count` it uses (5 to 10), its most fitting ones. */
 function Swatches({ tokens, count = MAX_COLOURS }) {
   return (
     <div className="flex overflow-hidden rounded-md border border-zinc-200" aria-hidden="true">
@@ -1399,7 +1405,7 @@ function Swatches({ tokens, count = MAX_COLOURS }) {
 }
 
 /**
- * − n + for how many colours a theme uses. Each end dims when it's as far as it goes.
+ * − n + for how many colors a theme uses. Each end dims when it's as far as it goes.
  * @param {{ value: number, onChange: (n: number) => void, label: string, size?: 'sm' | 'md' }} props
  */
 function ColourStepper({ value, onChange, label, size = 'sm' }) {
@@ -1414,8 +1420,8 @@ function ColourStepper({ value, onChange, label, size = 'sm' }) {
         type="button"
         onClick={step(-1)}
         disabled={value <= MIN_COLOURS}
-        aria-label={`Fewer colours (${value} now)`}
-        data-tip={value <= MIN_COLOURS ? `${MIN_COLOURS} is the fewest` : 'Use fewer colours'}
+        aria-label={`Fewer colors (${value} now)`}
+        data-tip={value <= MIN_COLOURS ? `${MIN_COLOURS} is the fewest` : 'Use fewer colors'}
         className={`${box} grid place-items-center rounded-full border border-zinc-300 bg-white text-zinc-800 cursor-pointer hover:border-zinc-900 disabled:cursor-default disabled:opacity-35 disabled:hover:border-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900`}
       >
         <Minus className="w-3.5 h-3.5" aria-hidden="true" />
@@ -1427,8 +1433,8 @@ function ColourStepper({ value, onChange, label, size = 'sm' }) {
         type="button"
         onClick={step(1)}
         disabled={value >= MAX_COLOURS}
-        aria-label={`More colours (${value} now)`}
-        data-tip={value >= MAX_COLOURS ? `${MAX_COLOURS} is every colour` : 'Use more colours'}
+        aria-label={`More colors (${value} now)`}
+        data-tip={value >= MAX_COLOURS ? `${MAX_COLOURS} is every color` : 'Use more colors'}
         className={`${box} grid place-items-center rounded-full border border-zinc-300 bg-white text-zinc-800 cursor-pointer hover:border-zinc-900 disabled:cursor-default disabled:opacity-35 disabled:hover:border-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900`}
       >
         <Plus className="w-3.5 h-3.5" aria-hidden="true" />
@@ -1443,13 +1449,13 @@ const NO_THEMES = []
 const COLOUR_STYLES = [
   { id: 'subtle', label: 'Subtle', Icon: Contrast },
   { id: 'balanced', label: 'Balanced', Icon: Palette },
-  { id: 'colourful', label: 'Colourful', Icon: Paintbrush },
+  { id: 'colourful', label: 'Colorful', Icon: Paintbrush },
 ]
 const STYLE_NOTES = {
-  subtle: 'Subtle: your site keeps its own backgrounds, cards and text. The theme’s colour comes in on buttons, links and highlights, with only a quiet hint of it on badges and tints.',
+  subtle: 'Subtle: your site keeps its own backgrounds, cards and text. The theme’s color comes in on buttons, links and highlights, with only a quiet hint of it on badges and tints.',
   balanced: 'Balanced: the theme in every role, with a soft wash of it across the page, cards and borders.',
   colourful:
-    'Colourful: an overhaul. Tinted backgrounds, and the theme paints your header, hero, sections, headings, cards, buttons and footer, like a designer would. Text is still checked for contrast.',
+    'Colorful: an overhaul. Tinted backgrounds, and the theme paints your header, hero, sections, headings, cards, buttons and footer, like a designer would. Text is still checked for contrast.',
 }
 
 function PresetGrid() {
@@ -1468,7 +1474,7 @@ function PresetGrid() {
   const { toast, reveal } = usePanel()
   const wrapRef = useRef(null)
   const pendingScroll = useRef(false)
-  // Picking a group or a library category brings its themes into view, so the colours are right there.
+  // Picking a group or a library category brings its themes into view, so the colors are right there.
   const themesRef = useRef(null)
   const scrollToThemes = useRef(false)
 
@@ -1512,9 +1518,9 @@ function PresetGrid() {
 
   // The site's own group, Picks and Yours are set apart from the library's categories.
   const groups = [
-    { id: 'site', label: siteName, Icon: Globe, count: siteThemes.length, description: `${siteName}'s own colours, and themes made for it` },
+    { id: 'site', label: siteName, Icon: Globe, count: siteThemes.length, description: `${siteName}'s own colors, and themes made for it` },
     ...(settings.showPicks
-      ? [{ id: 'picks', label: 'Max’s picks', Icon: Paintbrush, count: presets.length, description: 'Hand-tuned colorsbymax themes that pass every contrast check' }]
+      ? [{ id: 'picks', label: 'Max’s picks', Icon: Paintbrush, count: presets.length, description: 'Hand-tuned Kamiliyon themes that pass every contrast check' }]
       : []),
     { id: 'yours', label: 'Yours', Icon: UserRound, count: customs.length, description: 'Palettes you create, import or build from an image' },
   ]
@@ -1539,7 +1545,7 @@ function PresetGrid() {
     else if (category === 'all') list = library?.themes ?? []
     else list = (library?.themes ?? []).filter((t) => t.tags.includes(category))
     if (q) {
-      // By name or mood, and, for a colour word ("red"), by the theme's own colours: names first.
+      // By name or mood, and, for a color word ("red"), by the theme's own colors: names first.
       const labels = Object.fromEntries((library?.categories ?? []).map((c) => [c.id, c.label.toLowerCase()]))
       const byName = (t) => t.name.toLowerCase().includes(q) || t.tags?.some((tag) => labels[tag]?.includes(q))
       const byColour = colourMatcher(q)
@@ -1577,13 +1583,13 @@ function PresetGrid() {
     <div ref={wrapRef} className="space-y-3">
       {overrideCount > 0 && (
         <p className="flex items-center justify-between gap-2 rounded-lg bg-zinc-100 px-3 py-2 text-xs text-zinc-700">
-          {overrideCount} single-colour override{overrideCount > 1 ? 's are' : ' is'} applied on top of any theme.
+          {overrideCount} single-color override{overrideCount > 1 ? 's are' : ' is'} applied on top of any theme.
           <button
             type="button"
             className={btn}
             onClick={() => {
               clearOverrides()
-              toast(`Cleared ${overrideCount} single-colour ${overrideCount === 1 ? 'override' : 'overrides'}.`)
+              toast(`Cleared ${overrideCount} single-color ${overrideCount === 1 ? 'override' : 'overrides'}.`)
             }}
           >
             Clear
@@ -1793,10 +1799,10 @@ function PresetGrid() {
   )
 }
 
-/** User-triggered site scan: reads the page's colours and adds themes built around them. */
+/** User-triggered site scan: reads the page's colors and adds themes built around them. */
 /**
- * Above the themes: how boldly the site takes whichever theme is on (Subtle or Colourful), and the
- * scan that builds themes from the site's own colours.
+ * Above the themes: how boldly the site takes whichever theme is on (Subtle or Colorful), and the
+ * scan that builds themes from the site's own colors.
  */
 function StyleAndScan() {
   const { features, recolouring } = useTheme()
@@ -1807,7 +1813,7 @@ function StyleAndScan() {
           on its accents, Balanced is the theme as designed, Colourful an overhaul. */}
       {features.colourStyle && (
         <div className="rounded-xl border border-zinc-200 p-2.5">
-          <div role="radiogroup" aria-label="Colour style" className="grid grid-cols-3 gap-1 rounded-lg bg-zinc-100 p-1">
+          <div role="radiogroup" aria-label="Color style" className="grid grid-cols-3 gap-1 rounded-lg bg-zinc-100 p-1">
             {COLOUR_STYLES.map(({ id, label, Icon }) => {
               const on = settings.colourStyle === id
               return (
@@ -1829,9 +1835,9 @@ function StyleAndScan() {
           </div>
           <p className="mt-2 px-0.5 text-[11px] leading-snug text-zinc-600">
             {settings.colourStyle === 'balanced' && recolouring
-              ? 'Balanced: every colour on your site swapped for its match in the theme.'
+              ? 'Balanced: every color on your site swapped for its match in the theme.'
               : settings.colourStyle === 'colourful' && !recolouring
-                ? 'Colourful: an overhaul. Your page, cards and borders take a clear tint of the theme, and text a hint of it, wherever your design already uses colour. Text is still checked for contrast.'
+                ? 'Colorful: an overhaul. Your page, cards and borders take a clear tint of the theme, and text a hint of it, wherever your design already uses color. Text is still checked for contrast.'
                 : STYLE_NOTES[settings.colourStyle] ?? STYLE_NOTES.balanced}
           </p>
           {settings.colourStyle === 'colourful' && <ColourfulControls />}
@@ -1842,7 +1848,7 @@ function StyleAndScan() {
   )
 }
 
-/** Colourful's strength, from a light wash to bold, and tints from the site's own pictures. */
+/** Colorful's strength, from a light wash to bold, and tints from the site's own pictures. */
 function ColourfulControls() {
   const { pictureColours, pictureTint } = useTheme()
   const { settings, update } = useSettings()
@@ -1877,15 +1883,15 @@ function ColourfulControls() {
       <label className="flex cursor-pointer items-start gap-2">
         <input type="checkbox" checked={settings.imageTints} onChange={(e) => update({ imageTints: e.target.checked })} className="mt-0.5 h-3.5 w-3.5 shrink-0 accent-zinc-900" />
         <span className="min-w-0 text-[11px] leading-snug text-zinc-700">
-          <span className="font-semibold text-zinc-900">Tint with my pictures’ colours</span>
+          <span className="font-semibold text-zinc-900">Tint with my pictures’ colors</span>
           <span className="block text-zinc-600">
             {!settings.imageTints
-              ? 'The washes use the theme’s own colours.'
+              ? 'The washes use the theme’s own colors.'
               : pictureTint
-                ? 'The washes take a colour from your logo and photos, so they feel made for your site. Buttons and links keep the theme’s.'
+                ? 'The washes take a color from your logo and photos, so they feel made for your site. Buttons and links keep the theme’s.'
                 : pictureColours.length
-                  ? 'Your pictures are mostly greys, so the washes use the theme’s colours.'
-                  : 'No pictures colorsbymax can read on this page, so the washes use the theme’s colours.'}
+                  ? 'Your pictures are mostly greys, so the washes use the theme’s colors.'
+                  : 'No pictures Kamiliyon can read on this page, so the washes use the theme’s colors.'}
           </span>
           {settings.imageTints && pictureColours.length > 0 && (
             <span className="mt-1.5 flex items-center gap-1" aria-hidden="true">
@@ -1912,7 +1918,7 @@ function ScanCard() {
     try {
       const { colours, themes } = await runScan()
       showGroup('site', false)
-      toast(`Found ${colours} colours and added ${themes} themes to the ${siteName} group.`, { label: 'Show', run: () => showGroup('site') })
+      toast(`Found ${colours} colors and added ${themes} themes to the ${siteName} group.`, { label: 'Show', run: () => showGroup('site') })
     } catch {
       setError('Couldn’t scan this page. Try again after it has finished loading.')
     } finally {
@@ -1929,8 +1935,8 @@ function ScanCard() {
           </p>
           <p className="mt-0.5 text-[11px] text-zinc-600">
             {scanned
-              ? 'Themes built from this site’s colours are in its group in Preset themes.'
-              : 'Scan this page’s colours to get themes built around them.'}
+              ? 'Themes built from this site’s colors are in its group in Preset themes.'
+              : 'Scan this page’s colors to get themes built around them.'}
           </p>
         </div>
         <button type="button" className={`${scanned ? btn : btnPrimary} shrink-0`} onClick={scan} disabled={busy} aria-busy={busy}>
@@ -2021,10 +2027,152 @@ function ThemeCard({ theme: t, isActive, onSelect }) {
       {/* The theme in use: how many of its colours the site uses (5 to 10). */}
       {isActive && features.colourCount && (
         <span className="absolute right-2 bottom-2">
-          <ColourStepper value={colours} onChange={(n) => setThemeColours(t.id, n)} label={`Colours ${t.name} uses`} />
+          <ColourStepper value={colours} onChange={(n) => setThemeColours(t.id, n)} label={`Colors ${t.name} uses`} />
         </span>
       )}
     </div>
+  )
+}
+
+/**
+ * Pick a color from the site and get five themes built around it, kept in the job it does there
+ * (pick.js). Try any of them live; save the one you like to Yours.
+ */
+function PickFromSite() {
+  const { selectTheme, addPalette, mode, coloursOf, setThemeColours } = useTheme()
+  const { colourPick } = useSettings()
+  const { confirmTheme, toast } = usePanel()
+  const savedToYours = useSavedToYours()
+  const pick = colourPick.result
+  const [tried, setTried] = useState(null)
+  const boxRef = useRef(null)
+  const burst = useBurst()
+  // Built when the pick, or its role, changes; kept still while themes are tried.
+  const themes = useMemo(() => (pick ? themesFromPick(pick.colour, pick.role) : []), [pick?.colour, pick?.role, pick?.at])
+  // A new pick: the panel comes back on this section, opened, with a burst of the new colors.
+  useEffect(() => {
+    if (!pick?.at || Date.now() - pick.at > 3000) return
+    const section = boxRef.current?.closest('details')
+    if (section) section.open = true
+    requestAnimationFrame(() => boxRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' }))
+    burst.celebrate()
+    toast(`Picked ${pick.colour} from ${/^[aeiou]/i.test(pick.kind) ? 'an' : 'a'} ${pick.kind.toLowerCase()}. Five themes are ready, built around it.`)
+  }, [pick?.at])
+  const role = pick && PICK_ROLES.find((r) => r.id === pick.role)
+  const article = (word) => (/^[aeiou]/i.test(word) ? 'an' : 'a')
+
+  return (
+    <section ref={boxRef} className="space-y-3">
+      <div className="flex items-start gap-2.5">
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-zinc-100 text-zinc-800">
+          <Pipette className="w-4 h-4" aria-hidden="true" />
+        </span>
+        <div className="min-w-0">
+          <h4 className="text-xs font-semibold text-zinc-900">Pick a color from your site</h4>
+          <p className="text-[11px] leading-snug text-zinc-600">
+            Click any color on the page: a button, the background, some text. Kamiliyon works out the job it does there and builds five
+            themes around it.
+          </p>
+        </div>
+      </div>
+      <button type="button" className={`${pick ? btn : btnPrimary} w-full py-2`} onClick={colourPick.start}>
+        <Pipette className="w-3.5 h-3.5" aria-hidden="true" /> {pick ? 'Pick another color' : 'Pick from the page'}
+      </button>
+
+      {pick && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2.5 rounded-lg bg-zinc-50 p-2.5">
+            <span className="relative h-9 w-9 shrink-0 rounded-lg border border-black/15" style={{ background: pick.colour }} aria-hidden="true">
+              {burst.bursting && themes[0] && <Burst key={burst.burst} tokens={themes[0].tokens} spread={1.8} />}
+            </span>
+            <p className="min-w-0 text-[11px] leading-snug text-zinc-700">
+              <span className="font-mono font-semibold text-zinc-900">{pick.colour}</span>, from {article(pick.kind)} {pick.kind.toLowerCase()}
+              {pick.text && <> “{pick.text}”</>}
+              {pick.where && <> {pick.where}</>}. Used as the <strong className="font-semibold text-zinc-900">{role.label.toLowerCase()}</strong> color: {role.note}.
+            </p>
+          </div>
+          <div role="radiogroup" aria-label="Use it as" className="flex flex-wrap gap-1">
+            {PICK_ROLES.map((r) => (
+              <button
+                key={r.id}
+                type="button"
+                role="radio"
+                aria-checked={pick.role === r.id}
+                onClick={() => colourPick.setRole(r.id)}
+                data-tip={`Use it for ${r.note}`}
+                className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 ${
+                  pick.role === r.id ? 'border-zinc-900 bg-zinc-900 text-white' : 'border-zinc-300 text-zinc-700 hover:bg-zinc-50'
+                }`}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+          <ul className="space-y-2">
+            {themes.map((t, i) => {
+              const shown = inMode(t, mode)
+              const on = tried === t.id
+              // How many colors it uses: the visitor's default, or what they set on this one.
+              const colours = coloursOf(t.id)
+              // A mid-tone color kept exactly can leave a pairing or two short of WCAG: said, not hidden.
+              const short = checkTheme(shown.tokens).length
+              return (
+                <li key={t.id} className={`space-y-2 rounded-lg border p-2.5 ${on ? 'border-zinc-900' : 'border-zinc-200'}`}>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="min-w-0 truncate text-xs font-semibold text-zinc-900">
+                      {t.name}
+                      {i === 0 && <span className="ml-1.5 font-normal text-zinc-500">· shades of your color</span>}
+                    </p>
+                    <div className="flex shrink-0 gap-1">
+                      <button
+                        type="button"
+                        className={`${btn} px-2 py-1`}
+                        aria-pressed={on}
+                        onClick={() =>
+                          confirmTheme(() => {
+                            selectTheme(shown.id, shown)
+                            setTried(t.id)
+                          })
+                        }
+                      >
+                        {on ? 'On' : 'Try'}
+                      </button>
+                      <button
+                        type="button"
+                        className={`${btnPrimary} px-2 py-1`}
+                        onClick={() => {
+                          const id = addPalette(t.name, t.tokens, { twin: true })
+                          setThemeColours(id, colours)
+                          savedToYours(t.name)
+                        }}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="min-w-0 flex-1">
+                      <Swatches tokens={shown.tokens} count={colours} />
+                    </div>
+                    <ColourStepper value={colours} onChange={(n) => setThemeColours(t.id, n)} label={`Colors ${t.name} uses`} />
+                  </div>
+                  {short > 0 && (
+                    <p className="flex items-start gap-1.5 text-[11px] leading-snug text-amber-900">
+                      <AlertTriangle className="mt-px w-3 h-3 shrink-0" aria-hidden="true" />
+                      {short === 1 ? 'One pairing' : `${short} pairings`} can’t reach WCAG with your exact color. Try another style, or use it as a different role.
+                    </p>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+          <p className="text-[11px] text-zinc-600">
+            Each keeps your color exactly, follows 60-30-10, checks every pairing, keeps green, amber, red and blue for what they mean, and has a
+            dark twin. Saved ones go to Yours.
+          </p>
+        </div>
+      )}
+    </section>
   )
 }
 
@@ -2055,7 +2203,7 @@ function CustomPalettes() {
           <input id={nameId} className={field} value={name} onChange={(e) => setName(e.target.value)} placeholder="My palette" maxLength={60} />
           <button type="submit" className={`${btnPrimary} shrink-0`}>Create</button>
         </div>
-        <p className="text-[11px] text-zinc-600">Starts from the colours you see now. Edits apply live and save automatically.</p>
+        <p className="text-[11px] text-zinc-600">Starts from the colors you see now. Edits apply live and save automatically.</p>
       </form>
 
       {customs.length > 0 && (
@@ -2106,7 +2254,7 @@ function CustomPalettes() {
           />
         </div>
       ) : (
-        <p className="text-xs text-zinc-600">Create a palette, or choose Edit on a saved one, to change its colours.</p>
+        <p className="text-xs text-zinc-600">Create a palette, or choose Edit on a saved one, to change its colors.</p>
       )}
     </div>
   )
@@ -2120,7 +2268,7 @@ function Overrides() {
     <div className="space-y-3">
       <IssuesLink />
       <p className="text-xs text-zinc-600">
-        Change individual colours on top of <strong className="font-semibold text-zinc-800">{active.name}</strong>. Overrides stay when you switch themes.
+        Change individual colors on top of <strong className="font-semibold text-zinc-800">{active.name}</strong>. Overrides stay when you switch themes.
       </p>
       {Object.keys(overridden).length > 0 && (
         <div className="rounded-lg bg-zinc-100 p-2.5 text-xs">
@@ -2131,7 +2279,7 @@ function Overrides() {
             onClick={() => {
               const n = Object.keys(overridden).length
               clearOverrides()
-              toast(`Cleared ${n} single-colour ${n === 1 ? 'override' : 'overrides'}.`)
+              toast(`Cleared ${n} single-color ${n === 1 ? 'override' : 'overrides'}.`)
             }}
           >
             <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" /> Reset all overrides
@@ -2192,7 +2340,7 @@ function TokenRow({ token, value, onChange, isOverridden, onReset, warn, note })
         type="color"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        aria-label={`${token.label} colour picker`}
+        aria-label={`${token.label} color picker`}
         className="h-7 w-9 shrink-0 cursor-pointer rounded border border-zinc-300 bg-white p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900"
       />
       <div className="min-w-0 flex-1">
@@ -2239,9 +2387,9 @@ function TokenRow({ token, value, onChange, isOverridden, onReset, warn, note })
 }
 
 const FROM_NOTE = {
-  image: 'Picked from the picture’s main colours.',
-  pdf: 'Picked from the colours on the first pages.',
-  'pdf-text': 'Found colour codes written in the PDF.',
+  image: 'Picked from the picture’s main colors.',
+  pdf: 'Picked from the colors on the first pages.',
+  'pdf-text': 'Found color codes written in the PDF.',
 }
 
 const IS_MAC = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)
@@ -2253,7 +2401,7 @@ const PASTED = 'Pasted image'
 const fileFromClipboard = (data) => [...(data?.files ?? [])].find((f) => f.type.startsWith('image/') || f.type === 'application/pdf')
 
 /**
- * Builds a custom palette from the colours in an image (uploaded, dropped or pasted from the
+ * Builds a custom palette from the colors in an image (uploaded, dropped or pasted from the
  * clipboard), or a PDF where the site allows it.
  */
 function PaletteFromFile() {
@@ -2262,7 +2410,7 @@ function PaletteFromFile() {
   const savedToYours = useSavedToYours()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
-  const [found, setFound] = useState(null) // { fileName, colours, from }
+  const [found, setFound] = useState(null) // { fileName, colors, from }
   const [off, setOff] = useState(() => new Set())
   const [name, setName] = useState('')
   const [dragOver, setDragOver] = useState(false)
@@ -2303,7 +2451,7 @@ function PaletteFromFile() {
     setPicture({ url: file.type.startsWith('image/') ? URL.createObjectURL(file) : null, label, pasted })
     try {
       const { colours, from } = await coloursFromFile(file, { loadPdf })
-      if (!colours.length) throw new Error('Couldn’t find any colours in that file.')
+      if (!colours.length) throw new Error('Couldn’t find any colors in that file.')
       setFound({ fileName: label, colours, from })
       setOff(new Set())
       setName(label.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim().slice(0, 60) || 'Uploaded palette')
@@ -2421,7 +2569,7 @@ function PaletteFromFile() {
                 {picture.label}
                 {picture.size ? ` · ${picture.size}` : ''}
               </span>
-              <span className="block">{busy ? 'Reading its colours…' : 'Its colours are below.'}</span>
+              <span className="block">{busy ? 'Reading its colors…' : 'Its colors are below.'}</span>
             </figcaption>
             <button type="button" className={`${btn} shrink-0 border-transparent px-1.5`} onClick={clear} aria-label={`Remove ${picture.label}`} data-tip="Remove">
               <X className="w-3.5 h-3.5" aria-hidden="true" />
@@ -2434,7 +2582,7 @@ function PaletteFromFile() {
           ) : (
             <ImageUp className="w-3.5 h-3.5" aria-hidden="true" />
           )}
-          {busy ? 'Reading colours…' : picture ? 'Choose another…' : `Choose ${kinds}…`}
+          {busy ? 'Reading colors…' : picture ? 'Choose another…' : `Choose ${kinds}…`}
         </button>{' '}
         <button type="button" className={btn} onClick={pasteFromClipboard} disabled={busy} aria-keyshortcuts={IS_MAC ? 'Meta+V' : 'Control+V'}>
           <ClipboardPaste className="w-3.5 h-3.5" aria-hidden="true" />
@@ -2462,9 +2610,9 @@ function PaletteFromFile() {
       {found && (
         <div className="space-y-2 rounded-xl border border-zinc-200 p-3">
           <p className="text-[11px] text-zinc-600">
-            <span className="font-medium text-zinc-900">{found.fileName}</span>: {FROM_NOTE[found.from]} Select a colour to leave it out.
+            <span className="font-medium text-zinc-900">{found.fileName}</span>: {FROM_NOTE[found.from]} Select a color to leave it out.
           </p>
-          <div role="group" aria-label="Colours found" className="flex flex-wrap gap-1.5">
+          <div role="group" aria-label="Colors found" className="flex flex-wrap gap-1.5">
             {found.colours.map((hex) => {
               const on = !off.has(hex)
               return (
@@ -2496,7 +2644,7 @@ function PaletteFromFile() {
               <Swatches tokens={preview} />
             </>
           ) : (
-            <p className="text-[11px] text-zinc-600">Keep at least one colour to build a palette.</p>
+            <p className="text-[11px] text-zinc-600">Keep at least one color to build a palette.</p>
           )}
           <label htmlFor={nameId} className="block text-xs font-medium text-zinc-700">Palette name</label>
           <input id={nameId} className={field} value={name} onChange={(e) => setName(e.target.value)} maxLength={60} />
@@ -2534,7 +2682,7 @@ function ImportExport() {
   const [format, setFormat] = useState('json')
   const out = EXPORT_FORMATS.find((f) => f.id === format)
   // CSS: the theme as --color-* variables on :root, ready to paste into a stylesheet.
-  const text = format === 'css' ? `/* ${themeName.replace(/\*\//g, '')}, from colorsbymax */\n${cssSnippet(tokens)}\n` : json
+  const text = format === 'css' ? `/* ${themeName.replace(/\*\//g, '')}, from Kamiliyon */\n${cssSnippet(tokens)}\n` : json
   const [status, setStatus] = useState(null)
   const [input, setInput] = useState('')
   const exportId = useId()

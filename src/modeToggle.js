@@ -11,7 +11,7 @@ export const TOGGLE_HTML = `<button type="button" class="cbm-mode-toggle" data-c
   ${MOON}
 </button>`
 
-/** Its styles. It takes the colour of the text around it, so it suits any top bar. */
+/** Its styles. It takes the color of the text around it, so it suits any top bar. */
 export const TOGGLE_CSS = `.cbm-mode-toggle {
   display: inline-grid;
   place-items: center;

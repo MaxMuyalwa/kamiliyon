@@ -19,16 +19,18 @@ const LINKS = [
 const to = (home, href) => (href.startsWith('#') ? home + href : href)
 
 /**
- * The colorsbymax logo: mrmaxdesigns' three-bar mark, then the wordmark. As in the mrmaxdesigns logo,
- * the bars stand on the text's baseline, about two and a half times its lowercase height, and the
- * text tucks in under the last bar's slant.
+ * The Kamiliyon logo: mrmaxdesigns' three-bar mark, then the wordmark, with "colorsbymax" beneath
+ * it as its subtext. As in the mrmaxdesigns logo, the text tucks in under the last bar's slant.
  */
 export function Wordmark({ className = '' }) {
   return (
-    <span className={`inline-flex items-baseline font-display font-bold tracking-tight ${className}`}>
-      <LogoMark className="mr-[-0.28em] h-[1.3em] w-auto shrink-0 self-baseline" />
-      <span>
-        colors<span className="text-gradient">by</span>max
+    <span className={`inline-flex items-center font-display font-bold tracking-tight ${className}`}>
+      <LogoMark className="mr-[-0.12em] h-[1.3em] w-auto shrink-0" />
+      <span className="flex flex-col leading-none">
+        <span>
+          Kami<span className="text-gradient">liyon</span>
+        </span>
+        <span className="mt-[0.15em] text-[0.48em] font-semibold tracking-wide text-ink-secondary">colorsbymax</span>
       </span>
     </span>
   )
@@ -37,7 +39,7 @@ export function Wordmark({ className = '' }) {
 /**
  * The top bar, with a way back to mrmaxdesigns.com. It floats over the page, so the hero shows
  * behind it: a straight full-width bar at the very top, a floating glass pill once scrolled. From
- * 1200px wide the colour button sits at the top right, beside the bar, so both leave room for it.
+ * 1200px wide the color button sits at the top right, beside the bar, so both leave room for it.
  */
 /** @param {{ home?: string }} props  prefix for in-page links, for pages other than the home page */
 export function Nav({ home = '' }) {
@@ -60,7 +62,7 @@ export function Nav({ home = '' }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
   useEffect(() => {
-    // The colour button floats where the menu opens, so it steps aside while the menu is up.
+    // The color button floats where the menu opens, so it steps aside while the menu is up.
     document.documentElement.toggleAttribute('data-menu-open', open)
     if (!open) return
     const onKey = (e) => e.key === 'Escape' && setOpen(false)
@@ -147,7 +149,7 @@ export function Nav({ home = '' }) {
             Send feedback
           </button>
           <a href={REPO} target="_blank" rel="noopener" className="block rounded-2xl px-4 py-3 font-medium text-ink hover:bg-accent hover:text-on-accent">
-            Star colorsbymax on GitHub
+            Star Kamiliyon on GitHub
           </a>
           <a href="https://github.com/MaxMuyalwa" target="_blank" rel="noopener" className="block rounded-2xl px-4 py-3 font-medium text-ink hover:bg-accent hover:text-on-accent">
             Follow MaxMuyalwa on GitHub

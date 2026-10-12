@@ -1,4 +1,4 @@
-// The docs: colorsbymax's README and changelog, read live from GitHub so they're always the
+// The docs: Kamiliyon's README and changelog, read live from GitHub so they're always the
 // current ones (with a copy built into the site in case GitHub can't be reached), and the posts
 // and testimonials Max writes in admin mode (saved in the repo's content branch, see api/).
 // Laid out like a book: the contents on the left, the reading on the right.
@@ -178,7 +178,7 @@ export function Docs({ home }) {
 
       <div className="mx-auto max-w-6xl">
         <a href={home} className="group inline-flex items-center gap-1.5 text-sm font-semibold text-ink-secondary transition hover:text-primary">
-          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" aria-hidden="true" /> Back to colorsbymax
+          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" aria-hidden="true" /> Back to Kamiliyon
         </a>
         <header className="mt-5 flex flex-wrap items-end justify-between gap-6">
           <div className="max-w-2xl">
@@ -186,9 +186,9 @@ export function Docs({ home }) {
               <BookOpen className="h-3.5 w-3.5" aria-hidden="true" /> Docs
             </p>
             <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-ink md:text-5xl">
-              Everything about <span className="text-gradient">colorsbymax</span>
+              Everything about <span className="text-gradient">Kamiliyon</span>
             </h1>
-            <p className="mt-3 text-lg text-ink-secondary">How to set it up, what’s new, and posts about colour. The guides come straight from GitHub, so they’re always current.</p>
+            <p className="mt-3 text-lg text-ink-secondary">How to set it up, what’s new, and posts about color. The guides come straight from GitHub, so they’re always current.</p>
           </div>
         </header>
         {admin && <AdminStrip login={login} signOut={signOut} onNew={(kind) => setEditing({ kind })} />}
@@ -264,7 +264,7 @@ export function Docs({ home }) {
 
             {route.type === 'posts' && (
               <>
-                <PageHead Icon={Newspaper} title="Posts" blurb="Notes on colour, design and building colorsbymax." />
+                <PageHead Icon={Newspaper} title="Posts" blurb="Notes on color, design and building Kamiliyon." />
                 {content.loading ? (
                   <Loading />
                 ) : content.posts.length ? (
@@ -302,7 +302,7 @@ export function Docs({ home }) {
 
             {route.type === 'testimonials' && (
               <>
-                <PageHead Icon={MessageSquareQuote} title="Testimonials" blurb="What people say about colorsbymax." />
+                <PageHead Icon={MessageSquareQuote} title="Testimonials" blurb="What people say about Kamiliyon." />
                 {content.loading ? (
                   <Loading />
                 ) : content.testimonials.length ? (
@@ -500,7 +500,7 @@ export function Editor({ kind, entry, onClose, onSaved }) {
               value={body}
               onChange={(e) => setBody(e.target.value)}
               rows={isPost ? 14 : 5}
-              placeholder={isPost ? 'Write in Markdown: ## for headings, **bold**, [links](https://…), - lists.' : '“colorsbymax made our site…”'}
+              placeholder={isPost ? 'Write in Markdown: ## for headings, **bold**, [links](https://…), - lists.' : '“Kamiliyon made our site…”'}
               className={`${input} mt-1.5 font-mono text-sm leading-relaxed`}
             />
           ) : (

@@ -1,16 +1,19 @@
-import { BellRing, ClipboardPaste, Library, Paintbrush, Rocket, ScanLine, ShieldCheck, SunMoon, WandSparkles } from 'lucide-react'
+import { BellRing, ClipboardPaste, Library, Paintbrush, Pipette, Rocket, ScanEye, ScanLine, ShieldCheck, SignpostBig, SunMoon, WandSparkles } from 'lucide-react'
 import { Reveal, SectionHeading } from './ui.jsx'
 
 const FEATURES = [
-  { Icon: Paintbrush, title: 'Your colours first', text: 'The panel opens on your site’s own theme, with an accessible version made for you if it needs one.', tone: 'data-1', motion: 'group-hover:-rotate-12' },
+  { Icon: Paintbrush, title: 'Your colors first', text: 'The panel opens on your site’s own theme, with an accessible version made for you if it needs one.', tone: 'data-1', motion: 'group-hover:-rotate-12' },
   { Icon: Library, title: '700+ library themes', text: 'Community-loved palettes in 14 moods, from pastel to moody, each turned into a full 35-role system.', tone: 'data-2', motion: 'group-hover:-translate-y-1' },
   { Icon: SunMoon, title: 'Light and dark', text: 'A dark twin of every theme, and a panel that follows. Or match each visitor’s device.', tone: 'data-3', motion: 'group-hover:rotate-180' },
   { Icon: ShieldCheck, title: 'A contrast guard', text: 'Every piece of text and every icon checked against what it really sits on, in every style. Anything hard to read is fixed, keeping its hue.', tone: 'data-4', motion: 'group-hover:scale-110' },
-  { Icon: ScanLine, title: 'Scan your site', text: 'Reads the colours already on your pages and builds themes around them: soft, bold, complementary.', tone: 'data-5', motion: 'group-hover:translate-x-1' },
+  { Icon: Pipette, title: 'Pick a color from your site', text: 'Click a button, the background or some text. Kamiliyon knows the job that color does and builds five themes around it, your color kept exactly.', tone: 'data-1', motion: 'group-hover:-rotate-12' },
+  { Icon: SignpostBig, title: 'Color keeps its meaning', text: 'Delete stays red, warnings amber, saves green, tips blue, in every theme. Your brand color never takes over a button that means something.', tone: 'data-3', motion: 'group-hover:-translate-y-1' },
+  { Icon: ScanEye, title: 'Understands your page', text: 'It tells a button from a background, a ghost icon from a filled button, and knows the pill sliding under the active tab is what it sits on.', tone: 'data-5', motion: 'group-hover:scale-110' },
+  { Icon: ScanLine, title: 'Scan your site', text: 'Reads the colors already on your pages and builds themes around them: soft, bold, complementary.', tone: 'data-5', motion: 'group-hover:translate-x-1' },
   { Icon: ClipboardPaste, title: 'Palettes from a picture', text: 'Paste a screenshot, drop a mood board or a brand-guide PDF, and get a palette built from it.', tone: 'data-6', motion: 'group-hover:-rotate-6' },
   { Icon: BellRing, title: 'Know when there’s an update', text: 'A bell in the panel says when a new version is out, with what changed and how to update. Only where you work, never to your visitors.', tone: 'data-7', motion: 'group-hover:rotate-12' },
-  { Icon: WandSparkles, title: 'Works on any site', text: 'Hard-coded colours? colorsbymax reads what’s painted and re-colours it anyway. No rewrite needed.', tone: 'data-8', motion: 'group-hover:rotate-12' },
-  { Icon: Rocket, title: 'Ship your pick', text: 'Done choosing? Keep your colours as the default and hide the switcher in production, in one step.', tone: 'primary', motion: 'group-hover:-translate-y-1 group-hover:translate-x-1' },
+  { Icon: WandSparkles, title: 'Works on any site', text: 'Hard-coded colors? Kamiliyon reads what’s painted and re-colors it anyway. No rewrite needed.', tone: 'data-8', motion: 'group-hover:rotate-12' },
+  { Icon: Rocket, title: 'Ship your pick', text: 'Done choosing? Keep your colors as the default and hide the switcher in production, in one step.', tone: 'primary', motion: 'group-hover:-translate-y-1 group-hover:translate-x-1' },
 ]
 
 export function Features() {
@@ -18,8 +21,8 @@ export function Features() {
     <section aria-labelledby="features-title" id="features" className="relative overflow-hidden px-6 py-24">
       <div className="blob top-1/4 -left-40 h-96 w-96 bg-primary-alt opacity-20" aria-hidden="true" />
       <div className="mx-auto max-w-6xl">
-        <SectionHeading id="features-title" eyebrow="What’s inside" title="Everything in the colour panel">
-          One small button. Behind it, a full colour studio that works on sites with or without Tailwind, and never touches your own CSS.
+        <SectionHeading id="features-title" eyebrow="What’s inside" title="Everything in the color panel">
+          One small button. Behind it, a full color studio that works on sites with or without Tailwind, and never touches your own CSS.
         </SectionHeading>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map(({ Icon, title, text, tone, motion }, i) => (

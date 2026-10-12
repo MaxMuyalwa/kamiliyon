@@ -3,7 +3,7 @@
 // tabs, framer-motion layoutId pills). Such a pill is a separate element, so walking up an
 // element's parents never finds it, and the item would look like it sits on the bar.
 //
-// Every part of colorsbymax that asks "what does this sit on" (the re-colouring engine, the contrast
+// Every part of Kamiliyon that asks "what does this sit on" (the re-coloring engine, the contrast
 // guard, Studio's readability check) asks this first, for an element with no fill of its own.
 
 const MAX_SIBLINGS = 40

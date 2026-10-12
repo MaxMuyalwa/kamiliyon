@@ -1,23 +1,23 @@
-// The "Colourful" style for re-coloured sites: on top of swapping the site's own colours, it
-// paints the page the way colorsbymax's own site is painted, by role. A plain site (white page,
+// The "Colorful" style for re-colored sites: on top of swapping the site's own colors, it
+// paints the page the way Kamiliyon's own site is painted, by role. A plain site (white page,
 // black text, grey borders) otherwise barely changes with a theme; here its parts take the
-// theme's colours as a designer would give them:
+// theme's colors as a designer would give them:
 //
-//   the page's header        surface, with a border        the hero      a glow of the brand colour
+//   the page's header        surface, with a border        the hero      a glow of the brand color
 //   every other section      alternates with a soft tint   the last call to action   a brand gradient
-//   the footer               the secondary colour          cards    surface, with a brand border on hover
-//   buttons                  the brand colour (outlined ones the secondary)   links   the brand colour
-//   headings                 the deep brand colour, with any emphasis in the hero as a gradient
+//   the footer               the secondary color          cards    surface, with a brand border on hover
+//   buttons                  the brand color (outlined ones the secondary)   links   the brand color
+//   headings                 the deep brand color, with any emphasis in the hero as a gradient
 //   badges, fields, tables, quotes, code, marks, list markers, text selection, checkboxes: their roles
 //
 // It works in two steps. `markZones` finds the page's big parts once (header, hero, sections,
 // call to action, footer) and marks them `data-cbm-z`. `rolesOf` then names the part each element
 // plays (`data-cbm-v`), read from the site's original look while the engine tags the page. The
-// colours themselves come from `vividCss(tokens)`, a stylesheet that follows every theme; each
-// text colour is checked against what it sits on, falling back to the theme's plain text colours
+// colors themselves come from `vividCss(tokens)`, a stylesheet that follows every theme; each
+// text color is checked against what it sits on, falling back to the theme's plain text colors
 // when a pairing wouldn't read.
 
-import { contrastRatio, deltaE, mix } from './color.js'
+import { contrastRatio, deltaE, hexToRgb, mix, rgbToHsl } from './color.js'
 
 export const ZONE = 'data-cbm-z'
 export const ROLE = 'data-cbm-v'
@@ -123,7 +123,7 @@ export function markZones() {
   plain.forEach((p, i) => i % 2 === 0 && p.setAttribute(ZONE, 'tint'))
 }
 
-/** What an element paints over: 'primary' (a brand-coloured band), 'secondary' (the footer), or 'page'. */
+/** What an element paints over: 'primary' (a brand-colored band), 'secondary' (the footer), or 'page'. */
 const zoneOf = (el) => {
   const z = el.closest(`[${ZONE}]`)?.getAttribute(ZONE)
   return z === 'cta' ? 'primary' : z === 'footer' ? 'secondary' : 'page'
@@ -136,21 +136,43 @@ const allBorders = (cs) => ['top', 'right', 'bottom', 'left'].every((s) => px(cs
  * The roles an element plays, from its original look. `ownFill` is its own background (a hex, or
  * null if it has none worth counting) and `under` the hex of what it sits on.
  */
-export function rolesOf(el, cs, ownFill, under) {
+const hslOfHex = (hex) => rgbToHsl(hexToRgb(hex))
+const hueGap = (a, b) => Math.min(Math.abs(a - b), 360 - Math.abs(a - b))
+// Buttons whose words carry a meaning of their own.
+const MEANING = /(delete|remove|discard|destroy|cancel|stop|error|danger|warning|caution|confirm|approve|accept|save|done|success|retry)/i
+
+/**
+ * Whether a filled button carries a meaning rather than the brand: a red delete, an amber warning, a
+ * green save, a blue info. Its fill isn't in the site's brand family (or, on a site with no brand,
+ * it's a clearly colored status hue), so the swap keeps it as the theme's own danger, warning,
+ * success or info color instead of the brand.
+ */
+function meaningful(el, fill, brand) {
+  const [h, s, l] = hslOfHex(fill)
+  if (s < 0.35 || l < 0.15 || l > 0.85) return false
+  if (brand) {
+    const [bh, bs] = hslOfHex(brand)
+    if (bs >= 0.2 && hueGap(h, bh) <= 35) return false
+    return true
+  }
+  return MEANING.test(el.textContent) || h < 20 || h >= 340 || (h >= 30 && h < 60) || (h >= 90 && h < 165)
+}
+
+export function rolesOf(el, cs, ownFill, under, brand = null) {
   const roles = []
   const name = el.localName
   const zoneRole = el.getAttribute(ZONE)
   const zone = zoneOf(el)
   if (zoneRole) roles.push(`z-${zoneRole}`)
 
-  // Inside a button: its label and icons take the button's text colour.
+  // Inside a button: its label and icons take the button's text color.
   const inButton = el.parentElement?.closest(`[${ROLE}~="btn"], [${ROLE}~="btn2"], [${ROLE}~="btn-inv"]`)
   if (inButton) {
     const kind = inButton.getAttribute(ROLE).match(/\b(btn-inv|btn2|btn)\b/)[1]
     roles.push(`${kind}-in`)
     return roles
   }
-  // On a brand band or the footer, all text takes that colour's text colour.
+  // On a brand band or the footer, all text takes that color's text color.
   if (zone === 'primary') roles.push('on1')
   else if (zone === 'secondary') roles.push('on2')
 
@@ -166,6 +188,8 @@ export function rolesOf(el, cs, ownFill, under) {
     // A ghost button (no fill and no outline all round: an icon in a toolbar, a tab) keeps its own
     // shape; painting it would put a circle or a box where the design has none.
     if (!filled && !allBorders(cs)) return roles
+    // Color carries meaning: a delete, warning, save or info button keeps it, whatever the theme.
+    if (filled && meaningful(el, ownFill, brand)) return roles
     roles.push(zone === 'primary' ? 'btn-inv' : filled ? 'btn' : 'btn2')
     return roles
   }
@@ -177,7 +201,7 @@ export function rolesOf(el, cs, ownFill, under) {
     return roles
   }
   if (/^h[1-3]$/.test(name) && zone === 'page') roles.push('head')
-  // Emphasis inside the hero's headline: a gradient of the brand colours.
+  // Emphasis inside the hero's headline: a gradient of the brand colors.
   if (zone === 'page' && ['em', 'strong', 'b', 'i', 'span', 'mark'].includes(name) && el.parentElement?.localName === 'h1') roles.push('hl')
   if (name === 'input' && !FIELD_SKIP.has(type)) roles.push('field')
   else if (name === 'textarea' || name === 'select') roles.push('field')
@@ -225,10 +249,10 @@ export function rolesOf(el, cs, ownFill, under) {
   return roles
 }
 
-// ------------------------------------------------------------------ colours
+// ------------------------------------------------------------------ colors
 
 const readsOn = (fg, bgs, min) => bgs.every((bg) => contrastRatio(fg, bg) >= min)
-/** The first colour that reads on every background, else the theme's plain text colour. */
+/** The first color that reads on every background, else the theme's plain text color. */
 const firstReadable = (candidates, bgs, min) => candidates.find((c) => c && readsOn(c, bgs, min)) ?? candidates[candidates.length - 1]
 
 /** Roles Subtle paints: the accents only (buttons, links, badges, highlights), never backgrounds. */
@@ -240,8 +264,8 @@ const ACCENT_ROLES = new Set(['link', 'hl', 'badge', 'mark', 'btn', 'btn-in', 'b
  * ordinary button, since the band isn't painted.
  */
 export function vividCss(t, { accents = false, strength = 0.5, tint: imageTint = null } = {}) {
-  // Strength (0 a light wash, 1 bold) sets how much colour the backgrounds take; an image tint
-  // (a colour from the site's own pictures) colours the washes in place of the theme's.
+  // Strength (0 a light wash, 1 bold) sets how much color the backgrounds take; an image tint
+  // (a color from the site's own pictures) colors the washes in place of the theme's.
   const k = Math.min(1, Math.max(0, strength))
   const lerp = (a, b) => a + (b - a) * k
   const bg = t.background
@@ -251,26 +275,26 @@ export function vividCss(t, { accents = false, strength = 0.5, tint: imageTint =
   const quotesBg = mix(imageTint ?? t['primary-alt'], bg, lerp(0.05, 0.18))
   const pageBgs = [bg, t.surface, tint, glow, quotesBg]
   const ink = firstReadable([t.ink], pageBgs, MIN_TEXT)
-  // A light wash keeps headings in the text colour; from there on they take the brand's.
+  // A light wash keeps headings in the text color; from there on they take the brand's.
   const head = k < 0.2 ? ink : firstReadable([t['primary-dark'], ink], pageBgs, MIN_LARGE)
   const link = firstReadable([t.primary, t['primary-dark'], ink], pageBgs, MIN_TEXT)
   const linkHover = firstReadable([t['primary-dark'], ink], pageBgs, MIN_TEXT)
   const navHover = firstReadable([t.primary, t['primary-dark'], ink], [t.surface, bg], MIN_TEXT)
 
-  // Brand band: a gradient of the brand colours when its text reads on both ends, else solid.
+  // Brand band: a gradient of the brand colors when its text reads on both ends, else solid.
   const bandEnd = mix(t['primary-alt'], t.primary, 0.45)
   const onPrimary = firstReadable([t['on-primary'], '#ffffff', '#000000'], [t.primary], MIN_TEXT)
   const band = readsOn(onPrimary, [t.primary, bandEnd], MIN_TEXT) ? `linear-gradient(135deg,${t.primary},${bandEnd})` : t.primary
-  // The footer: a tint when the wash is light, the brand's own colour, deep, when bold.
+  // The footer: a tint when the wash is light, the brand's own color, deep, when bold.
   const footerBg = k < 0.3 ? tint : k > 0.75 ? mix(t.primary, bg, 0.72) : t.secondary
   const onSecondary = firstReadable([t['on-secondary'], ink, '#ffffff', '#000000'], [footerBg], MIN_TEXT)
   const btnHover = mix(t['primary-dark'], t.primary, 0.22)
   const onBtnHover = firstReadable([onPrimary, '#ffffff', '#000000'], [btnHover], MIN_TEXT)
   const quiet = firstReadable([t['on-secondary'], ink], [t.secondary], MIN_TEXT)
-  // Badges: a clear wash of the brand colour on the card they sit on, in light and dark alike.
+  // Badges: a clear wash of the brand color on the card they sit on, in light and dark alike.
   const badgeBg = mix(t.primary, t.surface, lerp(0.12, 0.32))
   const badgeInk = firstReadable([t['primary-dark'], t['on-secondary'], ink], [badgeBg], MIN_TEXT)
-  // The hero's emphasis: a gradient when both brand colours read as large text, else solid.
+  // The hero's emphasis: a gradient when both brand colors read as large text, else solid.
   const hlGradient = readsOn(t.primary, [bg, glow], MIN_LARGE) && readsOn(t['primary-alt'], [bg, glow], MIN_LARGE)
   const shadow = `0 18px 40px -22px ${t.shadow}`
   const move = 'transition:background-color .25s,color .25s,border-color .25s,box-shadow .25s,transform .25s!important'
@@ -286,9 +310,9 @@ export function vividCss(t, { accents = false, strength = 0.5, tint: imageTint =
     r('z-header', imp([`background-color:${k > 0.75 ? mix(t.primary, t.surface, 0.12) : t.surface}`, `border-bottom-color:${t.border}`])),
     r('z-hero', imp([`background-color:${bg}`, `background-image:radial-gradient(120% 85% at 50% -10%,${glow} 0%,transparent 62%),radial-gradient(60% 60% at 100% 100%,${glowAlt} 0%,transparent 70%)`])),
     r('z-tint', imp([`background-color:${tint}`])),
-    // Pricing: the plans on a soft glow, the picked-out one ringed in the brand colour.
+    // Pricing: the plans on a soft glow, the picked-out one ringed in the brand color.
     r('z-pricing', imp([`background-color:${bg}`, `background-image:radial-gradient(90% 70% at 50% 0%,${glow} 0%,transparent 70%)`])),
-    // Testimonials on a wash of the second brand colour; images on the plain page, so they show true.
+    // Testimonials on a wash of the second brand color; images on the plain page, so they show true.
     r('z-quotes', imp([`background-color:${quotesBg}`])),
     r('z-media', imp([`background-color:${bg}`])),
     r('z-form', imp([`background-color:${tint}`])),

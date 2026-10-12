@@ -1,7 +1,7 @@
 // The announcement banner: a slim bar pinned above the top bar on every page, written and
 // switched on in the admin space (Announcement). While the admin has it on, it's always there:
 // a visitor can close it, and it stays closed as they move between pages, but a refresh brings
-// it back. The page (and the colour button) move down by its height, so it never covers anything.
+// it back. The page (and the color button) move down by its height, so it never covers anything.
 
 import { useLayoutEffect, useRef, useState } from 'react'
 import { ArrowRight, Megaphone, X } from 'lucide-react'
@@ -56,7 +56,7 @@ export function Announcement() {
   })
   const box = useRef(null)
   const shown = Boolean(id) && closed !== id
-  // Push the page and the colour button down by the banner's height while it shows.
+  // Push the page and the color button down by the banner's height while it shows.
   useLayoutEffect(() => {
     const root = document.documentElement
     const clear = () => {

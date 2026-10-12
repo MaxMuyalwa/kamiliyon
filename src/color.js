@@ -1,4 +1,4 @@
-// Small sRGB colour helpers used by the theme system. All colours are #rrggbb strings.
+// Small sRGB color helpers used by the theme system. All colors are #rrggbb strings.
 
 const HEX_RE = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i
 
@@ -39,7 +39,7 @@ export function luminance(hex) {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b
 }
 
-/** WCAG 2.x contrast ratio between two colours (1–21). */
+/** WCAG 2.x contrast ratio between two colors (1–21). */
 export function contrastRatio(a, b) {
   const la = luminance(a)
   const lb = luminance(b)
@@ -91,7 +91,7 @@ export function toLab(hex) {
   return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)]
 }
 
-/** CIE76 colour difference. */
+/** CIE76 color difference. */
 export function deltaE(a, b) {
   const [l1, a1, b1] = toLab(a)
   const [l2, a2, b2] = toLab(b)

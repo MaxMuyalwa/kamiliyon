@@ -10,7 +10,7 @@ import { Feedback } from './site/Feedback.jsx'
 import { ThemedFavicon } from './site/Favicon.jsx'
 import './demo.css'
 
-// The admin space: where Max runs the site. Same colorsbymax setup as the home page, so the
+// The admin space: where Max runs the site. Same Kamiliyon setup as the home page, so the
 // theme follows here too.
 const HOME = import.meta.env.BASE_URL
 

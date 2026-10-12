@@ -19,8 +19,8 @@ const shotUrl = (r, s) => `${API}?id=${encodeURIComponent(r.id)}&file=${encodeUR
 
 // On the dev server there's no API; ?admin-preview shows a sample report instead.
 const SAMPLE = [
-  { id: 'sample-1', received: new Date().toISOString(), status: 'new', kind: 'bug', summary: 'The icons are distracting', name: 'Max', email: 'someone@example.com', contact: true, areas: ['Colour button'], rating: 5, severity: 'cosmetic', frequency: 'always', details: 'Icons are overlapping in the panel on mobile', steps: '1. Open the colour panel', expected: 'Properly aligned icons', actual: 'Overlapping icons', screenshots: [], environment: { Browser: 'Chrome 153', System: 'Android', Screen: '412 × 892' } },
-  { id: 'sample-2', received: new Date(Date.now() - 864e5).toISOString(), status: 'done', kind: 'praise', summary: 'This site is da bomb', name: 'Max', rating: 5, details: 'I love how every colour just works.', screenshots: [], environment: { Browser: 'Chrome 153' } },
+  { id: 'sample-1', received: new Date().toISOString(), status: 'new', kind: 'bug', summary: 'The icons are distracting', name: 'Max', email: 'someone@example.com', contact: true, areas: ['Color button'], rating: 5, severity: 'cosmetic', frequency: 'always', details: 'Icons are overlapping in the panel on mobile', steps: '1. Open the color panel', expected: 'Properly aligned icons', actual: 'Overlapping icons', screenshots: [], environment: { Browser: 'Chrome 153', System: 'Android', Screen: '412 × 892' } },
+  { id: 'sample-2', received: new Date(Date.now() - 864e5).toISOString(), status: 'done', kind: 'praise', summary: 'This site is da bomb', name: 'Max', rating: 5, details: 'I love how every color just works.', screenshots: [], environment: { Browser: 'Chrome 153' } },
 ]
 
 /** The inbox's reports, and a way to reload them. */
@@ -41,7 +41,7 @@ export function useInbox(enabled) {
 export function Inbox({ inbox, reload, setInbox }) {
   const [kind, setKind] = useState('all')
   const [site, setSite] = useState('all')
-  // Which site each report came from (reports from before sites were recorded are colorsbymax's).
+  // Which site each report came from (reports from before sites were recorded are Kamiliyon's).
   const siteOf = (r) => r.site || 'colorsbymax'
   const sites = [...new Set(inbox.reports.map(siteOf))]
   const [status, setStatus] = useState('new')

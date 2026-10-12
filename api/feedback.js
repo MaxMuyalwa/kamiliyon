@@ -1,4 +1,4 @@
-// Feedback from the colorsbymax site, emailed to Max through Resend (https://resend.com).
+// Feedback from the Kamiliyon site, emailed to Max through Resend (https://resend.com).
 //
 // The site's feedback form POSTs multipart form data: a "report" field (JSON) and up to six
 // "screenshots" files. This Vercel function checks it and sends one email, with the screenshots
@@ -8,7 +8,7 @@
 //   RESEND_API_KEY   a Resend API key with sending access (required)
 //   FEEDBACK_TO      where reports go (default mmkaluku@gmail.com)
 //   FEEDBACK_FROM    the sender, on a domain verified in Resend, e.g.
-//                    "colorsbymax feedback <feedback@mrmaxdesigns.com>"
+//                    "Kamiliyon feedback <feedback@mrmaxdesigns.com>"
 //                    (default Resend's test sender, which only delivers to the Resend account's own email)
 
 import { inboxReady, saveReport } from './_lib/inbox.js'
@@ -30,7 +30,7 @@ function emailHtml(r, env, shots) {
   const stars = r.rating ? `${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)} (${r.rating}/5)` : ''
   const envRows = env ? Object.entries(env).map(([k, v]) => row(k, v)).join('') : ''
   return `<div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:14px;color:#111827;max-width:640px">
-  <p style="margin:0 0 4px;color:#6b7280;font-size:12px;text-transform:uppercase;letter-spacing:.05em">${esc(KINDS[r.kind] ?? 'Feedback')} · colorsbymax</p>
+  <p style="margin:0 0 4px;color:#6b7280;font-size:12px;text-transform:uppercase;letter-spacing:.05em">${esc(KINDS[r.kind] ?? 'Feedback')} · Kamiliyon</p>
   <h2 style="margin:0 0 16px;font-size:20px">${esc(r.summary)}</h2>
   <table style="border-collapse:collapse">${row('From', [r.name, r.github && `@${r.github}`].filter(Boolean).join(' · '))}${row('Email', r.email && `${r.email}${r.contact ? ' (happy to be contacted)' : ''}`)}${row('Areas', (r.areas ?? []).join(', '))}${row('Rating', stars)}${row('Severity', r.severity)}${row('How often', r.frequency)}</table>
   ${block(r.kind === 'bug' ? 'What happened' : 'Details', r.details)}
@@ -41,7 +41,7 @@ function emailHtml(r, env, shots) {
 }
 
 export async function POST(request) {
-  // Only the colorsbymax site may send.
+  // Only the Kamiliyon site may send.
   const origin = request.headers.get('origin') ?? ''
   if (origin && !ALLOWED_ORIGINS.some((re) => re.test(origin))) return json(403, { error: 'Not allowed.' })
   if (Number(request.headers.get('content-length') ?? 0) > MAX_TOTAL_BYTES + 256 * 1024) return json(413, { error: 'That report is too large. Try fewer or smaller screenshots.' })
@@ -109,9 +109,9 @@ export async function POST(request) {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: process.env.FEEDBACK_FROM || 'colorsbymax feedback <onboarding@resend.dev>',
+      from: process.env.FEEDBACK_FROM || 'Kamiliyon feedback <onboarding@resend.dev>',
       to: (process.env.FEEDBACK_TO || 'mmkaluku@gmail.com').split(',').map((s) => s.trim()),
-      subject: `[colorsbymax] ${KINDS[report.kind]}: ${report.summary}`,
+      subject: `[Kamiliyon] ${KINDS[report.kind]}: ${report.summary}`,
       html: emailHtml(report, env, files),
       text: clip(r.markdown, 20000) || `${KINDS[report.kind]}: ${report.summary}\nFrom: ${report.name}`,
       ...(email ? { reply_to: email } : {}),

@@ -5,7 +5,7 @@ import type { ReactElement, ReactNode } from 'react'
 
 // ---------------------------------------------------------------- tokens and themes
 
-/** Every themeable colour. Each is exposed to CSS as `--color-<key>`. */
+/** Every themeable color. Each is exposed to CSS as `--color-<key>`. */
 export type TokenKey =
   | 'primary' | 'primary-dark' | 'primary-alt' | 'on-primary'
   | 'background' | 'surface' | 'secondary' | 'on-secondary' | 'accent' | 'on-accent' | 'border' | 'shadow'
@@ -59,66 +59,66 @@ export interface ColorsByMaxConfig {
   siteName?: string
   /** localStorage key; must match the pre-paint script. Defaults to "colorsbymax". */
   storageKey?: string
-  /** The site's own colours. Missing tokens are filled in. */
+  /** The site's own colors. Missing tokens are filled in. */
   defaultTheme?: { name: string; tokens: Partial<ThemeTokens> }
   /** Extra themes made for the site. */
   themes?: { id: string; name: string; tokens: Partial<ThemeTokens> }[]
-  /** Where each token is used on the site, shown in the colour editors. */
+  /** Where each token is used on the site, shown in the color editors. */
   usage?: Partial<Record<TokenKey, string>>
-  /** Colour the page's scrollbars from the theme. Default true. */
+  /** Color the page's scrollbars from the theme. Default true. */
   scrollbars?: boolean
   /** Enables PDF uploads: pass `loadPdf` from 'colorsbymax/pdf' (needs pdfjs-dist installed). */
   pdf?: () => Promise<unknown>
   /**
-   * Re-colour a site that doesn't paint with the --color-* variables, by swapping the colours
+   * Re-color a site that doesn't paint with the --color-* variables, by swapping the colors
    * actually on the page. 'auto' (the default) does it only when the site doesn't define
    * --color-primary itself; false never does.
    */
   recolour?: boolean | 'auto'
   /**
-   * Where the colour button starts. Default 'bottom-right', like chat and help widgets;
+   * Where the color button starts. Default 'bottom-right', like chat and help widgets;
    * 'top-right' sits just under a floating nav bar. Visitors can still drag it anywhere.
    */
   position?: 'bottom-right' | 'bottom-left' | 'top-left' | 'top-right'
   /**
-   * Hide the colour button and panel; the theme still applies. `hidden: import.meta.env.PROD`
-   * keeps it out of production once the colours are chosen, while it still shows in development.
+   * Hide the color button and panel; the theme still applies. `hidden: import.meta.env.PROD`
+   * keeps it out of production once the colors are chosen, while it still shows in development.
    */
   hidden?: boolean
   /**
-   * Bring the colour button in with a short pop and a burst of the theme's colours, a moment after
+   * Bring the color button in with a short pop and a burst of the theme's colors, a moment after
    * the page loads (default true). With reduced motion it fades in instead.
    */
   intro?: boolean
   /**
-   * Whether themes colour the site's logo for a first-time visitor (default false: the logo keeps
-   * its own colours). Visitors can still change it in the panel's settings.
+   * Whether themes color the site's logo for a first-time visitor (default false: the logo keeps
+   * its own colors). Visitors can still change it in the panel's settings.
    */
   colourLogo?: boolean
   /**
    * How boldly the site takes a theme, for a first-time visitor. 'subtle' keeps the site's own
    * backgrounds, cards and text and brings the theme in on buttons, links and highlights.
    * 'balanced' is the theme as designed (the default on a site painted with the --color-*
-   * variables). 'colourful' is an overhaul: tinted backgrounds, and the page's parts painted by role
-   * as a designer would (the default on a site colorsbymax re-colours). Visitors can switch in the panel.
+   * variables). 'colorful' is an overhaul: tinted backgrounds, and the page's parts painted by role
+   * as a designer would (the default on a site colorsbymax re-colors). Visitors can switch in the panel.
    */
-  colourStyle?: 'subtle' | 'balanced' | 'colourful'
+  colourStyle?: 'subtle' | 'balanced' | 'colourful' | 'colorful'
   /**
    * The bell in the panel: says when a newer colorsbymax is out, with how to update, and shows news
    * from mrmaxdesigns. 'dev' (default) shows it only on development addresses (localhost and the
    * like), never to a live site's visitors; true everywhere; false never. It checks once a day.
    */
   updates?: boolean | 'dev'
-  /** How strongly Colourful paints for a first-time visitor, 0 (a light wash) to 100 (bold). Default 50. */
+  /** How strongly Colorful paints for a first-time visitor, 0 (a light wash) to 100 (bold). Default 50. */
   colourStrength?: number
   /**
    * Parts of the panel to switch off for everyone, e.g. `{ scan: false, audit: false }`. All are on
    * by default. Unlike the rest of the config it's read live, so a site can change it after loading.
    */
-  features?: Partial<Record<'picks' | 'library' | 'search' | 'surprise' | 'scan' | 'custom' | 'overrides' | 'importExport' | 'audit' | 'addToSite' | 'colourStyle' | 'colourCount' | 'studio', boolean>>
+  features?: Partial<Record<'picks' | 'library' | 'search' | 'surprise' | 'scan' | 'custom' | 'overrides' | 'importExport' | 'audit' | 'addToSite' | 'colourStyle' | 'colourCount' | 'studio' | 'picker', boolean>>
   /**
-   * Only colour these pages, e.g. `['/', '/pricing', '/blog/*']`. A path ending in `/*` is that
-   * section and every page under it. Every other page keeps its own colours. Default: the whole
+   * Only color these pages, e.g. `['/', '/pricing', '/blog/*']`. A path ending in `/*` is that
+   * section and every page under it. Every other page keeps its own colors. Default: the whole
    * site. A visitor can choose differently in Studio, on their own device.
    */
   pages?: string[]
@@ -137,7 +137,7 @@ export interface ThemeProviderProps {
 /** Applies the saved or chosen theme to the page and provides it to the switcher and useTheme(). */
 export function ThemeProvider(props: ThemeProviderProps): ReactElement
 
-/** The floating colour button and panel. Render it once, inside ThemeProvider. */
+/** The floating color button and panel. Render it once, inside ThemeProvider. */
 export function ThemeSwitcher(): ReactElement | null
 
 export interface ScanResult {
@@ -163,7 +163,7 @@ export interface ThemeApi {
   position: 'bottom-right' | 'bottom-left' | 'top-left' | 'top-right'
   /** True when the config hides the switcher; the theme still applies. */
   hidden: boolean
-  /** Whether the colour button makes an entrance when it first appears. */
+  /** Whether the color button makes an entrance when it first appears. */
   intro: boolean
   /** The mode in effect: every theme shows its light or dark version. */
   mode: 'light' | 'dark'
@@ -171,12 +171,12 @@ export interface ThemeApi {
   modeSetting: 'light' | 'dark' | 'system'
   /** Sets the mode, for the whole site, and remembers it. */
   setMode(mode: 'light' | 'dark' | 'system'): void
-  /** True when colorsbymax is swapping the page's own colours (the site isn't using the variables). */
+  /** True when colorsbymax is swapping the page's own colors (the site isn't using the variables). */
   recolouring: boolean
-  /** Turns re-colouring of the site's logo on or off. */
+  /** Turns re-coloring of the site's logo on or off. */
   setLogoColouring(on: boolean): void
-  /** How boldly a re-coloured site takes the theme (the panel's Subtle / Colourful switch). */
-  setColourStyle(style: 'colourful' | 'subtle'): void
+  /** How boldly a re-colored site takes the theme (the panel's Subtle / Colorful switch). */
+  setColourStyle(style: 'subtle' | 'balanced' | 'colourful' | 'colorful'): void
   /** The site's own themes, then any scan suggestions. */
   siteThemes: Theme[]
   defaultTheme: Theme
@@ -186,14 +186,14 @@ export interface ThemeApi {
   themes: Theme[]
   /** The applied theme. */
   active: Theme
-  /** The applied colours: the active theme plus any overrides. */
+  /** The applied colors: the active theme plus any overrides. */
   tokens: ThemeTokens
-  /** Contrast problems in the applied colours. */
+  /** Contrast problems in the applied colors. */
   issues: ContrastIssue[]
 
   /** Selects a theme by id; pass the theme itself for library themes and dark twins. */
   selectTheme(id: string, theme?: Theme): void
-  /** Creates a custom palette from the current colours and applies it. Returns its id. */
+  /** Creates a custom palette from the current colors and applies it. Returns its id. */
   createCustom(name: string): string
   updateCustomToken(id: string, key: TokenKey, value: string): void
   renameCustom(id: string, name: string): void
@@ -207,7 +207,7 @@ export interface ThemeApi {
   resetToDefault(): void
 
   scanned: ScanResult | null
-  /** Reads the page's colours and adds themes built around them. Resolves to counts for the UI. */
+  /** Reads the page's colors and adds themes built around them. Resolves to counts for the UI. */
   runScan(): Promise<{ colours: number; themes: number }>
   clearScan(): void
 
@@ -245,13 +245,13 @@ export interface PanelSettings {
   panelWidth: number | null
   panelHeight: number | 'full' | null
   libraryCollapsed: boolean
-  /** Whether themes re-colour the site's logo too. Off (the default) keeps its own colours. */
+  /** Whether themes re-color the site's logo too. Off (the default) keeps its own colors. */
   colourLogo: boolean
   /** How boldly the site takes a theme: its own look with the theme's accents, the theme as designed, or an overhaul. */
   colourStyle: 'subtle' | 'balanced' | 'colourful'
-  /** How strongly Colourful paints, 0 (a light wash) to 100 (bold). */
+  /** How strongly Colorful paints, 0 (a light wash) to 100 (bold). */
   colourStrength: number
-  /** Whether Colourful tints the page with colours from the site's own pictures. */
+  /** Whether Colorful tints the page with colors from the site's own pictures. */
   imageTints: boolean
   /** Hidden on this device (from the finish screen); Alt+Shift+C or ?colorsbymax brings it back. */
   hideButton: boolean
@@ -294,12 +294,12 @@ export function checkTheme(tokens: ThemeTokens): ContrastIssue[]
 export function suggestFix(pairing: Pairing, tokens: ThemeTokens): { key: TokenKey; value: string } | null
 /** Fixes failing pairings until the theme passes or nothing more helps. Returns the changed tokens. */
 export function fixAll(tokens: ThemeTokens): Partial<ThemeTokens>
-/** Problems with an ordered colour ramp drawn on `surface`, as sentences. */
+/** Problems with an ordered color ramp drawn on `surface`, as sentences. */
 export function checkRamp(colors: string[], surface: string): string[]
 
-// ---------------------------------------------------------------- colour helpers
+// ---------------------------------------------------------------- color helpers
 
-/** WCAG 2 contrast ratio between two hex colours, 1–21. */
+/** WCAG 2 contrast ratio between two hex colors, 1–21. */
 export function contrastRatio(a: string, b: string): number
 /** "#abc", "abc" or "#AABBCC" → "#aabbcc"; null for anything else. */
 export function normalizeHex(input: unknown): string | null
@@ -319,17 +319,17 @@ export interface ColourTally {
   hex: string
   /** Area painted as a background. */
   bg: number
-  /** Weighted amount of text in this colour. */
+  /** Weighted amount of text in this color. */
   text: number
-  /** Border length in this colour. */
+  /** Border length in this color. */
   border: number
 }
 
 export type Roles = Partial<Record<TokenKey, string>>
 
-/** The page's painted colours, ignoring any applied theme. `exclude` is a selector to skip. */
+/** The page's painted colors, ignoring any applied theme. `exclude` is a selector to skip. */
 export function collectColors(options?: { exclude?: string }): ColourTally[]
-/** Works out token roles from collected colours. */
+/** Works out token roles from collected colors. */
 export function inferRoles(colors: ColourTally[]): { roles: Roles; palette: string[] }
 /** A complete theme from detected roles, deriving whatever wasn't found. */
 export function themeFromRoles(
@@ -343,14 +343,14 @@ export function detectSiteName(doc?: Document): string
 
 // ---------------------------------------------------------------- palettes from files
 
-/** The main colours in an image (or a PDF, with `loadPdf`), most important first. */
+/** The main colors in an image (or a PDF, with `loadPdf`), most important first. */
 export function coloursFromFile(
   file: File,
   options?: { loadPdf?: (() => Promise<unknown>) | null },
 ): Promise<{ colours: string[]; from: 'image' | 'pdf-text' | 'pdf' }>
-/** The dominant colours in sets of RGBA pixels, edge blends removed. */
+/** The dominant colors in sets of RGBA pixels, edge blends removed. */
 export function dominantColours(pixelSets: Uint8ClampedArray[]): string[]
-/** Assigns a palette's colours to theme roles. */
+/** Assigns a palette's colors to theme roles. */
 export function rolesFromPalette(colours: string[]): Roles
 /** A complete, contrast-checked theme built around a palette. */
 export function themeFromPalette(colours: string[]): ThemeTokens

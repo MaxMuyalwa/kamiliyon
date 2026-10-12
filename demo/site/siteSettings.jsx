@@ -1,5 +1,5 @@
 // The site's own settings, edited in the admin space and saved in the repo (api/site.js): the
-// landing page's editable text, and which parts of the colour panel are on. Loaded once per page,
+// landing page's editable text, and which parts of the color panel are on. Loaded once per page,
 // and kept in this browser too, so the next visit shows them straight away.
 
 import { useEffect, useState } from 'react'
@@ -11,14 +11,14 @@ const CACHE = 'colorsbymax-site:settings'
 /** The landing page text the admin can edit, with what it says by default. */
 export const EDITABLE_TEXT = [
   { key: 'hero.badge', label: 'Hero badge', default: 'A live theme switcher · 700+ palettes · contrast checked' },
-  { key: 'hero.title', label: 'Headline', default: 'Colour your whole site' },
+  { key: 'hero.title', label: 'Headline', default: 'Color your whole site' },
   { key: 'hero.highlight', label: 'Headline highlight (in the gradient)', default: 'like a designer would.' },
   {
     key: 'hero.subtitle',
     label: 'Subtext',
     long: true,
     default:
-      'colorsbymax adds a colour button to your website. Try hundreds of professionally built palettes on your real pages, live, with every colour in the right role and every pairing checked so text stays readable.',
+      'Kamiliyon adds a color button to your website. Try hundreds of professionally built palettes on your real pages, live, with every color in the right role and every pairing checked so text stays readable.',
   },
   { key: 'hero.primary', label: 'Main button', default: 'Try it on this page' },
   { key: 'hero.secondary', label: 'Second button', default: 'Add it to your site' },
@@ -77,7 +77,7 @@ export function useSiteText() {
   return (key) => (text?.[key]?.trim() ? text[key] : DEFAULTS[key])
 }
 
-/** The theme provider, with the colour panel features the admin chose. */
+/** The theme provider, with the color panel features the admin chose. */
 export function SiteThemeProvider({ config, children }) {
   const { features } = useSiteSettings()
   return <ThemeProvider config={{ ...config, features: features ?? {} }}>{children}</ThemeProvider>

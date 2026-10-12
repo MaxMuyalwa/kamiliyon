@@ -174,7 +174,7 @@ export async function deleteEntry(kind, slug, login) {
 
 // ------------------------------------------------------------------ site settings
 
-/** The site's editable settings (landing page text, colour panel features): one JSON file. */
+/** The site's editable settings (landing page text, color panel features): one JSON file. */
 const SETTINGS = 'content/site.json'
 
 export async function readSettings() {

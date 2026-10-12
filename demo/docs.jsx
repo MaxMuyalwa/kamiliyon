@@ -10,7 +10,7 @@ import { Feedback } from './site/Feedback.jsx'
 import { ThemedFavicon } from './site/Favicon.jsx'
 import './demo.css'
 
-// The docs page: the README, changelog and, soon, posts. Same colorsbymax setup as the home page,
+// The docs page: the README, changelog and, soon, posts. Same Kamiliyon setup as the home page,
 // so the theme a visitor picked follows them here.
 const HOME = import.meta.env.BASE_URL
 

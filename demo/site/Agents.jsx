@@ -9,23 +9,23 @@ const OPENCODE = JSON.stringify({ mcp: { colorsbymax: { type: 'local', command: 
 const STEPS = [
   { Icon: Plug, title: 'Add the server', text: 'Once, with the setup for your editor below.' },
   { Icon: RefreshCw, title: 'Start a new session', text: 'Agents load servers when a session starts.' },
-  { Icon: MessageSquare, title: 'Ask', text: '“Add colorsbymax to this project.”' },
-  { Icon: Play, title: 'Run your site', text: 'The colour button appears. Start picking.' },
+  { Icon: MessageSquare, title: 'Ask', text: '“Add Kamiliyon to this project.”' },
+  { Icon: Play, title: 'Run your site', text: 'The color button appears. Start picking.' },
 ]
 
 // Every agent that runs local MCP servers: most take the same mcpServers JSON; the rest have a
 // command or their own file format. Popular ones first.
 const EDITORS = [
-  { label: 'Claude Code', content: <CodeBlock title="terminal" code="claude mcp add colorsbymax -- npx -y colorsbymax-mcp" />, note: 'Add --scope user to have it in every project. If claude isn’t found, ask Claude Code to add the server itself.' },
+  { label: 'Claude Code', content: <CodeBlock title="terminal" code="claude mcp add Kamiliyon -- npx -y colorsbymax-mcp" />, note: 'Add --scope user to have it in every project. If claude isn’t found, ask Claude Code to add the server itself.' },
   { label: 'Cursor', content: <CodeBlock title=".cursor/mcp.json" code={SERVER} />, note: 'In your project, or ~/.cursor/mcp.json for every project. It then shows under Settings → MCP.' },
   { label: 'VS Code Copilot', content: <CodeBlock title=".vscode/mcp.json" code={VSCODE} />, note: 'Then use it from Copilot Chat in Agent mode.' },
-  { label: 'Copilot CLI', content: <CodeBlock title="terminal" code="copilot mcp add colorsbymax -- npx -y colorsbymax-mcp" />, note: 'GitHub Copilot in the terminal. Or type /mcp add inside copilot. It’s saved to ~/.copilot/mcp-config.json.' },
-  { label: 'Codex', content: <CodeBlock title="terminal" code="codex mcp add colorsbymax -- npx -y colorsbymax-mcp" />, note: 'OpenAI’s Codex CLI saves it to ~/.codex/config.toml, which the Codex IDE extension shares.' },
+  { label: 'Copilot CLI', content: <CodeBlock title="terminal" code="copilot mcp add Kamiliyon -- npx -y colorsbymax-mcp" />, note: 'GitHub Copilot in the terminal. Or type /mcp add inside copilot. It’s saved to ~/.copilot/mcp-config.json.' },
+  { label: 'Codex', content: <CodeBlock title="terminal" code="codex mcp add Kamiliyon -- npx -y colorsbymax-mcp" />, note: 'OpenAI’s Codex CLI saves it to ~/.codex/config.toml, which the Codex IDE extension shares.' },
   { label: 'Antigravity', content: <CodeBlock title="~/.gemini/config/mcp_config.json" code={SERVER} />, note: 'Google Antigravity: in the agent panel, open … → MCP Servers → Manage MCP Servers → View raw config, add the entry and save. It reloads by itself. For one project, use .agents/mcp_config.json.' },
   { label: 'Gemini CLI', content: <CodeBlock title="~/.gemini/settings.json" code={SERVER} />, note: 'Or .gemini/settings.json in your project. Restart Gemini CLI and check it with /mcp.' },
   {
     label: 'Grok Build',
-    content: <CodeBlock title="terminal" code="grok mcp add colorsbymax -- npx -y colorsbymax-mcp" />,
+    content: <CodeBlock title="terminal" code="grok mcp add Kamiliyon -- npx -y colorsbymax-mcp" />,
     note: 'xAI’s coding agent saves it to ~/.grok/config.toml (add --scope project for .grok/config.toml). The first start downloads the server, so give it a moment, or raise startup_timeout_sec.',
   },
   { label: 'Claude Desktop', content: <CodeBlock title="claude_desktop_config.json" code={SERVER} />, note: 'Settings → Developer → Edit Config, then restart Claude Desktop.' },
@@ -47,15 +47,15 @@ const EDITORS = [
 }))
 
 const ASKS = [
-  'Add colorsbymax to this project.',
+  'Add Kamiliyon to this project.',
   'Find me a calm ocean theme that also works in dark mode.',
-  'Build a theme around our brand colours #e63946 and #1d3557, and check its contrast.',
+  'Build a theme around our brand colors #e63946 and #1d3557, and check its contrast.',
   'Does white text pass on #f59e0b?',
-  'I’ve picked my colours. Make them the default and hide the switcher in production.',
+  'I’ve picked my colors. Make them the default and hide the switcher in production.',
 ]
 
 const PROMPT =
-  "Install the colorsbymax npm package in this project and add import 'colorsbymax/auto' to the app's entry file, so the colorsbymax colour button appears on every page. For Next.js, Remix or other server-rendered apps, load it in the browser only, with import('colorsbymax/auto') inside a useEffect. Don't change anything else."
+  "Install the Kamiliyon npm package in this project and add import 'colorsbymax/auto' to the app's entry file, so the Kamiliyon color button appears on every page. For Next.js, Remix or other server-rendered apps, load it in the browser only, with import('colorsbymax/auto') inside a useEffect. Don't change anything else."
 
 export function Agents() {
   const [copied, copy] = useCopy()
@@ -67,8 +67,8 @@ export function Agents() {
       </div>
       <div className="mx-auto max-w-6xl">
         <SectionHeading id="agents-title" eyebrow="Coding agents" title="Let your AI agent do the setup">
-          The colorsbymax MCP server gives Claude Code, Cursor, Copilot, Codex, Antigravity, Gemini, Grok and other agents colorsbymax’s own tools. They set it up the
-          right way for your framework, find themes, build one from your brand colours, check contrast and finish. It reads your project but
+          The Kamiliyon MCP server gives Claude Code, Cursor, Copilot, Codex, Antigravity, Gemini, Grok and other agents Kamiliyon’s own tools. They set it up the
+          right way for your framework, find themes, build one from your brand colors, check contrast and finish. It reads your project but
           never changes it: your agent makes the edits, so you review them as usual.
         </SectionHeading>
 

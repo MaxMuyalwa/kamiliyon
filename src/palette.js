@@ -1,14 +1,14 @@
-// How many colours a theme uses, from 10 (all of them) down to 5 (its core). The ten are the
-// swatches on a theme's card: five core colours every page needs, and five extras.
+// How many colors a theme uses, from 10 (all of them) down to 5 (its core). The ten are the
+// swatches on a theme's card: five core colors every page needs, and five extras.
 //
 //   core    primary · primary-alt · primary-dark · background · ink
-//   extras  secondary (the soft brand tint) · data-1 … data-4 (chart and category colours)
+//   extras  secondary (the soft brand tint) · data-1 … data-4 (chart and category colors)
 //
-// Fewer colours keeps a site calmer and more of a piece. The extras go in order of how well they
-// fit the theme: a chart colour whose hue is furthest from the theme's own brand colours (a
+// Fewer colors keeps a site calmer and more of a piece. The extras go in order of how well they
+// fit the theme: a chart color whose hue is furthest from the theme's own brand colors (a
 // bright blue in a forest theme) goes first, one close to them last, and the soft tint, which is
-// the brand colour itself, only when the theme is down to five. A colour that's gone isn't left
-// as a hole: its role is painted with the colours that remain, so the site really uses fewer.
+// the brand color itself, only when the theme is down to five. A color that's gone isn't left
+// as a hole: its role is painted with the colors that remain, so the site really uses fewer.
 
 import { contrastRatio, hexToRgb, hslToRgb, mix, rgbToHex, rgbToHsl } from './color.js'
 import { fixAll } from './contrast.js'
@@ -27,7 +27,7 @@ const hueGap = (a, b) => {
 }
 export const clampColours = (n) => Math.min(MAX_COLOURS, Math.max(MIN_COLOURS, Math.round(Number(n) || MAX_COLOURS)))
 
-/** How far a colour's hue is from the theme's brand colours (0 = one of them); greys fit anything. */
+/** How far a color's hue is from the theme's brand colors (0 = one of them); greys fit anything. */
 function misfit(tokens, key) {
   const [h, s] = hslOf(tokens[key])
   if (s < 0.15) return 0
@@ -36,11 +36,11 @@ function misfit(tokens, key) {
   return Math.min(...brand.map(([bh]) => hueGap(h, bh)))
 }
 
-/** The swatch keys a theme keeps at `count` colours, in card order. */
+/** The swatch keys a theme keeps at `count` colors, in card order. */
 export function paletteKeys(tokens, count = MAX_COLOURS) {
   const n = clampColours(count)
   if (n >= MAX_COLOURS) return SWATCH_KEYS
-  // Extras by how well they fit: the soft tint first, then chart colours closest in hue.
+  // Extras by how well they fit: the soft tint first, then chart colors closest in hue.
   const extras = ['secondary', ...[...CHART].sort((a, b) => misfit(tokens, a) - misfit(tokens, b))]
   const kept = new Set(['primary', 'primary-alt', 'primary-dark', 'background', 'ink', ...extras.slice(0, n - MIN_COLOURS)])
   return SWATCH_KEYS.filter((k) => kept.has(k))
@@ -53,9 +53,9 @@ const atLightness = (hex, l) => {
 }
 
 /**
- * A theme's tokens using only `count` of its colours. Chart colours that go are painted with
- * the ones that stay (brand colours first), at their own lightness so charts keep their
- * contrast; a soft tint that goes becomes a tint of the brand colour. The colours it replaces are
+ * A theme's tokens using only `count` of its colors. Chart colors that go are painted with
+ * the ones that stay (brand colors first), at their own lightness so charts keep their
+ * contrast; a soft tint that goes becomes a tint of the brand color. The colors it replaces are
  * then run through the contrast fixes (lightness only), so a smaller palette still reads.
  */
 export function reducePalette(tokens, count = MAX_COLOURS) {
@@ -76,12 +76,12 @@ export function reducePalette(tokens, count = MAX_COLOURS) {
     out['on-secondary'] = onSecondary.find((c) => c && contrastRatio(c, out.secondary) >= 4.5) ?? tokens.ink
     replaced.add('secondary').add('on-secondary')
   }
-  // Only what was replaced may move: the theme's own colours stay exactly as designed.
+  // Only what was replaced may move: the theme's own colors stay exactly as designed.
   for (const [key, value] of Object.entries(fixAll(out))) if (replaced.has(key)) out[key] = value
   return out
 }
 
-/** A theme's saved colour count: its own, or the visitor's default for every theme. */
+/** A theme's saved color count: its own, or the visitor's default for every theme. */
 export const coloursFor = (sizes, themeId, fallback = MAX_COLOURS) => clampColours(sizes?.[baseId(themeId)] ?? fallback)
 /** Light and dark versions of a theme share one count. */
 export const baseId = (id) => String(id).replace(/~dark$/, '')

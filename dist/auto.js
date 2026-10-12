@@ -1,4 +1,4 @@
-import { n as ThemeProvider, t as ThemeSwitcher } from "./ThemeSwitcher-Dd9yiisP.js";
+import { n as ThemeProvider, t as ThemeSwitcher } from "./ThemeSwitcher-Dy-ZGPsw.js";
 import { createElement } from "react";
 import { createRoot } from "react-dom/client";
 //#region src/auto.js
@@ -6,7 +6,7 @@ var root = null;
 var container = null;
 var pending = null;
 /**
-* Mounts the colour button and panel on its own, outside the site's app. Calling it again
+* Mounts the color button and panel on its own, outside the site's app. Calling it again
 * replaces the previous mount with the new config. Returns a function that removes it.
 * @param {import('./ThemeProvider.jsx').ColorsByMaxConfig} [config]
 */

@@ -48,7 +48,7 @@ export function StarButton({ className = '', compactOnPhone = false }) {
       href={REPO}
       target="_blank"
       rel="noopener"
-      aria-label={`Star colorsbymax on GitHub${stars !== null ? ` (${stars} stars)` : ''}`}
+      aria-label={`Star Kamiliyon on GitHub${stars !== null ? ` (${stars} stars)` : ''}`}
       className={`group inline-flex items-center overflow-hidden rounded-full border border-border bg-surface text-sm font-semibold text-ink shadow-sm transition hover:-translate-y-px hover:border-primary hover:shadow-md ${className}`}
     >
       <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 ${compactOnPhone ? 'max-sm:h-8 max-sm:gap-1 max-sm:px-2.5 max-sm:py-0' : ''}`}>

@@ -3,13 +3,13 @@ import { useTheme } from '../../src/index.js'
 import { Reveal, SectionHeading } from './ui.jsx'
 import { Specimen } from './Specimen.jsx'
 
-// Why each role exists, in plain words. Grouped as in colorsbymax's token schema.
+// Why each role exists, in plain words. Grouped as in Kamiliyon's token schema.
 const GROUPS = [
   {
     name: 'Brand',
     intro: 'Your identity. Used sparingly, so it guides the eye to what matters.',
     roles: [
-      ['primary', 'Primary', 'Your main brand colour, kept for what should be clicked: buttons, links and focus rings. Rarity is what makes it pop.'],
+      ['primary', 'Primary', 'Your main brand color, kept for what should be clicked: buttons, links and focus rings. Rarity is what makes it pop.'],
       ['primary-dark', 'Primary dark', 'A deeper shade of the brand for the logo and brand text, where the brighter primary would be too soft to read.'],
       ['primary-alt', 'Primary alt', 'The gradient partner. It sits beside primary in gradients and glows, adding depth without becoming a second brand.'],
       ['on-primary', 'On primary', 'The text and icons that sit on primary. Chosen for contrast, so a button’s label is always readable.'],
@@ -21,12 +21,12 @@ const GROUPS = [
     roles: [
       ['background', 'Background', 'Behind everything, and most of the screen. A near-white or near-black with a hint of the brand.'],
       ['surface', 'Surface', 'Cards, panels and inputs, lifted off the background so related content reads as one group.'],
-      ['secondary', 'Tint', 'A soft wash of the brand for badges, highlighted areas and footers: colour without shouting.'],
+      ['secondary', 'Tint', 'A soft wash of the brand for badges, highlighted areas and footers: color without shouting.'],
       ['on-secondary', 'On tint', 'Text on the tint: a deep shade of the same hue, so it matches and still reads.'],
       ['accent', 'Hover tint', 'The quiet change under a hovered link or row that says “this is interactive”.'],
       ['on-accent', 'On hover tint', 'Text on the hover tint, readable at a glance.'],
       ['border', 'Border', 'Dividers and outlines. Subtle, because borders organise; they don’t carry meaning.'],
-      ['shadow', 'Shadow', 'Shadows tinted with the brand look natural. Pure black ones look muddy on a coloured page.'],
+      ['shadow', 'Shadow', 'Shadows tinted with the brand look natural. Pure black ones look muddy on a colored page.'],
     ],
   },
   {
@@ -40,7 +40,7 @@ const GROUPS = [
   },
   {
     name: 'Status',
-    intro: 'Colours with a meaning that must survive every theme.',
+    intro: 'Colors with a meaning that must survive every theme.',
     roles: [
       ['success', 'Success', 'Done, paid, saved. Green in every theme, so it never has to be learned twice.'],
       ['warning', 'Warning', 'Careful, due soon. Amber, a step before trouble.'],
@@ -50,8 +50,8 @@ const GROUPS = [
   },
   {
     name: 'Data',
-    intro: 'Eight colours far enough apart to tell apart, even side by side in a chart.',
-    roles: Array.from({ length: 8 }, (_, i) => [`data-${i + 1}`, `Data ${i + 1}`, i === 0 ? 'Charts, tags and categories. Each is distinct from its neighbours and readable as an icon.' : 'The next category colour, spaced from the others in hue and lightness.']),
+    intro: 'Eight colors far enough apart to tell apart, even side by side in a chart.',
+    roles: Array.from({ length: 8 }, (_, i) => [`data-${i + 1}`, `Data ${i + 1}`, i === 0 ? 'Charts, tags and categories. Each is distinct from its neighbours and readable as an icon.' : 'The next category color, spaced from the others in hue and lightness.']),
   },
   {
     name: 'Second area',
@@ -81,8 +81,8 @@ export function Roles() {
     <section aria-labelledby="roles-title" id="roles" className="relative overflow-hidden px-6 py-24">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-secondary/50 to-transparent" aria-hidden="true" />
       <div className="mx-auto max-w-6xl">
-        <SectionHeading id="roles-title" eyebrow="Colour roles, explained" title="Every colour has a job">
-          A palette is more than five pretty colours. Every colorsbymax theme gives each of its 35 colours a role, so each one lands where
+        <SectionHeading id="roles-title" eyebrow="Color roles, explained" title="Every color has a job">
+          A palette is more than five pretty colors. Every Kamiliyon theme gives each of its 35 colors a role, so each one lands where
           it works. Hover a role to see where it’s used.
         </SectionHeading>
 

@@ -2,10 +2,10 @@
 // scrolled to a section, for the landing page's live pictures of it:
 //
 //   desktop, phone                 the hero's window and phone, the panel open on desktop
-//   subtle, balanced, colourful    the "Colour styles" section: the page in each colour style
-//   studio                         the "Studio" section: Studio picking a card and colouring it
+//   subtle, balanced, colorful    the "Color styles" section: the page in each color style
+//   studio                         the "Studio" section: Studio picking a card and coloring it
 //
-// Each keeps its own copy of the visitor's colorsbymax state, so what happens in here never changes
+// Each keeps its own copy of the visitor's Kamiliyon state, so what happens in here never changes
 // their real one, and the copies never change each other.
 
 import { inScope, normalPath } from '../../src/scope.js'
@@ -16,8 +16,8 @@ const STYLE_KINDS = ['subtle', 'balanced', 'colourful']
 
 const FROM = 'colorsbymax-demo'
 const TO = `colorsbymax-preview-${PREVIEW}`
-// With the site's own colours on, Subtle and Balanced look the same (both are the site as
-// designed), so the colour style pictures show one of Max's picks instead.
+// With the site's own colors on, Subtle and Balanced look the same (both are the site as
+// designed), so the color style pictures show one of Max's picks instead.
 const SHOWCASE_THEME = 'sunset'
 
 /** The site's config for the embedded copy: the visitor's saved state under its own key. */
@@ -27,7 +27,7 @@ export function previewConfig(config) {
       const key = localStorage.key(i)
       if (key.startsWith(`${FROM}:`) || key === FROM) localStorage.setItem(TO + key.slice(FROM.length), localStorage.getItem(key))
     }
-    // The copy is the page it sits in, whatever its address: coloured exactly when that page is
+    // The copy is the page it sits in, whatever its address: colored exactly when that page is
     // (Studio's "only some pages"), with that page's Studio changes.
     const state = JSON.parse(localStorage.getItem(TO) || 'null')
     if (state) {
@@ -46,8 +46,8 @@ export function previewConfig(config) {
       }
       localStorage.setItem(TO, JSON.stringify(state))
     }
-    // The colour button in its usual corner, and a roomier panel (as if dragged wider) so its
-    // header and theme cards read well when scaled down. The colour style pictures show the page
+    // The color button in its usual corner, and a roomier panel (as if dragged wider) so its
+    // header and theme cards read well when scaled down. The color style pictures show the page
     // alone, in their own style.
     localStorage.removeItem(`${TO}:button`)
     const key = `${TO}:settings`
@@ -82,17 +82,17 @@ export async function setUpPreview() {
   for (let el = why.nextElementSibling; el; el = el.nextElementSibling) el.style.visibility = 'hidden'
   document.querySelector('footer')?.style.setProperty('visibility', 'hidden')
   const root = document.querySelector('colorsbymax-root')?.shadowRoot
-  const button = () => root?.querySelector('button[aria-label^="colorsbymax theme settings"]')
+  const button = () => root?.querySelector('button[aria-label^="Kamiliyon theme settings"]')
 
   if (PREVIEW === 'phone') {
-    // The phone shows the page on its own, from the "colorsbymax way" card.
+    // The phone shows the page on its own, from the "Kamiliyon way" card.
     const title = [...why.querySelectorAll('h3')].find((h) => h.textContent.startsWith('The research'))
     const card = title?.closest('.bg-primary') ?? why
     window.scrollTo(0, card.getBoundingClientRect().top + scrollY - 70)
   } else if (STYLE_KINDS.includes(PREVIEW)) {
-    // The section's heading and its cards, in this colour style (the button is hidden).
+    // The section's heading and its cards, in this color style (the button is hidden).
     window.scrollTo(0, why.getBoundingClientRect().top + scrollY + 40)
-    await wait(600) // the guard's check, once the colours are on
+    await wait(600) // the guard's check, once the colors are on
   } else if (PREVIEW === 'studio') {
     window.scrollTo(0, why.getBoundingClientRect().top + scrollY + 40)
     if (root && (await until(button))) {
@@ -100,7 +100,7 @@ export async function setUpPreview() {
       ;(await until(() => root.querySelector('[aria-label="Studio"]')))?.click()
       ;(await until(() => [...root.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Point and click')))?.click()
       await wait(300)
-      // Pick the second card, and give it the theme's brand colour as its background.
+      // Pick the second card, and give it the theme's brand color as its background.
       const title = [...why.querySelectorAll('h3')][1]
       const card = title?.closest('.rounded-3xl') ?? title
       card?.click()

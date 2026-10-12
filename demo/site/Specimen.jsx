@@ -1,4 +1,4 @@
-// A small made-up website painted entirely with colour roles. The hero shows it off; the colour
+// A small made-up website painted entirely with color roles. The hero shows it off; the color
 // roles section highlights where each role is used as you hover it.
 
 import { createContext, useContext } from 'react'
@@ -56,7 +56,7 @@ export function Specimen({ highlight = null, compact = false }) {
               New season
             </R>
             <R as="p" roles="ink" className="font-display text-2xl leading-tight font-bold text-ink">
-              Colour that works on every page
+              Color that works on every page
             </R>
             <R as="p" roles="ink-secondary" className="text-sm leading-relaxed text-ink-secondary">
               Buttons stand out, text stays readable, and every tint belongs to the same family.

@@ -1,9 +1,9 @@
-// Studio's point and click: pick any part of the page and give it its own colours. Each change is
+// Studio's point and click: pick any part of the page and give it its own colors. Each change is
 // a "paint": what was picked (a CSS selector for it, and for every part like it), how to describe
-// it to a person or an AI agent, and its background, text and border colours. Paints are drawn
+// it to a person or an AI agent, and its background, text and border colors. Paints are drawn
 // with a stylesheet on the page they were made on, and exported as a prompt or as CSS.
 //
-// A colour is { token, hex }: picked from the theme's swatches it follows the theme (the token),
+// A color is { token, hex }: picked from the theme's swatches it follows the theme (the token),
 // with the hex it was when picked; or a custom { hex }.
 
 import { contrastRatio, normalizeHex } from './color.js'
@@ -13,7 +13,7 @@ import { TOKEN_KEYS, TOKEN_LABELS } from './tokens.js'
 
 /** Most paints a site keeps. */
 export const MAX_PAINTS = 80
-/** The theme colours offered as swatches, in order. */
+/** The theme colors offered as swatches, in order. */
 export const SWATCH_TOKENS = ['primary', 'primary-alt', 'primary-dark', 'secondary', 'accent', 'on-primary', 'background', 'surface', 'ink', 'ink-muted', 'data-1', 'data-2', 'data-3']
 export const PROPS = [
   { key: 'background', label: 'Background' },
@@ -102,7 +102,7 @@ export function selectorFor(el) {
 
 /** A selector for every part like this one: the same tag and classes, or its siblings of that tag. */
 export function similarSelector(el) {
-  const classes = [...el.classList].filter((c) => !/^(cbm|colorsbymax)/.test(c)).slice(0, 8)
+  const classes = [...el.classList].filter((c) => !/^(cbm|Kamiliyon)/.test(c)).slice(0, 8)
   if (classes.length) return `${el.localName}${classes.map((c) => `.${CSS.escape(c)}`).join('')}`
   const path = selectorFor(el).split(' > ')
   path[path.length - 1] = el.localName
@@ -200,12 +200,12 @@ export function describe(el) {
   }
 }
 
-// ---------------------------------------------------------------- colours on the page
+// ---------------------------------------------------------------- colors on the page
 
 let canvas = null
 const rgbaCache = new Map()
 /**
- * Any CSS colour the browser understands (rgb, hex, oklch, color(srgb …), color-mix and the rest)
+ * Any CSS color the browser understands (rgb, hex, oklch, color(srgb …), color-mix and the rest)
  * as [r, g, b, alpha], read back from a pixel so every format comes out the same way.
  */
 export function rgbaOf(colour) {
@@ -223,7 +223,7 @@ export function rgbaOf(colour) {
       canvas.clearRect(0, 0, 1, 1)
       canvas.fillStyle = colour
       canvas.fillRect(0, 0, 1, 1)
-      // getImageData hands back the colour itself and its alpha, separately (not premultiplied).
+      // getImageData hands back the color itself and its alpha, separately (not premultiplied).
       const [r, g, b, a] = canvas.getImageData(0, 0, 1, 1).data
       out = [r, g, b, a / 255]
     } catch {
@@ -236,10 +236,10 @@ export function rgbaOf(colour) {
 }
 
 const hexOfRgb = (rgb) => `#${rgb.map((n) => Math.round(Math.min(255, Math.max(0, n))).toString(16).padStart(2, '0')).join('')}`
-/** `top` (with its alpha) laid over the solid colour `under`. */
+/** `top` (with its alpha) laid over the solid color `under`. */
 const over = ([r, g, b, a], under) => under.map((u, i) => [r, g, b][i] * a + u * (1 - a))
 
-/** Any CSS colour as #rrggbb, or null when it's mostly see-through. */
+/** Any CSS color as #rrggbb, or null when it's mostly see-through. */
 export function toHex(colour) {
   const [r, g, b, a] = rgbaOf(colour)
   return a < 0.5 ? null : hexOfRgb([r, g, b])
@@ -255,7 +255,7 @@ function pageBackdrop() {
 }
 
 /**
- * The solid colour an element's text sits on: its own background and every see-through one
+ * The solid color an element's text sits on: its own background and every see-through one
  * behind it, laid over each other down to the first solid one (or the page). Background
  * pictures and gradients aren't counted.
  */
@@ -274,14 +274,14 @@ export function backgroundRgb(el) {
 }
 export const backgroundBehind = (el) => hexOfRgb(backgroundRgb(el))
 
-/** An element's text colour as it shows: faded by its own alpha and any see-through parents. */
+/** An element's text color as it shows: faded by its own alpha and any see-through parents. */
 export function textRgb(el, background = backgroundRgb(el)) {
   let [r, g, b, a] = rgbaOf(getComputedStyle(el).color)
   for (let node = el; node && node.nodeType === 1; node = node.parentElement) a *= Number(getComputedStyle(node).opacity) || 0
   return over([r, g, b, a], background)
 }
 
-/** Text against its background right now: the ratio, both colours, and what it needs to pass. */
+/** Text against its background right now: the ratio, both colors, and what it needs to pass. */
 export function readability(el) {
   const bg = backgroundRgb(el)
   const text = hexOfRgb(textRgb(el, bg))
@@ -321,8 +321,8 @@ export function checkText(roots, max = 60) {
 }
 
 /**
- * The best text colour for a background: the theme colour that reads best, or black or white
- * when no theme colour is readable enough.
+ * The best text color for a background: the theme color that reads best, or black or white
+ * when no theme color is readable enough.
  */
 export function bestText(background, tokens, need = 4.5) {
   const seen = new Set()
@@ -383,7 +383,7 @@ export const selectorOf = (paint) => ((paint.all || paint.everywhere) && paint.s
 /** The page a paint is drawn on, or '*' for one that goes on every page. */
 export const pageOf = (paint) => (paint.everywhere ? '*' : paint.page)
 
-/** A colour for the stylesheet: the theme's variable where it follows the theme, else its hex. */
+/** A color for the stylesheet: the theme's variable where it follows the theme, else its hex. */
 const cssValue = (v, themed) => (v.token && themed ? `var(--color-${v.token}${v.hex ? `, ${v.hex}` : ''})` : v.hex ?? `var(--color-${v.token})`)
 
 /** The stylesheet for some paints. `themed`: the page takes the theme, so swatches follow it. */
@@ -402,7 +402,7 @@ export function paintCss(paints, themed = true) {
 }
 
 const hexOf = (v, tokens) => (v.token ? tokens[v.token] : v.hex)
-const nameOf = (v, tokens) => (v.token ? `${hexOf(v, tokens)} (the theme's ${TOKEN_LABELS[v.token]?.toLowerCase() ?? v.token} colour, var(--color-${v.token}))` : v.hex)
+const nameOf = (v, tokens) => (v.token ? `${hexOf(v, tokens)} (the theme's ${TOKEN_LABELS[v.token]?.toLowerCase() ?? v.token} color, var(--color-${v.token}))` : v.hex)
 const partName = (p) => {
   const kind = p.kind.toLowerCase()
   const what = p.text ? `the ${kind} “${p.text}”` : `${['header', 'footer', 'navigation', 'sidebar', 'main area'].includes(kind) ? 'the' : 'a'} ${kind}`
@@ -425,10 +425,10 @@ export function paintsPrompt(paints, tokens) {
     })
     return `${onPage(page)}:\n${lines.join('\n')}`
   })
-  return `Make these colour changes in my site's code. I picked them in colorsbymax Studio by clicking on the page. Find each part in the code from its description and words (the CSS selector is only a hint), and change only what's listed; keep everything else the same. Where the site already has a colour variable or theme setting for a colour, use that instead of hard-coding the hex.\n\n${pages.join('\n\n')}`
+  return `Make these color changes in my site's code. I picked them in Kamiliyon Studio by clicking on the page. Find each part in the code from its description and words (the CSS selector is only a hint), and change only what's listed; keep everything else the same. Where the site already has a color variable or theme setting for a color, use that instead of hard-coding the hex.\n\n${pages.join('\n\n')}`
 }
 
-/** The changes as plain CSS, with the theme's colours as hex. */
+/** The changes as plain CSS, with the theme's colors as hex. */
 export function paintsCssExport(paints, tokens) {
   return [...groupByPage(paints)]
     .map(([page, list]) => {
@@ -442,7 +442,7 @@ export function paintsCssExport(paints, tokens) {
           ...(border ? [`${sel} { ${p.hasBorder ? 'border-color:' : 'border: 1px solid'} ${hexOf(border, tokens)}; }`] : []),
         ]
       })
-      return `/* colorsbymax Studio, ${page === '*' ? 'on every page' : `on ${page}`} */\n${rules.join('\n')}`
+      return `/* Kamiliyon Studio, ${page === '*' ? 'on every page' : `on ${page}`} */\n${rules.join('\n')}`
     })
     .join('\n\n')
 }

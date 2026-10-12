@@ -2,7 +2,7 @@ import { ArrowUpRight, Heart } from 'lucide-react'
 import { GitHubIcon, MRMAX, Reveal, REPO } from './ui.jsx'
 import portrait from '../assets/max-muyalwa.webp'
 
-/** Who makes colorsbymax, and why. */
+/** Who makes Kamiliyon, and why. */
 export function About() {
   return (
     <section aria-labelledby="about-title" id="about" className="px-6 py-24">
@@ -13,7 +13,7 @@ export function About() {
               fills the circle without stretching and nothing important is cut off. */}
           <img
             src={portrait}
-            alt="Max Muyalwa, the designer behind mrmaxdesigns and colorsbymax"
+            alt="Max Muyalwa, the designer behind mrmaxdesigns and Kamiliyon"
             width="240"
             height="240"
             loading="lazy"
@@ -26,15 +26,15 @@ export function About() {
             <Heart className="h-3.5 w-3.5" aria-hidden="true" /> Made by mrmaxdesigns
           </p>
           <h2 id="about-title" className="font-display text-3xl font-bold tracking-tight text-ink md:text-4xl">
-            Built by a designer who got tired of guessing colours.
+            Built by a designer who got tired of guessing colors.
           </h2>
           <div className="mt-5 space-y-4 leading-relaxed text-ink-secondary">
             <p>
-              colorsbymax is designed and built by Max Muyalwa at{' '}
+              Kamiliyon is designed and built by Max Muyalwa at{' '}
               <a href={MRMAX} className="font-semibold text-primary underline decoration-2 underline-offset-2">
                 mrmaxdesigns.com
               </a>
-              . It started as a theme switcher for a website he was designing, where choosing colours meant hours in pickers and swatch files,
+              . It started as a theme switcher for a website he was designing, where choosing colors meant hours in pickers and swatch files,
               then a contrast check that sent everything back to the start.
             </p>
             <p>
@@ -71,9 +71,9 @@ export function Closing() {
         <div className="dot-grid absolute inset-0 opacity-30" aria-hidden="true" />
         <div className="relative">
           <h2 id="closing-title" className="mx-auto max-w-3xl font-display text-4xl font-extrabold tracking-tight md:text-6xl">
-            Ready to see your site in colour?
+            Ready to see your site in color?
           </h2>
-          <p className="mx-auto mt-5 max-w-xl text-lg opacity-90">One install, one line, and a colour studio on every page. Or see what else mrmaxdesigns makes.</p>
+          <p className="mx-auto mt-5 max-w-xl text-lg opacity-90">One install, one line, and a color studio on every page. Or see what else mrmaxdesigns makes.</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3">
             <a href="#setup" className="shine inline-flex items-center gap-2 rounded-full bg-on-primary px-6 py-3 font-semibold text-primary shadow-xl transition hover:-translate-y-0.5">
               Get started

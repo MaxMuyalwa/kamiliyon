@@ -1,4 +1,4 @@
-// The colour side of the MCP server: the same theme catalogue, palette builder and contrast
+// The color side of the MCP server: the same theme catalogue, palette builder and contrast
 // checks the switcher uses in the browser, bundled from colorsbymax's own source.
 
 import { contrastRatio, deltaE, normalizeHex } from '../../src/color.js'
@@ -52,7 +52,7 @@ export const summary = (t) => ({
 export function searchThemes({ query, category, near, mode = 'light', limit = 12 }) {
   const words = (query ?? '').toLowerCase().split(/\s+/).filter(Boolean)
   const target = near ? normalizeHex(near) : null
-  if (near && !target) throw new Error(`"${near}" isn't a colour. Use a hex code like #0d6b84.`)
+  if (near && !target) throw new Error(`"${near}" isn't a color. Use a hex code like #0d6b84.`)
   let found = ALL_THEMES.filter((t) => !category || t.tags.includes(category))
   if (words.length) {
     found = found.filter((t) => {
@@ -61,7 +61,7 @@ export function searchThemes({ query, category, near, mode = 'light', limit = 12
     })
   }
   if (target) {
-    // Closest brand colour first; primary counts most, its gradient partner a little.
+    // Closest brand color first; primary counts most, its gradient partner a little.
     const distance = (t) => Math.min(deltaE(t.tokens.primary, target), deltaE(t.tokens['primary-alt'], target) + 4)
     found = found.map((t) => [t, distance(t)]).sort((a, b) => a[1] - b[1]).map(([t]) => t)
   }
@@ -70,7 +70,7 @@ export function searchThemes({ query, category, near, mode = 'light', limit = 12
   return { total, themes }
 }
 
-/** Every token filled in; unknown keys and non-colours are reported, not silently dropped. */
+/** Every token filled in; unknown keys and non-colors are reported, not silently dropped. */
 export function completeFrom(partial = {}) {
   const clean = {}
   const rejected = []
@@ -106,11 +106,11 @@ export function pairReport(fg, bg) {
 
 export { THRESHOLDS }
 
-/** A complete, contrast-checked theme built around up to 8 colours, as the panel's image upload does. */
+/** A complete, contrast-checked theme built around up to 8 colors, as the panel's image upload does. */
 export function themeFromColours(colours) {
   const hexes = colours.map((c) => [c, normalizeHex(c)])
   const bad = hexes.filter(([, h]) => !h).map(([c]) => c)
-  if (bad.length) throw new Error(`Not colours: ${bad.join(', ')}. Use hex codes like #0d6b84.`)
+  if (bad.length) throw new Error(`Not colors: ${bad.join(', ')}. Use hex codes like #0d6b84.`)
   return themeFromPalette([...new Set(hexes.map(([, h]) => h))].slice(0, 8))
 }
 

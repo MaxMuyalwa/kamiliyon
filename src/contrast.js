@@ -1,5 +1,5 @@
 // WCAG contrast validation for themes. PAIRINGS lists the foreground/background pairings a
-// typical site renders with the colorsbymax tokens, computed against realistic composited
+// typical site renders with the Kamiliyon tokens, computed against realistic composited
 // backgrounds (translucent cards, tinted icon chips) rather than the raw token.
 
 import { contrastRatio, deltaE, lightness, mix, toLab, withLightness } from './color.js'
@@ -29,7 +29,7 @@ const CONSEQUENCE = {
 
 // Opacities used by the page's classes, so checks match what is painted.
 const GLASS_ALPHA = 0.6 // translucent card: surface at 60% over the background
-const CHIP_ALPHA = 0.15 // icon on a 15% tint of its own colour
+const CHIP_ALPHA = 0.15 // icon on a 15% tint of its own color
 const BADGE_ALPHA = 0.1 // primary text on a 10% primary tint (badges, pills)
 const MUTED_ON_PRIMARY_ALPHA = 0.8 // secondary text on primary: on-primary at 80%
 const APP_GRADIENT_LIGHT_ALPHA = 0.8 // lighter end of an app-primary button gradient (80% + white)
@@ -173,9 +173,12 @@ export function fixAll(tokens) {
   let current = { ...tokens }
   const changes = {}
   for (let pass = 0; pass < PAIRINGS.length * 3; pass++) {
-    const fixable = checkTheme(current)
-      .map((issue) => suggestFix(issue.pairing, current))
-      .find(Boolean)
+    // The first issue that has a fix (worked out one at a time, not for every issue each pass).
+    let fixable = null
+    for (const issue of checkTheme(current)) {
+      fixable = suggestFix(issue.pairing, current)
+      if (fixable) break
+    }
     if (!fixable) break
     current = { ...current, [fixable.key]: fixable.value }
     changes[fixable.key] = fixable.value

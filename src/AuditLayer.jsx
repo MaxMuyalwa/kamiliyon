@@ -14,7 +14,7 @@ const COMPACT_WIDTH = 640
 
 /**
  * The audit on the page: each finding outlined where it is, with a numbered card pointing at it,
- * kept in place as the page scrolls; and a bar by the colour button to re-check or close.
+ * kept in place as the page scrolls; and a bar by the color button to re-check or close.
  */
 export default function AuditLayer({ findings, anchor, themeIssues, onRecheck, onClose, onAction }) {
   const [rects, setRects] = useState([])
@@ -159,7 +159,7 @@ export default function AuditLayer({ findings, anchor, themeIssues, onRecheck, o
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {f.action === 'colour-logo' && (
                   <button type="button" className="rounded-lg bg-zinc-900 px-2 py-1 text-[11px] font-medium text-white hover:bg-zinc-700 cursor-pointer" onClick={() => onAction('colour-logo')}>
-                    Colour the logo
+                    Color the logo
                   </button>
                 )}
                 {f.action === 'invert' && (
@@ -199,7 +199,7 @@ export default function AuditLayer({ findings, anchor, themeIssues, onRecheck, o
   )
 }
 
-/** The audit's summary, next to the colour button: what it found, Re-check and Close. */
+/** The audit's summary, next to the color button: what it found, Re-check and Close. */
 function AuditBar({ anchorRect, open, hiddenCount, themeIssues, onRecheck, onClose }) {
   const ref = useRef(null)
   const [size, setSize] = useState({ width: 0, height: 0 })
@@ -208,7 +208,7 @@ function AuditBar({ anchorRect, open, hiddenCount, themeIssues, onRecheck, onClo
     if (r && (r.width !== size.width || r.height !== size.height)) setSize({ width: r.width, height: r.height })
   })
   const vw = document.documentElement.clientWidth
-  // Just below the colour button (above it when it's in the lower half of the screen), lined up
+  // Just below the color button (above it when it's in the lower half of the screen), lined up
   // with its inward edge, so it stays clear of the page's top bar and of the notes.
   const vh = document.documentElement.clientHeight
   let style = { right: EDGE, bottom: EDGE }

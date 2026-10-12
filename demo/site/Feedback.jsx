@@ -36,8 +36,8 @@ const KINDS = [
 ]
 
 const AREAS = [
-  'Colour button', 'Panel', 'Theme library', 'Max’s picks', 'Custom palettes', 'Palette from an image', 'Contrast checks', 'Audit',
-  'Light & dark mode', 'Settings', 'Import / export', '“I’m done”', 'Re-colouring my site', 'Installing', 'MCP / AI agents', 'Docs & README',
+  'Color button', 'Panel', 'Theme library', 'Max’s picks', 'Custom palettes', 'Palette from an image', 'Contrast checks', 'Audit',
+  'Light & dark mode', 'Settings', 'Import / export', '“I’m done”', 'Re-coloring my site', 'Installing', 'MCP / AI agents', 'Docs & README',
   'This website', 'Other',
 ]
 
@@ -231,7 +231,7 @@ function StarRating({ value, onChange }) {
   const shown = hover || value
   return (
     <fieldset>
-      <Legend optional>How would you rate colorsbymax?</Legend>
+      <Legend optional>How would you rate Kamiliyon?</Legend>
       <div className="flex flex-wrap items-center gap-3" onMouseLeave={() => setHover(0)}>
         <div role="radiogroup" aria-label="Rating" className="flex gap-1">
           {RATINGS.map((label, i) => {
@@ -588,7 +588,7 @@ export function Feedback() {
               <MessageSquarePlus className="h-3.5 w-3.5" aria-hidden="true" /> Feedback
             </p>
             <h2 id={`${ids}-title`} className="font-display text-2xl font-bold text-ink">
-              {done ? (status === 'sent' ? 'Thank you!' : 'Your report is ready') : 'Help make colorsbymax better'}
+              {done ? (status === 'sent' ? 'Thank you!' : 'Your report is ready') : 'Help make Kamiliyon better'}
             </h2>
             {!done && <p className="mt-1 text-sm text-ink-secondary">Found a bug, have an idea, or just love it? Every report is read.</p>}
           </div>
@@ -698,7 +698,7 @@ export function Feedback() {
                 <div className="space-y-5 rounded-2xl border border-border bg-background/60 p-4">
                   <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">For bug reports</p>
                   <Field label="Steps to reproduce" id={`${ids}-steps`} optional>
-                    <textarea id={`${ids}-steps`} className={`${input} min-h-24 resize-y font-mono text-[13px]`} value={form.steps} placeholder={'1. Open the colour panel\n2. Pick “Ocean” in the library\n3. Switch to dark mode'} onChange={(e) => set({ steps: e.target.value })} />
+                    <textarea id={`${ids}-steps`} className={`${input} min-h-24 resize-y font-mono text-[13px]`} value={form.steps} placeholder={'1. Open the color panel\n2. Pick “Ocean” in the library\n3. Switch to dark mode'} onChange={(e) => set({ steps: e.target.value })} />
                   </Field>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <Field label="What you expected" id={`${ids}-expected`} optional>
@@ -718,7 +718,7 @@ export function Feedback() {
 
               <StarRating value={form.rating} onChange={(rating) => set({ rating })} />
 
-              <Field label="Suggestions" id={`${ids}-suggestion`} optional hint="What would make colorsbymax better for you?">
+              <Field label="Suggestions" id={`${ids}-suggestion`} optional hint="What would make Kamiliyon better for you?">
                 <textarea id={`${ids}-suggestion`} className={`${input} min-h-20 resize-y`} value={form.suggestion} onChange={(e) => set({ suggestion: e.target.value })} />
               </Field>
 

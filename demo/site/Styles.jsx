@@ -1,4 +1,4 @@
-// The landing page's spotlight on the three colour styles (Subtle, Balanced, Colourful), the strength
+// The landing page's spotlight on the three color styles (Subtle, Balanced, Colorful), the strength
 // slider and tints from the site's own pictures. Each style is shown live: this very page, in a
 // small window, painted in that style and the visitor's current theme (preview.js), so the
 // pictures change whenever the page or the theme does.
@@ -22,17 +22,17 @@ const STYLES = [
     id: 'balanced',
     Icon: Palette,
     name: 'Balanced',
-    text: 'The theme in every role, with a soft wash of it across the page, cards and borders. Your own colours stay exactly as designed.',
+    text: 'The theme in every role, with a soft wash of it across the page, cards and borders. Your own colors stay exactly as designed.',
   },
   {
     id: 'colourful',
     Icon: Paintbrush,
-    name: 'Colourful',
+    name: 'Colorful',
     text: 'An overhaul: tinted backgrounds, headings with a hint of the brand, and stronger tints everywhere. Text still checked for contrast.',
   },
 ]
 
-/** This page, live, in one colour style. */
+/** This page, live, in one color style. */
 function LiveStyle({ kind, version }) {
   return (
     <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-border bg-background">
@@ -46,15 +46,15 @@ function LiveStyle({ kind, version }) {
 export function Styles() {
   const { active, defaultTheme } = useTheme()
   const version = useColourVersion()
-  // On the site's own colours the three would look alike (all are the site as designed), so the
+  // On the site's own colors the three would look alike (all are the site as designed), so the
   // windows show Sunset instead (preview.js).
   const own = active.id === defaultTheme.id || active.id === `${defaultTheme.id}~dark`
   return (
     <section aria-labelledby="styles-title" id="styles" className="relative overflow-hidden bg-surface/60 px-6 py-24">
       <div className="mx-auto max-w-6xl">
-        <SectionHeading id="styles-title" eyebrow="New · Colour styles" title="As quiet or as bold as you like">
-          Every theme comes three ways. Try a new colour on your buttons, see the theme as it’s meant to be, or let it take over the page for
-          a whole new look. These are this page, live, in the theme you’re using now{own ? ' (Sunset, while you’re on our own colours)' : ''}.
+        <SectionHeading id="styles-title" eyebrow="New · Color styles" title="As quiet or as bold as you like">
+          Every theme comes three ways. Try a new color on your buttons, see the theme as it’s meant to be, or let it take over the page for
+          a whole new look. These are this page, live, in the theme you’re using now{own ? ' (Sunset, while you’re on our own colors)' : ''}.
         </SectionHeading>
 
         <div className="grid gap-5 md:grid-cols-3">
@@ -76,7 +76,7 @@ export function Styles() {
             <h3 className="flex items-center gap-2 font-semibold text-ink">
               <SlidersHorizontal className="h-5 w-5 text-primary" aria-hidden="true" /> From a light wash to bold
             </h3>
-            <p className="mt-2 text-sm leading-relaxed text-ink-secondary">Colourful has a strength slider: a gentle tint for a calm site, or the whole page in colour for a loud one.</p>
+            <p className="mt-2 text-sm leading-relaxed text-ink-secondary">Colorful has a strength slider: a gentle tint for a calm site, or the whole page in color for a loud one.</p>
             <div className="mt-4" aria-hidden="true">
               <div className="h-3 rounded-full" style={{ background: `linear-gradient(90deg, ${mixed('primary', 6)}, var(--color-primary))` }} />
               <div className="mt-1.5 flex justify-between text-xs text-ink-muted">
@@ -92,7 +92,7 @@ export function Styles() {
               <Image className="h-5 w-5 text-primary" aria-hidden="true" /> Tints from your pictures
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-ink-secondary">
-              Colourful can take its washes from your logo and photos, so the colours feel made for your site, while buttons and links keep the
+              Colorful can take its washes from your logo and photos, so the colors feel made for your site, while buttons and links keep the
               theme’s.
             </p>
           </Reveal>

@@ -1,4 +1,4 @@
-// Colours from the site's own pictures: its logo and its biggest photos. Colourful can tint the
+// Colors from the site's own pictures: its logo and its biggest photos. Colorful can tint the
 // page with them, so a theme's washes feel made for the site rather than laid on top of it.
 // Pictures from another site that doesn't allow reading them can't be sampled and are skipped.
 
@@ -31,7 +31,7 @@ function pixelsOf(img) {
   }
 }
 
-/** The main colours in the site's logo and biggest pictures, most used first. */
+/** The main colors in the site's logo and biggest pictures, most used first. */
 export function imageColours() {
   const pictures = [...document.images].filter((img) => img.complete && img.naturalWidth >= 24 && shownArea(img) && !img.closest('colorsbymax-root, [data-colorsbymax]'))
   const logos = pictures.filter((img) => img.closest(LOGO_SELECTOR))
@@ -43,7 +43,7 @@ export function imageColours() {
   return sets.length ? dominantColours(sets) : []
 }
 
-/** The picture colour to tint with: the most used one with real colour in it (no greys, black or white). */
+/** The picture color to tint with: the most used one with real color in it (no greys, black or white). */
 export function tintOf(colours) {
   return (
     colours.find((hex) => {

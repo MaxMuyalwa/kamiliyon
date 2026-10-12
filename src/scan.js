@@ -1,5 +1,5 @@
-// Site scanning: reads the colours actually painted on the page, works out what role each
-// plays (page background, surfaces, text, brand colours) and builds themes around them.
+// Site scanning: reads the colors actually painted on the page, works out what role each
+// plays (page background, surfaces, text, brand colors) and builds themes around them.
 
 import { contrastRatio, deltaE, hexToRgb, hslToRgb, lightness, rgbToHex, rgbToHsl, withLightness } from './color.js'
 import { checkTheme, fixAll } from './contrast.js'
@@ -7,14 +7,14 @@ import { completeTokens } from './tokens.js'
 
 /** Elements beyond this count are ignored so scanning stays fast on huge pages. */
 export const MAX_SCANNED_ELEMENTS = 5000
-/** Colours closer than this (CIE76 ΔE) are treated as the same colour. */
+/** Colors closer than this (CIE76 ΔE) are treated as the same color. */
 export const MERGE_DELTA_E = 6
-/** Minimum HSL saturation for a colour to count as a brand/accent candidate. */
+/** Minimum HSL saturation for a color to count as a brand/accent candidate. */
 export const MIN_ACCENT_SATURATION = 0.25
 /** How many closest library themes to suggest. */
 export const LIBRARY_MATCHES = 4
 
-// Colour functions and hex values inside computed gradients.
+// Color functions and hex values inside computed gradients.
 export const COLOR_IN_GRADIENT = /(?:rgba?|hsla?|oklab|oklch|lab|lch|color)\([^()]*\)|#[0-9a-f]{3,8}\b/gi
 
 const hueDist = (a, b) => Math.min(Math.abs(a - b), 360 - Math.abs(a - b))
@@ -30,7 +30,7 @@ export function detectSiteName(doc = document) {
   return doc.location?.hostname?.replace(/^www\./, '') || 'This site'
 }
 
-// Converts any CSS colour string (rgb, oklab, color(srgb …), named…) to [hex, alpha] using a
+// Converts any CSS color string (rgb, oklab, color(srgb …), named…) to [hex, alpha] using a
 // 1×1 canvas, which understands everything the browser does.
 function createColorParser() {
   const canvas = document.createElement('canvas')
@@ -45,25 +45,25 @@ function createColorParser() {
     ctx.fillStyle = css
     ctx.fillRect(0, 0, 1, 1)
     const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data
-    const out = a < 128 ? null : rgbToHex([r, g, b]) // ignore mostly-transparent colours
+    const out = a < 128 ? null : rgbToHex([r, g, b]) // ignore mostly-transparent colors
     cache.set(css, out)
     return out
   }
 }
 
 /**
- * Temporarily removes colorsbymax's inline token overrides, and its re-colouring stylesheet, so a
- * read sees the site's own colours. Everything happens synchronously, so nothing repaints in between.
+ * Temporarily removes Kamiliyon's inline token overrides, and its re-coloring stylesheet, so a
+ * read sees the site's own colors. Everything happens synchronously, so nothing repaints in between.
  */
 export function withoutAppliedTheme(fn) {
-  // Sites that animate colour changes (transition-colors, transition-all) would otherwise
-  // report mid-transition colours from the applied theme. Transitions are switched off only for
+  // Sites that animate color changes (transition-colors, transition-all) would otherwise
+  // report mid-transition colors from the applied theme. Transitions are switched off only for
   // this synchronous read; animations are left alone so entrance effects don't replay.
   const freeze = document.createElement('style')
   freeze.textContent = '*,*::before,*::after{transition:none!important}'
   document.head.appendChild(freeze)
 
-  // The re-colouring engine's swaps and its Colourful style.
+  // The re-coloring engine's swaps and its Colorful style.
   const applied = [...document.querySelectorAll('style[data-colorsbymax="recolour"], style[data-colorsbymax="vivid"], style[data-colorsbymax="guard"]')]
   for (const sheet of applied) sheet.disabled = true
 
@@ -81,7 +81,7 @@ export function withoutAppliedTheme(fn) {
   } finally {
     for (const [prop, value] of saved) style.setProperty(prop, value)
     for (const sheet of applied) sheet.disabled = false
-    // Apply the restored colours while transitions are still off, so nothing animates back.
+    // Apply the restored colors while transitions are still off, so nothing animates back.
     void getComputedStyle(document.documentElement).color
     void document.body.offsetHeight
     freeze.remove()
@@ -89,7 +89,7 @@ export function withoutAppliedTheme(fn) {
 }
 
 /**
- * Collects the page's painted colours with how much each is used as a background (by area),
+ * Collects the page's painted colors with how much each is used as a background (by area),
  * as text (by length × font size²) and as a border.
  * @param {{ exclude?: string }} [options]  selector for UI to skip, e.g. the switcher itself
  */
@@ -146,7 +146,7 @@ export function collectColors({ exclude = 'colorsbymax-root, .theme-switcher' } 
   })
 }
 
-// Folds near-identical colours together (anti-aliasing, tiny tint differences).
+// Folds near-identical colors together (anti-aliasing, tiny tint differences).
 function mergeSimilar(entries) {
   const sorted = entries.sort((a, b) => b.bg + b.text * 50 + b.border - (a.bg + a.text * 50 + a.border))
   const out = []
@@ -162,7 +162,7 @@ function mergeSimilar(entries) {
 }
 
 /**
- * Works out token roles from collected colours.
+ * Works out token roles from collected colors.
  * @returns {{ roles: Record<string, string>, palette: string[] }}
  */
 export function inferRoles(colors) {
@@ -180,8 +180,8 @@ export function inferRoles(colors) {
   const ink = (byText.find((c) => readable(c, 4.5)) ?? byText[0])?.hex ?? '#1f2937'
   const inkSecondary = byText.find((c) => c.hex !== ink && deltaE(c.hex, ink) > 8 && readable(c, 3))?.hex
 
-  // Brand candidates: saturated colours, scored by how much of the page they occupy. The text
-  // colour isn't one, even when it's a warm or tinted dark (it would outscore the real brand).
+  // Brand candidates: saturated colors, scored by how much of the page they occupy. The text
+  // color isn't one, even when it's a warm or tinted dark (it would outscore the real brand).
   const accents = colors
     .filter((c) => c.hex !== ink && c.hex !== inkSecondary)
     .map((c) => {
@@ -255,7 +255,7 @@ export function themeFromRoles(roles, { softness = 0, boldness = 0, complementar
 const passing = (tokens) => ({ ...tokens, ...fixAll(tokens) })
 
 /**
- * Suggested themes for a scanned site, all named after it. "Scanned" keeps the colours as
+ * Suggested themes for a scanned site, all named after it. "Scanned" keeps the colors as
  * found; every other suggestion passes contrast.
  * @param {{ roles: Record<string, string> }} scan
  * @param {string} siteName
@@ -274,7 +274,7 @@ export function suggestThemes(scan, siteName, library = []) {
     make('complement', 'Complementary', passing(themeFromRoles(scan.roles, { complementary: true }))),
   )
 
-  // Closest library themes by primary and partner colour.
+  // Closest library themes by primary and partner color.
   const matches = [...library]
     // The primary dominates; the partner colour only breaks near-ties.
     .map((t) => ({ t, d: deltaE(t.tokens.primary, found.primary) + 0.25 * deltaE(t.tokens['primary-alt'], found['primary-alt']) }))

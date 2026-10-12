@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Palette } from './icons.jsx'
-import { BURST_TIME, Burst, NewMark } from './burst.jsx'
+import { BURST_TIME, Burst } from './burst.jsx'
 import ThemePanel from './ThemePanel.jsx'
 import AuditLayer from './AuditLayer.jsx'
-import StudioLayer from './StudioLayer.jsx'
+import StudioLayer, { ColourPickLayer } from './StudioLayer.jsx'
 import { useUpdates } from './updates.js'
 import { runAudit } from './audit.js'
 import { useTheme } from './ThemeProvider.jsx'
@@ -16,7 +16,7 @@ import panelCss from './panel-css.generated.js'
 // top-right corner below ~1200px. There the button sits just under the nav's right end;
 // from 1200px up the gutter beside the nav is wide enough and it moves into the corner,
 // vertically centred on the nav.
-// Where the colour button starts (config `position`). 'bottom-right', the default, is where chat and
+// Where the color button starts (config `position`). 'bottom-right', the default, is where chat and
 // help widgets usually sit. 'top-right' sits just under a floating nav bar, as on Tsungi.
 const CORNERS = {
   'bottom-right': 'right-5 bottom-5',
@@ -26,7 +26,7 @@ const CORNERS = {
 }
 const CORNER_GAP = 20 // matches the 5-unit (20px) insets above
 
-// Once dragged, the colour button is placed in pixels and the panel opens beside it.
+// Once dragged, the color button is placed in pixels and the panel opens beside it.
 const BUTTON_SIZE = 36
 const EDGE = 12 // closest the button or panel gets to the viewport edge
 const PANEL_GAP = 8
@@ -35,8 +35,8 @@ const MIN_PANEL_WIDTH = 320
 const MIN_PANEL_HEIGHT = 260
 const DRAG_THRESHOLD = 5 // pixels of movement before a press becomes a drag
 const HINT_DELAY = 100 // ms of hovering before the drag tooltip shows; just enough to skip passing sweeps
-const DOT_INTERVAL = 1500 // ms between the colour button dot's colour changes
-const INTRO_DELAY = 900 // ms the colour button waits before making its entrance
+const DOT_INTERVAL = 1500 // ms between the color button dot's color changes
+const INTRO_DELAY = 900 // ms the color button waits before making its entrance
 
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), summary, [tabindex]:not([tabindex="-1"])'
 
@@ -77,7 +77,7 @@ function Switcher() {
   const [open, setOpen] = useState(false)
 
   // The entrance: a moment after the page loads, the button pops in with a burst of the theme's
-  // colours, so visitors notice it arrive. Every click bursts again. `burst` is a counter, so a
+  // colors, so visitors notice it arrive. Every click bursts again. `burst` is a counter, so a
   // click during a burst restarts it.
   const [arrived, setArrived] = useState(!intro)
   const [entering, setEntering] = useState(false)
@@ -112,13 +112,17 @@ function Switcher() {
   useEffect(() => setImageTints(settings.imageTints), [settings.imageTints, setImageTints])
 
   // The page audit (the panel's Audit button): findings pinned to the page until it's closed.
-  // It re-runs by itself when the colours or settings change, and on Re-check.
+  // It re-runs by itself when the colors or settings change, and on Re-check.
   const [auditOn, setAuditOn] = useState(false)
   // Studio's point and click: the panel steps aside while parts of the page are picked.
   const [picking, setPicking] = useState(false)
+  // Picking a color from the site (Custom palettes): the panel steps aside, then shows themes built
+  // around the pick.
+  const [colourPicking, setColourPicking] = useState(false)
+  const [colourPick, setColourPick] = useState(null)
   const [findings, setFindings] = useState([])
   const recheck = useCallback(() => {
-    // After the new colours have been applied and laid out.
+    // After the new colors have been applied and laid out.
     requestAnimationFrame(() => setFindings(runAudit({ logoColouring: settingsRef.current.colourLogo })))
   }, [])
   const settingsRef = useRef(settings)
@@ -154,7 +158,7 @@ function Switcher() {
   const [hint, setHint] = useState(false)
   const hintTimer = useRef(null)
 
-  // Pixel position of the colour button, or null while it sits in its default corner.
+  // Pixel position of the color button, or null while it sits in its default corner.
   const placed = dragPoint ?? (saved && fromRatios(saved, viewport))
 
   // Panel size: the saved one, or the one being dragged out right now.
@@ -317,6 +321,17 @@ function Switcher() {
         }
       },
     },
+    colourPick: {
+      picking: colourPicking,
+      result: colourPick,
+      start() {
+        setOpen(false)
+        setColourPicking(true)
+      },
+      /** Changes the job the picked color does (brand, background, text, card, tint). */
+      setRole: (role) => setColourPick((p) => (p ? { ...p, role } : p)),
+      clear: () => setColourPick(null),
+    },
     studio: {
       picking,
       start() {
@@ -393,7 +408,7 @@ function Switcher() {
         <button
           ref={buttonRef}
           type="button"
-          aria-label={`colorsbymax theme settings${issues.length ? ` (${issues.length} contrast issues)` : ''}${updates.unseen ? ' (something new in the bell)' : ''}`}
+          aria-label={`Kamiliyon theme settings${issues.length ? ` (${issues.length} contrast issues)` : ''}`}
           aria-haspopup="dialog"
           aria-expanded={open}
           aria-controls="theme-panel"
@@ -419,8 +434,6 @@ function Switcher() {
         >
           <Palette className="w-4 h-4" aria-hidden="true" />
           <CyclingDot tokens={tokens} animate={settings.animateDot} />
-          {/* Something new in the bell: an update or news. */}
-          {updates.unseen && <NewMark className="-top-1 -left-1" />}
           {bursting && <Burst key={burst} tokens={tokens} />}
           {/* Hover tooltip. Visual only: screen reader and keyboard users open the panel as usual. */}
           {hint && !open && !dragPoint && (
@@ -479,18 +492,31 @@ function Switcher() {
             }}
           />
         )}
+        {colourPicking && (
+          <ColourPickLayer
+            onPick={(pick) => {
+              setColourPick({ ...pick, at: Date.now() })
+              setColourPicking(false)
+              setOpen(true)
+            }}
+            onCancel={() => {
+              setColourPicking(false)
+              setOpen(true)
+            }}
+          />
+        )}
         <TooltipLayer rootRef={layerRef} />
       </div>
     </SettingsContext.Provider>
   )
 }
 
-// Theme colours the colour button's dot cycles through: brand, gradient and data colours.
+// Theme colors the color button's dot cycles through: brand, gradient and data colors.
 const DOT_KEYS = ['primary', 'primary-alt', 'primary-dark', 'data-1', 'data-2', 'data-3', 'data-4', 'data-5', 'data-6', 'data-7', 'data-8']
 
 /**
- * The dot on the colour button: drifts through the current theme's colours, overrides
- * included, in random order. Held on the primary colour when animation is off or reduced.
+ * The dot on the color button: drifts through the current theme's colors, overrides
+ * included, in random order. Held on the primary color when animation is off or reduced.
  */
 function CyclingDot({ tokens, animate }) {
   const reduceMotion = usePrefersReducedMotion()
@@ -501,7 +527,7 @@ function CyclingDot({ tokens, animate }) {
   useEffect(() => {
     if (still) return
     const id = setInterval(() => {
-      // Any colour but the one showing.
+      // Any color but the one showing.
       setIndex((i) => (i + 1 + Math.floor(Math.random() * (colours.length - 1))) % colours.length)
     }, DOT_INTERVAL)
     return () => clearInterval(id)
@@ -530,7 +556,7 @@ function usePrefersReducedMotion() {
 
 /**
  * Themed tooltips for the panel: anything with `data-tip` gets one on hover, or on keyboard
- * focus, drawn in the panel's own colours instead of the browser's plain tooltip. It sits
+ * focus, drawn in the panel's own colors instead of the browser's plain tooltip. It sits
  * above its element (below when there's no room) and stays on screen.
  */
 function TooltipLayer({ rootRef }) {
@@ -611,7 +637,7 @@ function TooltipLayer({ rootRef }) {
 /** Viewport size without scrollbars: the area fixed elements are placed in. */
 /**
  * How far a bar the site pins to the top of the page (above its nav, e.g. an announcement) pushes
- * the colour button and panel down: the CSS variable --colorsbymax-offset-top on <html>, in px.
+ * the color button and panel down: the CSS variable --colorsbymax-offset-top on <html>, in px.
  */
 function useTopOffset() {
   const read = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--colorsbymax-offset-top')) || 0

@@ -1,6 +1,6 @@
-// Where the colours go: the whole site (the default), or only some of its pages. Studio sets it,
+// Where the colors go: the whole site (the default), or only some of its pages. Studio sets it,
 // and a site can set it for everyone with the `pages` config option. Pages outside it are left
-// exactly as the site made them: no theme, no re-colouring, no dark mode.
+// exactly as the site made them: no theme, no re-coloring, no dark mode.
 //
 // A page is its path, e.g. "/pricing". One ending in "/*" is a whole section: "/blog/*" is
 // /blog and every page under it.
@@ -46,7 +46,7 @@ export function cleanScope(input) {
   return { mode: input.mode === 'pages' ? 'pages' : 'all', pages: cleanPages(input.pages) }
 }
 
-/** Whether a page gets the colours. */
+/** Whether a page gets the colors. */
 export const pageMatches = (page, path) => (page.endsWith('/*') ? path === page.slice(0, -2) || path.startsWith(page.slice(0, -1)) : path === page)
 export const inScope = (scope, path) => !scope || scope.mode !== 'pages' || scope.pages.some((p) => pageMatches(p, path))
 
@@ -111,4 +111,4 @@ export const pagesSnippet = (pages) =>
   `// Add to your colorsbymax config (the autoMount({...}) call, or the config passed to <ThemeProvider>):\npages: ${JSON.stringify(pages, null, 2)},`
 
 export const pagesPrompt = (pages) =>
-  `In my colorsbymax config (the autoMount({...}) call, or the config passed to <ThemeProvider>), set pages: ${JSON.stringify(pages)} so the theme only colours those pages and every other page keeps its own colours. A path ending in /* covers that section and every page under it. If the site uses import 'colorsbymax/auto', replace it with import { autoMount } from 'colorsbymax/auto' and an autoMount({ pages: [...] }) call. Don't change anything else.`
+  `In my colorsbymax config (the autoMount({...}) call, or the config passed to <ThemeProvider>), set pages: ${JSON.stringify(pages)} so the theme only colors those pages and every other page keeps its own colors. A path ending in /* covers that section and every page under it. If the site uses import 'colorsbymax/auto', replace it with import { autoMount } from 'colorsbymax/auto' and an autoMount({ pages: [...] }) call. Don't change anything else.`

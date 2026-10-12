@@ -1,5 +1,5 @@
 // The mrmaxdesigns logo mark (three slanted bars) for the panel's header, in the current theme's
-// colours: the gradient partner, the brand, and the chart colour most unlike both, as in the logo's
+// colors: the gradient partner, the brand, and the chart color most unlike both, as in the logo's
 // own red, violet and blue. Each bar is deepened or lightened until it stands out on the panel.
 
 import { contrastRatio, hexToRgb, mix, rgbToHsl } from './color.js'
@@ -17,7 +17,7 @@ const hueGap = (a, b) => {
   return Math.min(d, 360 - d)
 }
 
-/** The three bars' colours for a theme. */
+/** The three bars' colors for a theme. */
 export function logoColours(tokens) {
   const [a, b] = [tokens['primary-alt'], tokens.primary]
   const apart = (x) => Math.min(hueGap(x, a), hueGap(x, b))
@@ -26,7 +26,7 @@ export function logoColours(tokens) {
   return [a, b, c]
 }
 
-/** Moves a colour towards black (on light) or white (on dark) until it reads on `background`. */
+/** Moves a color towards black (on light) or white (on dark) until it reads on `background`. */
 function standOut(hex, background) {
   const target = contrastRatio(background, '#000000') > contrastRatio(background, '#ffffff') ? '#000000' : '#ffffff'
   for (let t = 0; t <= 1; t += 0.05) {

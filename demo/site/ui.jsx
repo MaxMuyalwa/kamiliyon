@@ -1,4 +1,4 @@
-// Small building blocks shared by the landing page's sections. Every colour is a colorsbymax
+// Small building blocks shared by the landing page's sections. Every color is a Kamiliyon
 // token, so they all follow the theme a visitor picks.
 
 import { useEffect, useId, useRef, useState } from 'react'
@@ -13,14 +13,14 @@ export const SUPPORT = `${import.meta.env.BASE_URL}support.html`
 /** The docs: the README, changelog and posts, on their own page. */
 export const DOCS = `${import.meta.env.BASE_URL}docs.html`
 
-/** The colour button, inside the switcher's shadow root (null until it has made its entrance). */
+/** The color button, inside the switcher's shadow root (null until it has made its entrance). */
 const colourButton = () => document.querySelector('colorsbymax-root')?.shadowRoot?.querySelector('button')
 
 /** Opens the switcher from a button on the page. */
 export function openPanel() {
   const button = colourButton()
   if (!button) {
-    // The colour button makes its entrance a moment after the page loads.
+    // The color button makes its entrance a moment after the page loads.
     setTimeout(openPanel, 300)
     return
   }
@@ -38,7 +38,7 @@ export async function openStudio() {
   if (studio?.getAttribute('aria-pressed') !== 'true') studio?.click()
 }
 
-/** Opens the switcher on its Colour style section: Subtle, Balanced and Colourful. */
+/** Opens the switcher on its Color style section: Subtle, Balanced and Colorful. */
 export async function openColourStyle() {
   openPanel()
   for (let i = 0; i < 20 && !panelRoot()?.querySelector('summary'); i++) await wait(150)
@@ -47,7 +47,7 @@ export async function openColourStyle() {
   // Back to the switcher's main view if another one (Studio, settings) is showing.
   ;[...root.querySelectorAll('button')].find((b) => /^Back( to the switcher)?$/.test(b.textContent.trim()))?.click()
   await wait(100)
-  const summary = [...root.querySelectorAll('summary')].find((s) => s.textContent.startsWith('Colour style'))
+  const summary = [...root.querySelectorAll('summary')].find((s) => s.textContent.startsWith('Color style'))
   if (summary && !summary.parentElement.open) summary.click()
   summary?.scrollIntoView({ block: 'start', behavior: 'smooth' })
 }
@@ -57,7 +57,7 @@ export async function openColourStyle() {
 let openAtPress = null
 
 /**
- * Props for a page button that opens and closes the switcher, like the colour button does:
+ * Props for a page button that opens and closes the switcher, like the color button does:
  * <button {...panelToggle}>.
  */
 export const panelToggle = {

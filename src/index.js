@@ -1,4 +1,4 @@
-// colorsbymax by mrmaxdesigns: a runtime theme switcher for sites built on colour tokens.
+// Kamiliyon by mrmaxdesigns: a runtime theme switcher for sites built on color tokens.
 
 export { ThemeProvider, useTheme, applyTokens } from './ThemeProvider.jsx'
 export { default as ThemeSwitcher } from './ThemeSwitcher.jsx'

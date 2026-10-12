@@ -25,11 +25,11 @@ function Rule({ n, title, children, visual, delay }) {
 }
 
 const HISTORY = [
-  ['1704', 'Isaac Newton’s Opticks bends the spectrum into a circle: the first colour wheel.'],
-  ['1961', 'Johannes Itten’s The Art of Color names seven kinds of colour contrast designers still use.'],
+  ['1704', 'Isaac Newton’s Opticks bends the spectrum into a circle: the first color wheel.'],
+  ['1961', 'Johannes Itten’s The Art of Color names seven kinds of color contrast designers still use.'],
   ['2008', 'WCAG 2.0 turns “readable” into a number: 4.5:1 for normal text.'],
-  ['2018', 'Material Design names “on” colours, the text that sits on a colour. colorsbymax’s on-primary is the same idea.'],
-  ['Today', 'colorsbymax packs these rules into every one of its 700+ themes.'],
+  ['2018', 'Material Design names “on” colors, the text that sits on a color. Kamiliyon’s on-primary is the same idea.'],
+  ['Today', 'Kamiliyon packs these rules into every one of its 700+ themes.'],
 ]
 
 export function Rules() {
@@ -42,8 +42,8 @@ export function Rules() {
   return (
     <section aria-labelledby="rules-title" id="rules" className="px-6 py-24">
       <div className="mx-auto max-w-6xl">
-        <SectionHeading id="rules-title" eyebrow="A little colour theory" title="The rules behind good colour">
-          colorsbymax follows these for you. Knowing them helps you pick, tweak and trust the result. The examples use the colours on
+        <SectionHeading id="rules-title" eyebrow="A little color theory" title="The rules behind good color">
+          Kamiliyon follows these for you. Knowing them helps you pick, tweak and trust the result. The examples use the colors on
           this page right now.
         </SectionHeading>
 
@@ -67,7 +67,7 @@ export function Rules() {
               </div>
             }
           >
-            Let one colour lead. Roughly 60% calm background and surfaces, 30% supporting tints and text, 10% brand. It’s why primary is saved
+            Let one color lead. Roughly 60% calm background and surfaces, 30% supporting tints and text, 10% brand. It’s why primary is saved
             for the things you want clicked.
           </Rule>
 
@@ -89,7 +89,7 @@ export function Rules() {
               </div>
             }
           >
-            Text needs at least 4.5:1 against its background, and large text and icons 3:1 (WCAG AA). colorsbymax checks every pairing and fixes
+            Text needs at least 4.5:1 against its background, and large text and icons 3:1 (WCAG AA). Kamiliyon checks every pairing and fixes
             failures by nudging lightness only, so your hues stay yours.
           </Rule>
 
@@ -103,7 +103,7 @@ export function Rules() {
                   ['#ffffff', white, 'White'],
                   ['#111111', dark, 'Dark'],
                 ].map(([c, r, label]) => (
-                  // A deliberate comparison: colorsbymax's contrast guard leaves both samples as they are.
+                  // A deliberate comparison: Kamiliyon's contrast guard leaves both samples as they are.
                   <div key={label} data-colorsbymax-contrast="keep" className="rounded-xl bg-primary p-3 text-center" style={{ outline: r >= Math.max(white, dark) ? '2px solid var(--color-ink)' : undefined, outlineOffset: 2 }}>
                     <span className="block font-display text-2xl font-bold" style={{ color: c }}>
                       Aa
@@ -117,13 +117,13 @@ export function Rules() {
             }
           >
             Readability comes from the difference in lightness, not the hue. A vivid yellow or cyan looks strong but is light, so dark text reads
-            better on it than white. That’s why a button’s text colour can be dark in one theme and white in the next. The outlined sample is
+            better on it than white. That’s why a button’s text color can be dark in one theme and white in the next. The outlined sample is
             the better one on this page’s primary.
           </Rule>
 
           <Rule
             n={4}
-            title="Colour carries meaning"
+            title="Color carries meaning"
             delay={0}
             visual={
               <div className="flex flex-wrap gap-2">
@@ -140,8 +140,8 @@ export function Rules() {
               </div>
             }
           >
-            Green for done, amber for careful, red for stop, blue for information. These keep their meaning in every theme, and colour is never
-            the only signal: an icon or a word goes with it, for colour-blind readers.
+            Green for done, amber for careful, red for stop, blue for information. These keep their meaning in every theme, and color is never
+            the only signal: an icon or a word goes with it, for color-blind readers.
           </Rule>
 
           <Rule
@@ -193,8 +193,8 @@ export function Rules() {
               </div>
             }
           >
-            Swapping black and white isn’t enough. Dark themes use deep tinted surfaces, soften pure white text, and lift brand colours so they
-            still read. Every colorsbymax theme has a dark twin built this way: this is this page’s.
+            Swapping black and white isn’t enough. Dark themes use deep tinted surfaces, soften pure white text, and lift brand colors so they
+            still read. Every Kamiliyon theme has a dark twin built this way: this is this page’s.
           </Rule>
         </div>
 

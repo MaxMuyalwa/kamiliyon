@@ -1,5 +1,5 @@
 // Saves the site's settings, for the signed-in admin only: landing page text (strings, capped),
-// colour panel features (true or false), the announcement banner and the messages in colorsbymax's
+// color panel features (true or false), the announcement banner and the messages in Kamiliyon's
 // bell. Anything else is dropped.
 import { adminOf, fromSite, json, saveSettings } from '../_lib/admin.js'
 

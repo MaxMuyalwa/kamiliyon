@@ -42,7 +42,7 @@ const describe = (el) => {
 const fmt = (r) => `${(Math.floor(r * 10) / 10).toFixed(1)}:1`
 
 /**
- * Samples an image's corners and middle (for a solid background and an overall colour). Returns
+ * Samples an image's corners and middle (for a solid background and an overall color). Returns
  * null when the browser won't allow reading it (a cross-origin image without CORS).
  */
 function sampleImage(img) {
@@ -58,7 +58,7 @@ function sampleImage(img) {
       return data[i + 3] < 200 ? null : rgbToHex([data[i], data[i + 1], data[i + 2]])
     }
     const corners = [at(0, 0), at(w - 1, 0), at(0, h - 1), at(w - 1, h - 1)]
-    // The image's "ink": its average non-transparent colour, for how it reads on a background.
+    // The image's "ink": its average non-transparent color, for how it reads on a background.
     let r = 0, g = 0, b = 0, n = 0
     for (let i = 0; i < data.length; i += 4) {
       if (data[i + 3] < 128) continue
@@ -88,8 +88,8 @@ export function runAudit({ logoColouring }) {
     findings.push({ id: `${finding.kind}-${findings.length}`, el, ...finding })
   }
 
-  // The colour showing behind an element: its nearest painted background. `null` when a picture
-  // is behind it, since its colours can't be judged.
+  // The color showing behind an element: its nearest painted background. `null` when a picture
+  // is behind it, since its colors can't be judged.
   const cache = new WeakMap()
   const behind = (el) => {
     if (!el || el.nodeType !== 1) return parse(getComputedStyle(document.documentElement).backgroundColor) ?? '#ffffff'
@@ -119,20 +119,20 @@ export function runAudit({ logoColouring }) {
         add(img, {
           kind: 'logo-image',
           title: 'Logo is hard to see here',
-          message: `Your logo is a picture, which colorsbymax can’t re-colour, and it reads at only ${fmt(ratio)} on this background. Use a transparent SVG (which colorsbymax can colour), or add a version made for ${darkPage ? 'dark' : 'light'} backgrounds.`,
+          message: `Your logo is a picture, which Kamiliyon can’t re-color, and it reads at only ${fmt(ratio)} on this background. Use a transparent SVG (which Kamiliyon can color), or add a version made for ${darkPage ? 'dark' : 'light'} backgrounds.`,
           action: 'invert',
         })
       } else if (sample === null) {
         add(img, {
           kind: 'logo-image',
           title: 'Check your logo here',
-          message: `Your logo is a picture, which colorsbymax can’t re-colour. Check it still reads on this ${darkPage ? 'dark' : 'light'} background, or use a transparent SVG instead.`,
+          message: `Your logo is a picture, which Kamiliyon can’t re-color. Check it still reads on this ${darkPage ? 'dark' : 'light'} background, or use a transparent SVG instead.`,
           action: 'invert',
         })
       }
       continue
     }
-    // A text or SVG logo: judge its text colour, or its first drawn shape.
+    // A text or SVG logo: judge its text color, or its first drawn shape.
     const painted = ownText(logo) ? logo : [...logo.querySelectorAll('*')].find((n) => ownText(n) || n instanceof SVGElement) ?? logo
     const cs = getComputedStyle(painted)
     const fg = parse(painted instanceof SVGElement ? (cs.fill !== 'none' ? cs.fill : cs.stroke) : cs.color)
@@ -143,8 +143,8 @@ export function runAudit({ logoColouring }) {
         kind: 'logo',
         title: 'Logo is hard to see here',
         message: logoColouring
-          ? `Your logo reads at only ${fmt(ratio)} on this background. Try another theme, or give the logo its own colour.`
-          : `Your logo keeps its own colours, which read at only ${fmt(ratio)} on this background. Let colorsbymax colour it to match the theme, or pick a theme it suits.`,
+          ? `Your logo reads at only ${fmt(ratio)} on this background. Try another theme, or give the logo its own color.`
+          : `Your logo keeps its own colors, which read at only ${fmt(ratio)} on this background. Let Kamiliyon color it to match the theme, or pick a theme it suits.`,
         action: logoColouring ? undefined : 'colour-logo',
       })
     }
@@ -193,7 +193,7 @@ export function runAudit({ logoColouring }) {
     add(el, {
       kind: svg ? 'icon' : 'text',
       title: `${what} is hard to read`,
-      message: `${describe(el) ? `“${describe(el)}” ` : ''}reads at ${fmt(ratio)} here; ${svg ? 'icons' : large ? 'large text' : 'text'} needs ${needed}:1. Try another theme, or adjust it under “Override a single colour”.`,
+      message: `${describe(el) ? `“${describe(el)}” ` : ''}reads at ${fmt(ratio)} here; ${svg ? 'icons' : large ? 'large text' : 'text'} needs ${needed}:1. Try another theme, or adjust it under “Override a single color”.`,
     })
   }
 

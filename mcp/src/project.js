@@ -1,6 +1,6 @@
 // Reads a project on disk to work out how colorsbymax fits in: the framework, the package manager,
 // whether colorsbymax is installed and wired up, and whether the site paints with the --color-*
-// tokens or hard-coded colours. Read-only: the agent makes the edits.
+// tokens or hard-coded colors. Read-only: the agent makes the edits.
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, relative, resolve, sep } from 'node:path'

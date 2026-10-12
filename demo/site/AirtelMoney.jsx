@@ -108,7 +108,7 @@ export function AirtelMoney({ className = '' }) {
                   </h2>
                   <p className="mt-2 text-sm leading-relaxed opacity-90">If you live in Zambia or elsewhere in Africa, you can say thanks with Airtel Money. Any amount you like.</p>
                   <p className="mt-5 flex items-start gap-2 rounded-2xl bg-surface/60 p-3 text-sm font-semibold md:mt-auto">
-                    <Heart className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" /> Thank you in advance. Every bit of support keeps colorsbymax going.
+                    <Heart className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" /> Thank you in advance. Every bit of support keeps Kamiliyon going.
                   </p>
                 </div>
               </div>

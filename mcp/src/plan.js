@@ -1,5 +1,5 @@
 // Turns a project inspection into setup steps for the agent: what to install, which file to edit
-// and with what code, how the site's colours will be themed, and how to check it worked.
+// and with what code, how the site's colors will be themed, and how to check it worked.
 
 import { prePaintScript } from '../../src/storage.js'
 import { olderThan } from './project.js'
@@ -32,7 +32,7 @@ function wiringStep(info, config) {
         const dir = layout.replace(/layout\.[jt]sx?$/, '')
         const file = `${dir}colorsbymax.${ts ? 'tsx' : 'jsx'}`
         return {
-          title: 'Add the colour button (Next.js app router)',
+          title: 'Add the color button (Next.js app router)',
           detail: `Create ${file}, a client component that loads colorsbymax in the browser only, then render <ColorsByMax /> inside <body> in ${layout}.`,
           files: [
             { file, action: 'create', code: `'use client'\n\nimport { useEffect } from 'react'\n\nexport default function ColorsByMax() {\n  useEffect(() => {\n    ${browserImport(config, '    ')}\n  }, [])\n  return null\n}\n` },
@@ -42,7 +42,7 @@ function wiringStep(info, config) {
       }
       const app = entry(['pages/_app', 'src/pages/_app']) ?? 'pages/_app.js'
       return {
-        title: 'Add the colour button (Next.js pages router)',
+        title: 'Add the color button (Next.js pages router)',
         detail: `In ${app}, load colorsbymax in the browser once, from a useEffect in the App component.`,
         files: [{ file: app, action: 'edit', code: `import { useEffect } from 'react'\n\n// …inside App, before the return:\nuseEffect(() => {\n  ${browserImport(config, '  ')}\n}, [])` }],
       }
@@ -50,38 +50,38 @@ function wiringStep(info, config) {
     case 'remix': {
       const rootFile = entry(['app/root']) ?? 'app/root.tsx'
       return {
-        title: `Add the colour button (${fw.label})`,
+        title: `Add the color button (${fw.label})`,
         detail: `In ${rootFile}, load colorsbymax in the browser once, from a useEffect in the App component (it renders on the server too).`,
         files: [{ file: rootFile, action: 'edit', code: `import { useEffect } from 'react'\n\n// …inside App, before the return:\nuseEffect(() => {\n  ${browserImport(config, '  ')}\n}, [])` }],
       }
     }
     case 'gatsby':
       return {
-        title: 'Add the colour button (Gatsby)',
+        title: 'Add the color button (Gatsby)',
         detail: 'Gatsby runs gatsby-browser.js in the browser only, so a plain import works there.',
         files: [{ file: entry(['gatsby-browser']) ?? 'gatsby-browser.js', action: info.entryFiles.some((f) => f.startsWith('gatsby-browser')) ? 'edit' : 'create', code: staticImport(config) }],
       }
     case 'astro':
       return {
-        title: 'Add the colour button (Astro)',
+        title: 'Add the color button (Astro)',
         detail: 'Add a script to the layout every page uses. Astro bundles it and runs it in the browser. colorsbymax needs react and react-dom installed, but no Astro React integration.',
         files: [{ file: entry(['src/layouts/']) ?? 'src/layouts/Layout.astro', action: 'edit', code: `<!-- before </body> -->\n<script>\n  ${staticImport(config).replace(/\n/g, '\n  ')}\n</script>` }],
       }
     case 'nuxt':
       return {
-        title: 'Add the colour button (Nuxt)',
+        title: 'Add the color button (Nuxt)',
         detail: 'A .client plugin runs in the browser only. colorsbymax renders its own React island, so react and react-dom are installed alongside Vue.',
         files: [{ file: `plugins/colorsbymax.client.${ts ? 'ts' : 'js'}`, action: 'create', code: `export default defineNuxtPlugin(() => {\n  ${browserImport(config, '  ')}\n})\n` }],
       }
     case 'sveltekit':
       return {
-        title: 'Add the colour button (SvelteKit)',
+        title: 'Add the color button (SvelteKit)',
         detail: 'Load it from onMount in the root layout, so it runs in the browser only. colorsbymax renders its own React island, so react and react-dom are installed alongside Svelte.',
         files: [{ file: 'src/routes/+layout.svelte', action: info.entryFiles.includes('src/routes/+layout.svelte') ? 'edit' : 'create', code: `<script>\n  import { onMount } from 'svelte'\n  onMount(() => {\n    ${browserImport(config, '    ')}\n  })\n</script>\n\n<slot />` }],
       }
     case 'static':
       return {
-        title: 'Add the colour button (static site, no bundler)',
+        title: 'Add the color button (static site, no bundler)',
         detail: 'Without a bundler, load colorsbymax and React from the esm.sh CDN with one module script, on every page that should have the button.',
         files: [{ file: info.entryFiles.includes('index.html') ? 'index.html' : 'each page’s .html', action: 'edit', code: `<!-- before </body> -->\n<script type="module">\n  ${(config ? `import { autoMount } from 'https://esm.sh/colorsbymax/auto'\n\nautoMount(${config})` : `import 'https://esm.sh/colorsbymax/auto'`).replace(/\n/g, '\n  ')}\n</script>` }],
       }
@@ -89,7 +89,7 @@ function wiringStep(info, config) {
       const file = entry(['src/main', 'src/index']) ?? 'your app’s entry file (for example src/main.jsx)'
       const nonReact = fw.ui && fw.ui !== 'React' && fw.ui !== 'plain'
       return {
-        title: `Add the colour button (${fw.label})`,
+        title: `Add the color button (${fw.label})`,
         detail: `Add this at the top of ${file}. The button appears once the page has loaded.${nonReact ? ` colorsbymax renders its own small React island next to your ${fw.ui} app, so react and react-dom are installed alongside it.` : ''}`,
         files: [{ file, action: 'edit', code: staticImport(config) }],
       }
@@ -121,13 +121,13 @@ export function setupPlan(info, options = {}) {
     if (!cbm.installed) steps.push({ title: 'Install the packages (the code uses colorsbymax, but it isn’t in node_modules)', command: `${install}` })
     steps.push({
       title: 'Check it on the page',
-      detail: 'Run the site. The colour button sits in the bottom-right corner unless position says otherwise. The panel’s Audit button (next to settings) pins notes to anything that won’t look right in the chosen theme.',
+      detail: 'Run the site. The color button sits in the bottom-right corner unless position says otherwise. The panel’s Audit button (next to settings) pins notes to anything that won’t look right in the chosen theme.',
     })
     steps.push({
-      title: cbm.usage.hidden ? 'Finished already' : 'When the colours are chosen',
+      title: cbm.usage.hidden ? 'Finished already' : 'When the colors are chosen',
       detail: cbm.usage.hidden
         ? `The config sets hidden (${cbm.usage.hidden.join(', ')}), so the button is hidden where that’s true, typically in production. Use the finish tool with action "bring-back" to show it again.`
-        : 'Use the finish tool (action "keep") to make the chosen colours the default for every visitor and hide the button in production.',
+        : 'Use the finish tool (action "keep") to make the chosen colors the default for every visitor and hide the button in production.',
     })
     return {
       status: 'set-up',
@@ -143,7 +143,7 @@ export function setupPlan(info, options = {}) {
     steps.push({
       title: 'Install',
       command: `${install} colorsbymax${extra.length ? ` ${extra.join(' ')}` : ''}`,
-      detail: extra.length ? 'colorsbymax’s panel is built with React, so react and react-dom come too. They only power the colour panel; the site itself doesn’t need to use React.' : undefined,
+      detail: extra.length ? 'colorsbymax’s panel is built with React, so react and react-dom come too. They only power the color panel; the site itself doesn’t need to use React.' : undefined,
     })
   }
 
@@ -151,28 +151,28 @@ export function setupPlan(info, options = {}) {
   const config = configSource(options)
   steps.push(wiringStep(info, config))
 
-  // 3. How the colours get themed.
+  // 3. How the colors get themed.
   const colours = info.colours
   if (colours.mode === 'tokens') {
     const index = info.entryFiles.includes('index.html')
     steps.push({
-      title: 'Colours: themes apply to your tokens directly',
-      detail: `The site already paints with ${colours.tokensUsed.length} of the 35 colorsbymax tokens (${colours.tokensUsed.slice(0, 8).join(', ')}${colours.tokensUsed.length > 8 ? '…' : ''}), so each theme sets those --color-* variables and nothing is re-coloured by reading the page.${index ? ' To avoid a flash of the default colours on reload, add the pre-paint script to <head> in index.html (use the same storageKey as the config, or the default).' : ''}`,
+      title: 'Colors: themes apply to your tokens directly',
+      detail: `The site already paints with ${colours.tokensUsed.length} of the 35 colorsbymax tokens (${colours.tokensUsed.slice(0, 8).join(', ')}${colours.tokensUsed.length > 8 ? '…' : ''}), so each theme sets those --color-* variables and nothing is re-colored by reading the page.${index ? ' To avoid a flash of the default colors on reload, add the pre-paint script to <head> in index.html (use the same storageKey as the config, or the default).' : ''}`,
       files: index ? [{ file: 'index.html', action: 'edit', code: `<!-- in <head>, before any stylesheet -->\n<script>${prePaintScript(options.storageKey)}</script>` }] : undefined,
     })
   } else {
     steps.push({
-      title: 'Colours: re-coloured automatically',
-      detail: `The site doesn’t use the colorsbymax tokens (it has about ${colours.hardCodedColours} hard-coded colours${colours.tailwindPaletteClasses ? ` and ${colours.tailwindPaletteClasses} Tailwind palette classes` : ''}), so colorsbymax reads the colours painted on the page and swaps each for its counterpart in the chosen theme. This works with no other changes. For exact control over which colour goes where, the site can paint with the --color-* tokens instead: see the docs tool, topic "full-setup".`,
+      title: 'Colors: re-colored automatically',
+      detail: `The site doesn’t use the colorsbymax tokens (it has about ${colours.hardCodedColours} hard-coded colors${colours.tailwindPaletteClasses ? ` and ${colours.tailwindPaletteClasses} Tailwind palette classes` : ''}), so colorsbymax reads the colors painted on the page and swaps each for its counterpart in the chosen theme. This works with no other changes. For exact control over which color goes where, the site can paint with the --color-* tokens instead: see the docs tool, topic "full-setup".`,
     })
   }
 
   // 4. Check.
   steps.push({
     title: 'Check it on the page',
-    detail: `Run the site. The colour button appears ${options.position ? `at ${options.position}` : 'in the bottom-right corner'} once the page has loaded. Open it, pick a theme, and use Audit (next to settings) to see anything that won’t look right, such as a picture logo on a dark theme. If the logo isn’t detected, add data-colorsbymax-logo to it.`,
+    detail: `Run the site. The color button appears ${options.position ? `at ${options.position}` : 'in the bottom-right corner'} once the page has loaded. Open it, pick a theme, and use Audit (next to settings) to see anything that won’t look right, such as a picture logo on a dark theme. If the logo isn’t detected, add data-colorsbymax-logo to it.`,
   })
-  steps.push({ title: 'When the colours are chosen', detail: 'Use the finish tool (action "keep") to make them the site’s default and hide the button in production.' })
+  steps.push({ title: 'When the colors are chosen', detail: 'Use the finish tool (action "keep") to make them the site’s default and hide the button in production.' })
 
   return {
     status: 'not-set-up',
