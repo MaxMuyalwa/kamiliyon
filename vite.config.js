@@ -25,10 +25,14 @@ function panelCss() {
   }
 }
 
-// `vite build --mode site` builds the demo for mrmaxdesigns.com/colorsbymax: every URL starts
-// with /colorsbymax/ and the files land in demo/dist/colorsbymax/, the layout the Vercel project
+// `vite build --mode site` builds the demo for mrmaxdesigns.com/kamiliyon: every URL starts
+// with /kamiliyon/ and the files land in demo/dist/kamiliyon/, the layout the Vercel project
 // (vercel.json) serves and the portfolio forwards to.
-export const SITE_BASE = '/colorsbymax/'
+//
+// It was /colorsbymax/ until the rename. Both vercel.json here and the portfolio's next.config
+// send the old path on permanently, because it is on the npm page, in the README and indexed -
+// so every link that already exists keeps working.
+export const SITE_BASE = '/kamiliyon/'
 
 // The switcher's own version, as in the package build (vite.lib.config.js).
 const { version } = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'))

@@ -1,10 +1,10 @@
 import { Bot, Check, MessageSquare, Play, Plug, RefreshCw, Terminal } from 'lucide-react'
 import { CodeBlock, MCP_NPM, Reveal, SectionHeading, Tabs, useCopy } from './ui.jsx'
 
-const SERVER = JSON.stringify({ mcpServers: { colorsbymax: { command: 'npx', args: ['-y', 'colorsbymax-mcp'] } } }, null, 2)
-const VSCODE = JSON.stringify({ servers: { colorsbymax: { command: 'npx', args: ['-y', 'colorsbymax-mcp'] } } }, null, 2)
-const ZED = JSON.stringify({ context_servers: { colorsbymax: { command: 'npx', args: ['-y', 'colorsbymax-mcp'] } } }, null, 2)
-const OPENCODE = JSON.stringify({ mcp: { colorsbymax: { type: 'local', command: ['npx', '-y', 'colorsbymax-mcp'] } } }, null, 2)
+const SERVER = JSON.stringify({ mcpServers: { kamiliyon: { command: 'npx', args: ['-y', 'kamiliyon-mcp'] } } }, null, 2)
+const VSCODE = JSON.stringify({ servers: { kamiliyon: { command: 'npx', args: ['-y', 'kamiliyon-mcp'] } } }, null, 2)
+const ZED = JSON.stringify({ context_servers: { kamiliyon: { command: 'npx', args: ['-y', 'kamiliyon-mcp'] } } }, null, 2)
+const OPENCODE = JSON.stringify({ mcp: { kamiliyon: { type: 'local', command: ['npx', '-y', 'kamiliyon-mcp'] } } }, null, 2)
 
 const STEPS = [
   { Icon: Plug, title: 'Add the server', text: 'Once, with the setup for your editor below.' },
@@ -16,16 +16,16 @@ const STEPS = [
 // Every agent that runs local MCP servers: most take the same mcpServers JSON; the rest have a
 // command or their own file format. Popular ones first.
 const EDITORS = [
-  { label: 'Claude Code', content: <CodeBlock title="terminal" code="claude mcp add Kamiliyon -- npx -y colorsbymax-mcp" />, note: 'Add --scope user to have it in every project. If claude isn’t found, ask Claude Code to add the server itself.' },
+  { label: 'Claude Code', content: <CodeBlock title="terminal" code="claude mcp add kamiliyon -- npx -y kamiliyon-mcp" />, note: 'Add --scope user to have it in every project. If claude isn’t found, ask Claude Code to add the server itself.' },
   { label: 'Cursor', content: <CodeBlock title=".cursor/mcp.json" code={SERVER} />, note: 'In your project, or ~/.cursor/mcp.json for every project. It then shows under Settings → MCP.' },
   { label: 'VS Code Copilot', content: <CodeBlock title=".vscode/mcp.json" code={VSCODE} />, note: 'Then use it from Copilot Chat in Agent mode.' },
-  { label: 'Copilot CLI', content: <CodeBlock title="terminal" code="copilot mcp add Kamiliyon -- npx -y colorsbymax-mcp" />, note: 'GitHub Copilot in the terminal. Or type /mcp add inside copilot. It’s saved to ~/.copilot/mcp-config.json.' },
-  { label: 'Codex', content: <CodeBlock title="terminal" code="codex mcp add Kamiliyon -- npx -y colorsbymax-mcp" />, note: 'OpenAI’s Codex CLI saves it to ~/.codex/config.toml, which the Codex IDE extension shares.' },
+  { label: 'Copilot CLI', content: <CodeBlock title="terminal" code="copilot mcp add kamiliyon -- npx -y kamiliyon-mcp" />, note: 'GitHub Copilot in the terminal. Or type /mcp add inside copilot. It’s saved to ~/.copilot/mcp-config.json.' },
+  { label: 'Codex', content: <CodeBlock title="terminal" code="codex mcp add kamiliyon -- npx -y kamiliyon-mcp" />, note: 'OpenAI’s Codex CLI saves it to ~/.codex/config.toml, which the Codex IDE extension shares.' },
   { label: 'Antigravity', content: <CodeBlock title="~/.gemini/config/mcp_config.json" code={SERVER} />, note: 'Google Antigravity: in the agent panel, open … → MCP Servers → Manage MCP Servers → View raw config, add the entry and save. It reloads by itself. For one project, use .agents/mcp_config.json.' },
   { label: 'Gemini CLI', content: <CodeBlock title="~/.gemini/settings.json" code={SERVER} />, note: 'Or .gemini/settings.json in your project. Restart Gemini CLI and check it with /mcp.' },
   {
     label: 'Grok Build',
-    content: <CodeBlock title="terminal" code="grok mcp add Kamiliyon -- npx -y colorsbymax-mcp" />,
+    content: <CodeBlock title="terminal" code="grok mcp add kamiliyon -- npx -y kamiliyon-mcp" />,
     note: 'xAI’s coding agent saves it to ~/.grok/config.toml (add --scope project for .grok/config.toml). The first start downloads the server, so give it a moment, or raise startup_timeout_sec.',
   },
   { label: 'Claude Desktop', content: <CodeBlock title="claude_desktop_config.json" code={SERVER} />, note: 'Settings → Developer → Edit Config, then restart Claude Desktop.' },
@@ -35,7 +35,7 @@ const EDITORS = [
   { label: 'JetBrains', content: <CodeBlock title="mcp.json" code={SERVER} />, note: 'AI Assistant: Settings → Tools → AI Assistant → Model Context Protocol (MCP). Junie: Settings → Tools → Junie → MCP Settings.' },
   { label: 'Cline · Roo', content: <CodeBlock title="MCP settings" code={SERVER} />, note: 'In the extension’s MCP Servers view, choose Configure (or Edit MCP Settings) and add the entry.' },
   { label: 'opencode', content: <CodeBlock title="opencode.json" code={OPENCODE} />, note: 'In your project, or ~/.config/opencode/opencode.json for every project.' },
-  { label: 'Others', content: <CodeBlock title="mcp.json" code={SERVER} />, note: 'Most other MCP clients take this same mcpServers entry: the command is npx, with -y colorsbymax-mcp as its arguments.' },
+  { label: 'Others', content: <CodeBlock title="mcp.json" code={SERVER} />, note: 'Most other MCP clients take this same mcpServers entry: the command is npx, with -y kamiliyon-mcp as its arguments.' },
 ].map((e) => ({
   label: e.label,
   content: (
@@ -55,7 +55,7 @@ const ASKS = [
 ]
 
 const PROMPT =
-  "Install the Kamiliyon npm package in this project and add import 'colorsbymax/auto' to the app's entry file, so the Kamiliyon color button appears on every page. For Next.js, Remix or other server-rendered apps, load it in the browser only, with import('colorsbymax/auto') inside a useEffect. Don't change anything else."
+  "Install the Kamiliyon npm package in this project and add import 'kamiliyon/auto' to the app's entry file, so the Kamiliyon color button appears on every page. For Next.js, Remix or other server-rendered apps, load it in the browser only, with import('kamiliyon/auto') inside a useEffect. Don't change anything else."
 
 export function Agents() {
   const [copied, copy] = useCopy()
@@ -96,7 +96,7 @@ export function Agents() {
             <p className="mt-5 text-xs text-ink-muted">
               Runs with npx, so there’s nothing to install first (Node 18 or later).{' '}
               <a href={MCP_NPM} className="font-semibold text-primary underline underline-offset-2">
-                colorsbymax-mcp on npm
+                kamiliyon-mcp on npm
               </a>
             </p>
           </Reveal>

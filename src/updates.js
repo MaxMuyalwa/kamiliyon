@@ -1,5 +1,5 @@
-// The bell: tells a site's owner when a newer colorsbymax is out, with how to update, and shows
-// Max's own messages (written in the colorsbymax admin space). Once a day at most, the switcher
+// The bell: tells a site's owner when a newer Kamiliyon is out, with how to update, and shows
+// Max's own messages (written in the Kamiliyon admin space). Once a day at most, the switcher
 // asks npm for the latest version and mrmaxdesigns.com for the messages; nothing is sent but the
 // request itself. By default this happens only on development addresses (localhost and the like),
 // where the owner works: visitors to a live site never see it. Config `updates`: true for
@@ -10,13 +10,13 @@ import { useCallback, useEffect, useState } from 'react'
 /** This copy's version, built in when the package is built. */
 export const VERSION = typeof __COLORSBYMAX_VERSION__ === 'string' ? __COLORSBYMAX_VERSION__ : null
 
-const LATEST = 'https://registry.npmjs.org/colorsbymax/latest'
+const LATEST = 'https://registry.npmjs.org/kamiliyon/latest'
 const NOTICES = 'https://www.mrmaxdesigns.com/colorsbymax/api/notices'
-const CHANGELOG_SOURCE = 'https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/CHANGELOG.md'
+const CHANGELOG_SOURCE = 'https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/CHANGELOG.md'
 export const CHANGELOG_PAGE = 'https://www.mrmaxdesigns.com/colorsbymax/docs#changelog'
-export const UPDATE_COMMAND = 'npm install colorsbymax@latest'
+export const UPDATE_COMMAND = 'npm install kamiliyon@latest'
 export const updatePrompt = (latest) =>
-  `Update colorsbymax in this project to the latest version${latest ? ` (${latest})` : ''}: run ${UPDATE_COMMAND}, then read the changelog at ${CHANGELOG_PAGE} for every version since the one installed, and make any changes its "Upgrading" notes ask for. If the site has a colorsbymax pre-paint script copied into its HTML, replace it with the current prePaintScript() output. Don't change anything else.`
+  `Update Kamiliyon in this project to the latest version${latest ? ` (${latest})` : ''}: run ${UPDATE_COMMAND}, then read the changelog at ${CHANGELOG_PAGE} for every version since the one installed, and make any changes its "Upgrading" notes ask for. If the site has a Kamiliyon pre-paint script copied into its HTML, replace it with the current prePaintScript() output. Don't change anything else.`
 
 const DAY = 24 * 60 * 60 * 1000
 const MAX_NOTES = 6

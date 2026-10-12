@@ -327,7 +327,7 @@ function AnnouncementEditor({ onSaved }) {
   const badLink = draft.link && !/^(https:\/\/\S+|\/\S*)$/.test(draft.link.trim())
   const save = async () => {
     if (draft.on && !draft.text.trim()) return setError('Write the message first.')
-    if (badLink) return setError('The link must start with https:// or be a path on the site, like /colorsbymax/docs.')
+    if (badLink) return setError('The link must start with https:// or be a path on the site, like /kamiliyon/docs.')
     setBusy(true)
     const res = await saveSettings({ ...settings, announcement: { ...draft, text: draft.text.trim(), link: draft.link.trim(), label: draft.label.trim() } })
     setBusy(false)
@@ -358,7 +358,7 @@ function AnnouncementEditor({ onSaved }) {
         <div className={`${tile} grid gap-4 sm:grid-cols-[1fr_200px]`}>
           <div>
             <label htmlFor="ann-link" className="text-sm font-semibold text-ink">Link <span className="font-normal text-ink-muted">(optional)</span></label>
-            <input id="ann-link" value={draft.link} onChange={(e) => set({ link: e.target.value })} placeholder="https://… or /colorsbymax/docs#changelog" className={`${input} ${badLink ? 'border-danger' : ''}`} />
+            <input id="ann-link" value={draft.link} onChange={(e) => set({ link: e.target.value })} placeholder="https://… or /kamiliyon/docs#changelog" className={`${input} ${badLink ? 'border-danger' : ''}`} />
           </div>
           <div>
             <label htmlFor="ann-label" className="text-sm font-semibold text-ink">Link text</label>
@@ -405,7 +405,7 @@ function BellEditor({ onSaved }) {
   const badLink = (n) => n.link && !/^(https:\/\/\S+|\/\S*)$/.test(n.link.trim())
   const save = async () => {
     if (draft.some((n) => !n.title.trim())) return setError('Every message needs a title.')
-    if (draft.some(badLink)) return setError('A link must start with https:// or be a path on the site, like /colorsbymax/docs.')
+    if (draft.some(badLink)) return setError('A link must start with https:// or be a path on the site, like /kamiliyon/docs.')
     setBusy(true)
     const res = await saveSettings({ ...settings, notices: draft.map((n) => ({ ...n, title: n.title.trim(), text: n.text.trim(), link: n.link.trim(), label: n.label.trim() })) })
     setBusy(false)
@@ -445,7 +445,7 @@ function BellEditor({ onSaved }) {
             <div className="grid gap-4 sm:grid-cols-[1fr_200px]">
               <div>
                 <label htmlFor={`${n.id}-link`} className="text-sm font-semibold text-ink">Link <span className="font-normal text-ink-muted">(optional)</span></label>
-                <input id={`${n.id}-link`} value={n.link} onChange={(e) => setOne(n.id, { link: e.target.value })} placeholder="https://… or /colorsbymax/support" className={`${input} ${badLink(n) ? 'border-danger' : ''}`} />
+                <input id={`${n.id}-link`} value={n.link} onChange={(e) => setOne(n.id, { link: e.target.value })} placeholder="https://… or /kamiliyon/support" className={`${input} ${badLink(n) ? 'border-danger' : ''}`} />
               </div>
               <div>
                 <label htmlFor={`${n.id}-label`} className="text-sm font-semibold text-ink">Link text</label>

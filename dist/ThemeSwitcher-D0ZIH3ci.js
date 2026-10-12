@@ -1409,7 +1409,7 @@ function suggestThemes(scan, siteName, library = []) {
 	}));
 	return [...themes, ...matches];
 }
-/** A path as colorsbymax compares it: no query or hash, no trailing slash (but "/" for the home page). */
+/** A path as Kamiliyon compares it: no query or hash, no trailing slash (but "/" for the home page). */
 function normalPath(input) {
 	if (typeof input !== "string") return null;
 	let p = input.trim().split(/[?#]/)[0];
@@ -1497,8 +1497,8 @@ function linkedPages(max = 30) {
 	return [...found];
 }
 /** The config line that gives every visitor these pages. */
-var pagesSnippet = (pages) => `// Add to your colorsbymax config (the autoMount({...}) call, or the config passed to <ThemeProvider>):\npages: ${JSON.stringify(pages, null, 2)},`;
-var pagesPrompt = (pages) => `In my colorsbymax config (the autoMount({...}) call, or the config passed to <ThemeProvider>), set pages: ${JSON.stringify(pages)} so the theme only colors those pages and every other page keeps its own colors. A path ending in /* covers that section and every page under it. If the site uses import 'colorsbymax/auto', replace it with import { autoMount } from 'colorsbymax/auto' and an autoMount({ pages: [...] }) call. Don't change anything else.`;
+var pagesSnippet = (pages) => `// Add to your Kamiliyon config (the autoMount({...}) call, or the config passed to <ThemeProvider>):\npages: ${JSON.stringify(pages, null, 2)},`;
+var pagesPrompt = (pages) => `In my Kamiliyon config (the autoMount({...}) call, or the config passed to <ThemeProvider>), set pages: ${JSON.stringify(pages)} so the theme only colors those pages and every other page keeps its own colors. A path ending in /* covers that section and every page under it. If the site uses import 'kamiliyon/auto', replace it with import { autoMount } from 'kamiliyon/auto' and an autoMount({ pages: [...] }) call. Don't change anything else.`;
 //#endregion
 //#region src/underlay.js
 var MAX_SIBLINGS = 40;
@@ -2325,13 +2325,13 @@ function createGuard() {
 //#endregion
 //#region src/updates.js
 /** This copy's version, built in when the package is built. */
-var VERSION$1 = "0.6.0";
-var LATEST = "https://registry.npmjs.org/colorsbymax/latest";
+var VERSION$1 = "0.7.0";
+var LATEST = "https://registry.npmjs.org/kamiliyon/latest";
 var NOTICES = "https://www.mrmaxdesigns.com/colorsbymax/api/notices";
-var CHANGELOG_SOURCE = "https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/CHANGELOG.md";
+var CHANGELOG_SOURCE = "https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/CHANGELOG.md";
 var CHANGELOG_PAGE = "https://www.mrmaxdesigns.com/colorsbymax/docs#changelog";
-var UPDATE_COMMAND = "npm install colorsbymax@latest";
-var updatePrompt = (latest) => `Update colorsbymax in this project to the latest version${latest ? ` (${latest})` : ""}: run ${UPDATE_COMMAND}, then read the changelog at ${CHANGELOG_PAGE} for every version since the one installed, and make any changes its "Upgrading" notes ask for. If the site has a colorsbymax pre-paint script copied into its HTML, replace it with the current prePaintScript() output. Don't change anything else.`;
+var UPDATE_COMMAND = "npm install kamiliyon@latest";
+var updatePrompt = (latest) => `Update Kamiliyon in this project to the latest version${latest ? ` (${latest})` : ""}: run ${UPDATE_COMMAND}, then read the changelog at ${CHANGELOG_PAGE} for every version since the one installed, and make any changes its "Upgrading" notes ask for. If the site has a Kamiliyon pre-paint script copied into its HTML, replace it with the current prePaintScript() output. Don't change anything else.`;
 var DAY = 864e5;
 var MAX_NOTES = 6;
 /** Whether this page is on a development address: localhost, a .local or .test name, a private network. */
@@ -2405,7 +2405,7 @@ async function check(storageKey) {
 	const [latest, notices] = await Promise.allSettled([fetchWithin(LATEST), fetchWithin(NOTICES)]);
 	const version = latest.status === "fulfilled" && typeof latest.value?.version === "string" ? latest.value.version : cached?.latest ?? null;
 	let notes = cached?.latest === version ? cached?.notes ?? [] : [];
-	if (version && isNewer(version, "0.6.0") && !notes.length) try {
+	if (version && isNewer(version, "0.7.0") && !notes.length) try {
 		notes = notesFor(await fetchWithin(CHANGELOG_SOURCE, "text"), version);
 	} catch {}
 	const result = {
@@ -2436,7 +2436,7 @@ function useUpdates(storageKey, enabled) {
 			clearTimeout(timer);
 		};
 	}, [storageKey, enabled]);
-	const update = Boolean(data?.latest && isNewer(data.latest, "0.6.0"));
+	const update = Boolean(data?.latest && isNewer(data.latest, "0.7.0"));
 	const notices = data?.notices ?? [];
 	const unseen = enabled && (update && seen.version !== data.latest || notices.some((n) => !seen.notices.includes(n.id)));
 	const markSeen = useCallback(() => {
@@ -2475,7 +2475,7 @@ var hslOf$3 = (hex) => rgbToHsl(hexToRgb(hex));
 /**
 * The main colors in an image or PDF, most important first.
 * @param {File} file
-* @param {{ loadPdf?: (() => Promise<any>) | null }} [options]  PDF support, from 'colorsbymax/pdf'
+* @param {{ loadPdf?: (() => Promise<any>) | null }} [options]  PDF support, from 'kamiliyon/pdf'
 * @returns {Promise<{ colors: string[], from: 'image' | 'pdf-text' | 'pdf' }>}
 */
 async function coloursFromFile(file, { loadPdf = null } = {}) {
@@ -3993,7 +3993,7 @@ var newId$1 = () => `custom-${Date.now().toString(36)}-${Math.random().toString(
 * @property {Partial<Record<import('./tokens.js').TokenKey, string>>} [usage]
 *   Where each token is used on this site, shown in the editors
 * @property {boolean} [scrollbars]  Color the page's scrollbars from the theme (default true)
-* @property {() => Promise<any>} [pdf]  Enables PDF uploads: pass `loadPdf` from 'colorsbymax/pdf'
+* @property {() => Promise<any>} [pdf]  Enables PDF uploads: pass `loadPdf` from 'kamiliyon/pdf'
 * @property {'light' | 'dark' | 'system'} [defaultMode]  The mode a first-time visitor starts in
 *   (default 'light'; 'system' follows their device). Visitors can still change it.
 * @property {boolean} [colourLogo]  Whether themes color the site's logo for a first-time visitor
@@ -5011,14 +5011,14 @@ var tokenLines = (tokens, indent) => TOKEN_KEYS.map((k) => `${indent}'${k}': '${
 function keepSnippet(kind, name, tokens, prod = VITE_PROD, style = null) {
 	const styleLine = style ? `\n  // How boldly the colors paint the site: 'subtle', 'balanced' or 'colorful'.\n  colourStyle: '${style === "colourful" ? "colorful" : style}',` : "";
 	const theme = `defaultTheme: {\n    name: ${JSON.stringify(name)},\n    tokens: {\n${tokenLines(tokens, "      ")}\n    },\n  },${styleLine}\n  // Hides the color button in production; set to false to bring it back.\n  hidden: ${prod},`;
-	if (kind === "auto") return `// Replace \`import 'colorsbymax/auto'\` with:\nimport { autoMount } from 'colorsbymax/auto'\n\nautoMount({\n  ${theme}\n})`;
+	if (kind === "auto") return `// Replace \`import 'kamiliyon/auto'\` with:\nimport { autoMount } from 'kamiliyon/auto'\n\nautoMount({\n  ${theme}\n})`;
 	return `// Add to the config you pass to <ThemeProvider>:\n<ThemeProvider config={{\n  ...config,\n  ${theme}\n}}>`;
 }
 /** The theme as `--color-*` variables on :root. */
 var cssSnippet = (tokens) => `:root {\n${TOKEN_KEYS.map((k) => `  --color-${k}: ${tokens[k]};`).join("\n")}\n}`;
-var keepPrompt = (name, tokens, style = null) => `Update my colorsbymax setup so the colors I chose become my site's default and the color switcher is hidden in production. In the colorsbymax config (the autoMount({...}) call, or the config passed to <ThemeProvider>), set defaultTheme to { name: ${JSON.stringify(name)}, tokens: ${JSON.stringify(tokens)} }${style ? `, set colourStyle: '${style}'` : ""} and set hidden: ${VITE_PROD} (use ${NODE_PROD} if this isn't a Vite project). If the site uses import 'colorsbymax/auto', replace it with import { autoMount } from 'colorsbymax/auto' and an autoMount({...}) call with that config. Don't change anything else.`;
-/** @param {boolean} recoloring  true when colorsbymax was swapping the site's hard-coded colors */
-var removePrompt = (tokens, recolouring) => recolouring ? `Remove colorsbymax from this project but keep the colors it currently shows. The site's CSS uses hard-coded colors that colorsbymax was swapping at runtime, so update the site's own CSS to use this palette instead (primary is the main brand color, background the page, ink the text): ${JSON.stringify(tokens)}. Then uninstall the colorsbymax package and delete its import (import 'colorsbymax/auto', autoMount, ThemeProvider or ThemeSwitcher) and any colorsbymax pre-paint script in index.html.` : `Remove colorsbymax from this project but keep my colors: add these CSS variables to my global stylesheet, replacing any existing --color-* values: ${cssSnippet(tokens)} Then uninstall the colorsbymax package and delete its usage (ThemeProvider, ThemeSwitcher, autoMount or import 'colorsbymax/auto') and any colorsbymax pre-paint script in index.html. Keep colorsbymax/tokens.css only if nothing else needs it.`;
+var keepPrompt = (name, tokens, style = null) => `Update my Kamiliyon setup so the colors I chose become my site's default and the color switcher is hidden in production. In the Kamiliyon config (the autoMount({...}) call, or the config passed to <ThemeProvider>), set defaultTheme to { name: ${JSON.stringify(name)}, tokens: ${JSON.stringify(tokens)} }${style ? `, set colourStyle: '${style}'` : ""} and set hidden: ${VITE_PROD} (use ${NODE_PROD} if this isn't a Vite project). If the site uses import 'kamiliyon/auto', replace it with import { autoMount } from 'kamiliyon/auto' and an autoMount({...}) call with that config. Don't change anything else.`;
+/** @param {boolean} recoloring  true when Kamiliyon was swapping the site's hard-coded colors */
+var removePrompt = (tokens, recolouring) => recolouring ? `Remove Kamiliyon from this project but keep the colors it currently shows. The site's CSS uses hard-coded colors that Kamiliyon was swapping at runtime, so update the site's own CSS to use this palette instead (primary is the main brand color, background the page, ink the text): ${JSON.stringify(tokens)}. Then uninstall the kamiliyon package and delete its import (import 'kamiliyon/auto', autoMount, ThemeProvider or ThemeSwitcher) and any Kamiliyon pre-paint script in index.html.` : `Remove Kamiliyon from this project but keep my colors: add these CSS variables to my global stylesheet, replacing any existing --color-* values: ${cssSnippet(tokens)} Then uninstall the kamiliyon package and delete its usage (ThemeProvider, ThemeSwitcher, autoMount or import 'kamiliyon/auto') and any Kamiliyon pre-paint script in index.html. Keep kamiliyon/tokens.css only if nothing else needs it.`;
 /** The switch's markup: a sun in light mode, a moon in dark. */
 var TOGGLE_HTML = `<button type="button" class="cbm-mode-toggle" data-colorsbymax-mode="toggle" aria-label="Switch between light and dark mode">
   <svg class="cbm-mode-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -5042,7 +5042,7 @@ var TOGGLE_CSS = `.cbm-mode-toggle {
 html[data-colorsbymax-scheme="dark"] .cbm-mode-toggle .cbm-mode-sun { display: none; }
 html[data-colorsbymax-scheme="dark"] .cbm-mode-toggle .cbm-mode-moon { display: block; }`;
 /** The same switch as a React component. */
-var TOGGLE_REACT = `// ModeToggle.jsx: put <ModeToggle /> in your top bar. colorsbymax makes it work.
+var TOGGLE_REACT = `// ModeToggle.jsx: put <ModeToggle /> in your top bar. Kamiliyon makes it work.
 export function ModeToggle() {
   return (
     <button type="button" className="cbm-mode-toggle" data-colorsbymax-mode="toggle" aria-label="Switch between light and dark mode">
@@ -5057,7 +5057,7 @@ export function ModeToggle() {
   )
 }`;
 /** A prompt for Claude, Cursor or Copilot that adds the switch to the site's top bar. */
-var TOGGLE_PROMPT = `Add a light and dark mode switch to my site's top navigation bar, next to its other links or buttons. The site uses colorsbymax, which makes the switch work: any element with data-colorsbymax-mode="toggle" switches the whole site between light and dark and remembers the visitor's choice. Use this button (as a React component if the nav is React):
+var TOGGLE_PROMPT = `Add a light and dark mode switch to my site's top navigation bar, next to its other links or buttons. The site uses Kamiliyon, which makes the switch work: any element with data-colorsbymax-mode="toggle" switches the whole site between light and dark and remembers the visitor's choice. Use this button (as a React component if the nav is React):
 
 ${TOGGLE_HTML}
 
@@ -7142,7 +7142,7 @@ function FinishView({ onBack, onAddToSite }) {
 							"."
 						] }), /* @__PURE__ */ jsx(CopyBlock, {
 							label: "Prompt to bring it back",
-							text: "Show the colorsbymax color switcher again in production: in its config (the autoMount({...}) call or the config passed to <ThemeProvider>), set hidden to false or remove the hidden line. Don't change anything else.",
+							text: "Show the Kamiliyon color switcher again in production: in its config (the autoMount({...}) call or the config passed to <ThemeProvider>), set hidden to false or remove the hidden line. Don't change anything else.",
 							copyLabel: "Copy prompt"
 						})]
 					})
@@ -7201,13 +7201,13 @@ function FinishView({ onBack, onAddToSite }) {
 						children: [
 							/* @__PURE__ */ jsxs("li", { children: ["Uninstall it: ", /* @__PURE__ */ jsx("code", {
 								className: "font-mono",
-								children: "npm uninstall colorsbymax"
+								children: "npm uninstall kamiliyon"
 							})] }),
 							/* @__PURE__ */ jsxs("li", { children: [
 								"Delete its import (",
 								/* @__PURE__ */ jsx("code", {
 									className: "font-mono",
-									children: "import 'colorsbymax/auto'"
+									children: "import 'kamiliyon/auto'"
 								}),
 								", ",
 								/* @__PURE__ */ jsx("code", {

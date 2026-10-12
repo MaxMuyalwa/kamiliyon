@@ -67,7 +67,7 @@ export interface ColorsByMaxConfig {
   usage?: Partial<Record<TokenKey, string>>
   /** Color the page's scrollbars from the theme. Default true. */
   scrollbars?: boolean
-  /** Enables PDF uploads: pass `loadPdf` from 'colorsbymax/pdf' (needs pdfjs-dist installed). */
+  /** Enables PDF uploads: pass `loadPdf` from 'kamiliyon/pdf' (needs pdfjs-dist installed). */
   pdf?: () => Promise<unknown>
   /**
    * Re-color a site that doesn't paint with the --color-* variables, by swapping the colors

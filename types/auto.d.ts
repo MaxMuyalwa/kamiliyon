@@ -1,5 +1,5 @@
-// Type declarations for 'colorsbymax/auto'. Importing the module mounts the colour button by
-// itself once the page has rendered: `import 'colorsbymax/auto'`.
+// Type declarations for 'kamiliyon/auto'. Importing the module mounts the colour button by
+// itself once the page has rendered: `import 'kamiliyon/auto'`.
 
 import type { ColorsByMaxConfig } from './index.js'
 

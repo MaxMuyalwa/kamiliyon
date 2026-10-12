@@ -1,6 +1,13 @@
 # Changelog
 
-What changed in each colorsbymax release. Update with `npm install colorsbymax@latest`.
+What changed in each Kamiliyon release (published as colorsbymax up to 0.6.0). Update with `npm install kamiliyon@latest`.
+
+## 0.7.0 (2026-10-12)
+
+- **The package is now `kamiliyon`.** Kamiliyon was published as `colorsbymax` up to 0.6.0; from this release it's `kamiliyon`, and the MCP server is `kamiliyon-mcp`. The GitHub repo moves to MaxMuyalwa/kamiliyon (old links redirect).
+- The MCP server's `setup_plan` recognises a project still on `colorsbymax` and gives the steps to move. Its prompts are now `add-kamiliyon` and `finish-kamiliyon`, and the Next.js setup it writes is `app/kamiliyon.tsx`.
+
+**Upgrading:** uninstall `colorsbymax`, install `kamiliyon`, and change your imports from `colorsbymax` to `kamiliyon` (`colorsbymax/auto` becomes `kamiliyon/auto`, and the same for `/pdf` and `/tokens.css`). Nothing else changes: the config, the `data-colorsbymax-*` attributes and visitors' saved themes carry over. Full steps: [Moving from colorsbymax](README.md#moving-from-colorsbymax).
 
 ## 0.6.0 (2026-10-12)
 

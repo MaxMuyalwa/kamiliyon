@@ -1,5 +1,5 @@
-// Reads a project on disk to work out how colorsbymax fits in: the framework, the package manager,
-// whether colorsbymax is installed and wired up, and whether the site paints with the --color-*
+// Reads a project on disk to work out how Kamiliyon fits in: the framework, the package manager,
+// whether Kamiliyon is installed and wired up, and whether the site paints with the --color-*
 // tokens or hard-coded colors. Read-only: the agent makes the edits.
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
@@ -54,10 +54,10 @@ function walk(root) {
   return files
 }
 
-/** The newest colorsbymax on npm, or null when offline. */
+/** The newest kamiliyon on npm, or null when offline. */
 export async function latestVersion() {
   try {
-    const res = await fetch('https://registry.npmjs.org/colorsbymax/latest', { signal: AbortSignal.timeout(3000) })
+    const res = await fetch('https://registry.npmjs.org/kamiliyon/latest', { signal: AbortSignal.timeout(3000) })
     return res.ok ? (await res.json()).version : null
   } catch {
     return null
@@ -91,11 +91,11 @@ const ENTRY_CANDIDATES = [
 ]
 
 const USAGE = [
-  { id: 'auto-import', pattern: /import\s+['"]colorsbymax\/auto['"]|import\(\s*['"]colorsbymax\/auto['"]\s*\)/, label: "import 'colorsbymax/auto'" },
+  { id: 'auto-import', pattern: /import\s+['"](?:kamiliyon|Kamiliyon)\/auto['"]|import\(\s*['"](?:kamiliyon|Kamiliyon)\/auto['"]\s*\)/, label: "import 'kamiliyon/auto'" },
   { id: 'autoMount', pattern: /\bautoMount\s*\(/, label: 'autoMount({...})' },
   { id: 'provider', pattern: /<ThemeProvider\b[^>]*config/, label: '<ThemeProvider config>' },
   { id: 'switcher', pattern: /<ThemeSwitcher\b/, label: '<ThemeSwitcher />' },
-  { id: 'tokens-css', pattern: /colorsbymax\/tokens\.css/, label: 'colorsbymax/tokens.css' },
+  { id: 'tokens-css', pattern: /(?:kamiliyon|Kamiliyon)\/tokens\.css/, label: 'kamiliyon/tokens.css' },
   { id: 'pre-paint', pattern: /prePaintScript|--color-'\+k/, label: 'pre-paint script' },
   { id: 'hidden', pattern: /\bhidden\s*:/, label: 'hidden: … (switcher hidden, e.g. in production)' },
   { id: 'defaultTheme', pattern: /\bdefaultTheme\s*:/, label: 'defaultTheme' },
@@ -116,7 +116,9 @@ export async function inspectProject(dir) {
   const rel = (f) => relative(root, f).split(sep).join('/')
 
   const packageManager = existsSync(join(root, 'pnpm-lock.yaml')) ? 'pnpm' : existsSync(join(root, 'yarn.lock')) ? 'yarn' : existsSync(join(root, 'bun.lockb')) || existsSync(join(root, 'bun.lock')) ? 'bun' : 'npm'
-  const installedPkg = readJson(join(root, 'node_modules', 'colorsbymax', 'package.json'))
+  // Kamiliyon is the package's old name: a site may still be on it.
+  const installedPkg = readJson(join(root, 'node_modules', 'kamiliyon', 'package.json')) ?? readJson(join(root, 'node_modules', 'colorsbymax', 'package.json'))
+  const onOldName = !deps.kamiliyon && Boolean(deps.colorsbymax || installedPkg?.name === 'colorsbymax')
   const framework = pkg ? detectFramework(deps, root) : { id: 'static', label: 'a static site (no package.json)' }
 
   const usage = Object.fromEntries(USAGE.map((u) => [u.id, []]))
@@ -133,11 +135,11 @@ export async function inspectProject(dir) {
     } catch {
       continue
     }
-    if (text.includes('colorsbymax') || /ThemeProvider|ThemeSwitcher|autoMount/.test(text)) {
+    if (/kamiliyon|colorsbymax/.test(text) || /ThemeProvider|ThemeSwitcher|autoMount/.test(text)) {
       const lines = text.split('\n')
       for (const u of USAGE) {
         const i = lines.findIndex((l) => u.pattern.test(l))
-        if (i >= 0 && (u.id !== 'hidden' || text.includes('colorsbymax'))) usage[u.id].push(`${rel(file)}:${i + 1}`)
+        if (i >= 0 && (u.id !== 'hidden' || /kamiliyon|colorsbymax/.test(text))) usage[u.id].push(`${rel(file)}:${i + 1}`)
       }
     }
     for (const m of text.matchAll(/var\(\s*--color-([a-z0-9-]+)/g)) if (TOKEN_KEYS.includes(m[1])) tokenUses.set(m[1], (tokenUses.get(m[1]) ?? 0) + 1)
@@ -161,8 +163,9 @@ export async function inspectProject(dir) {
     react: deps.react ? { declared: deps.react, major: major(deps.react), reactDom: deps['react-dom'] ?? null } : null,
     tailwind: deps.tailwindcss ? { declared: deps.tailwindcss, major: major(deps.tailwindcss) } : null,
     typescript: 'typescript' in deps,
-    colorsbymax: {
-      declared: deps.colorsbymax ?? null,
+    kamiliyon: {
+      declared: deps.kamiliyon ?? deps.colorsbymax ?? null,
+      oldName: onOldName,
       installed: installedPkg?.version ?? null,
       latest: await latestVersion(),
       wired: Boolean(wired),

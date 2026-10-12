@@ -28,7 +28,7 @@ const COLUMNS = [
     title: 'Packages',
     links: [
       ['Kamiliyon on npm', NPM],
-      ['colorsbymax-mcp', MCP_NPM],
+      ['kamiliyon-mcp', MCP_NPM],
       ['GitHub', REPO],
     ],
   },

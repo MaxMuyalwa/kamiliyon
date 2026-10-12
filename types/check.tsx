@@ -17,9 +17,9 @@ import {
   type ColorsByMaxConfig,
   type ThemeTokens,
   type TokenKey,
-} from 'colorsbymax'
-import { loadPdf } from 'colorsbymax/pdf'
-import { autoMount } from 'colorsbymax/auto'
+} from 'kamiliyon'
+import { loadPdf } from 'kamiliyon/pdf'
+import { autoMount } from 'kamiliyon/auto'
 
 const config: ColorsByMaxConfig = {
   siteName: 'Example',

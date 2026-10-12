@@ -4,9 +4,9 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Check, Copy } from 'lucide-react'
 
-export const REPO = 'https://github.com/MaxMuyalwa/colorsbymax'
-export const NPM = 'https://www.npmjs.com/package/colorsbymax'
-export const MCP_NPM = 'https://www.npmjs.com/package/colorsbymax-mcp'
+export const REPO = 'https://github.com/MaxMuyalwa/kamiliyon'
+export const NPM = 'https://www.npmjs.com/package/kamiliyon'
+export const MCP_NPM = 'https://www.npmjs.com/package/kamiliyon-mcp'
 export const MRMAX = 'https://mrmaxdesigns.com'
 /** The support page (buy Max a coffee), next to the home page. */
 export const SUPPORT = `${import.meta.env.BASE_URL}support.html`

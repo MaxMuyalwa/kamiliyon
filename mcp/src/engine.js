@@ -1,5 +1,5 @@
 // The color side of the MCP server: the same theme catalogue, palette builder and contrast
-// checks the switcher uses in the browser, bundled from colorsbymax's own source.
+// checks the switcher uses in the browser, bundled from Kamiliyon's own source.
 
 import { contrastRatio, deltaE, normalizeHex } from '../../src/color.js'
 import { checkTheme, fixAll, formatRatio, MIN_CONTRAST_LARGE_TEXT, MIN_CONTRAST_NON_TEXT, MIN_CONTRAST_TEXT, PAIRINGS, THRESHOLDS } from '../../src/contrast.js'
@@ -116,7 +116,7 @@ export function themeFromColours(colours) {
 
 /** The token set as Tailwind v4 @theme overrides. */
 export const tailwindSnippet = (tokens) =>
-  `@import "tailwindcss";\n@import "colorsbymax/tokens.css";\n\n@theme static {\n${TOKEN_KEYS.map((k) => `  --color-${k}: ${tokens[k]};`).join('\n')}\n}`
+  `@import "tailwindcss";\n@import "kamiliyon/tokens.css";\n\n@theme static {\n${TOKEN_KEYS.map((k) => `  --color-${k}: ${tokens[k]};`).join('\n')}\n}`
 
 /** The panel's Import/export format: paste into the panel, or download as a .theme.json. */
 export const themeJson = (name, tokens) => JSON.stringify({ name, tokens }, null, 2)

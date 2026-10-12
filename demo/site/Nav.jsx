@@ -28,7 +28,7 @@ export function Wordmark({ className = '' }) {
       <LogoMark className="mr-[-0.12em] h-[1.3em] w-auto shrink-0" />
       <span className="flex flex-col leading-none">
         <span>
-          Kami<span className="text-gradient">liyon</span>
+          <span className="text-gradient">Kamiliyon</span>
         </span>
         <span className="mt-[0.15em] text-[0.48em] font-semibold tracking-wide text-ink-secondary">colorsbymax</span>
       </span>

@@ -1,6 +1,6 @@
 // Palettes from files: reads the colors in an uploaded image or PDF and turns them into a
 // theme. Images are sampled pixel by pixel. PDFs are rendered with PDF.js, which is opt-in: a
-// site passes `loadPdf` from 'colorsbymax/pdf', so sites that don't want PDFs never install or
+// site passes `loadPdf` from 'kamiliyon/pdf', so sites that don't want PDFs never install or
 // bundle it. Hex codes written in a PDF, as in brand guidelines, win over its pixels.
 
 import { contrastRatio, deltaE, hexToRgb, mix, rgbToHex, rgbToHsl } from './color.js'
@@ -28,7 +28,7 @@ const hslOf = (hex) => rgbToHsl(hexToRgb(hex))
 /**
  * The main colors in an image or PDF, most important first.
  * @param {File} file
- * @param {{ loadPdf?: (() => Promise<any>) | null }} [options]  PDF support, from 'colorsbymax/pdf'
+ * @param {{ loadPdf?: (() => Promise<any>) | null }} [options]  PDF support, from 'kamiliyon/pdf'
  * @returns {Promise<{ colors: string[], from: 'image' | 'pdf-text' | 'pdf' }>}
  */
 export async function coloursFromFile(file, { loadPdf = null } = {}) {

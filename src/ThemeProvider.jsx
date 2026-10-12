@@ -43,7 +43,7 @@ const newId = () => `custom-${Date.now().toString(36)}-${Math.random().toString(
  * @property {Partial<Record<import('./tokens.js').TokenKey, string>>} [usage]
  *   Where each token is used on this site, shown in the editors
  * @property {boolean} [scrollbars]  Color the page's scrollbars from the theme (default true)
- * @property {() => Promise<any>} [pdf]  Enables PDF uploads: pass `loadPdf` from 'colorsbymax/pdf'
+ * @property {() => Promise<any>} [pdf]  Enables PDF uploads: pass `loadPdf` from 'kamiliyon/pdf'
  * @property {'light' | 'dark' | 'system'} [defaultMode]  The mode a first-time visitor starts in
  *   (default 'light'; 'system' follows their device). Visitors can still change it.
  * @property {boolean} [colourLogo]  Whether themes color the site's logo for a first-time visitor

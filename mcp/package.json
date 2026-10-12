@@ -1,10 +1,11 @@
 {
-  "name": "colorsbymax-mcp",
-  "version": "0.1.3",
-  "description": "MCP server for colorsbymax: lets AI agents set up the theme switcher, find and build themes, check contrast and finish a site's colours.",
+  "name": "kamiliyon-mcp",
+  "version": "0.2.0",
+  "description": "MCP server for Kamiliyon (colorsbymax): lets AI agents set up the theme switcher, find and build themes, check contrast and finish a site's colors.",
   "keywords": [
     "mcp",
     "model-context-protocol",
+    "kamiliyon",
     "colorsbymax",
     "theme",
     "colors",
@@ -14,19 +15,19 @@
     "ai-agents"
   ],
   "author": "Max Muyalwa (mrmaxdesigns)",
-  "homepage": "https://github.com/MaxMuyalwa/colorsbymax/tree/main/mcp#readme",
+  "homepage": "https://github.com/MaxMuyalwa/kamiliyon/tree/main/mcp#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MaxMuyalwa/colorsbymax.git",
+    "url": "git+https://github.com/MaxMuyalwa/kamiliyon.git",
     "directory": "mcp"
   },
   "bugs": {
-    "url": "https://github.com/MaxMuyalwa/colorsbymax/issues"
+    "url": "https://github.com/MaxMuyalwa/kamiliyon/issues"
   },
   "license": "MIT",
   "type": "module",
   "bin": {
-    "colorsbymax-mcp": "dist/server.js"
+    "kamiliyon-mcp": "dist/server.js"
   },
   "files": [
     "dist",

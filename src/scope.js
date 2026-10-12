@@ -12,7 +12,7 @@ export const MAX_PAGES = 50
 /** Most pages Studio remembers seeing, to offer them back. */
 export const MAX_SEEN = 30
 
-/** A path as colorsbymax compares it: no query or hash, no trailing slash (but "/" for the home page). */
+/** A path as Kamiliyon compares it: no query or hash, no trailing slash (but "/" for the home page). */
 export function normalPath(input) {
   if (typeof input !== 'string') return null
   let p = input.trim().split(/[?#]/)[0]
@@ -108,7 +108,7 @@ export function linkedPages(max = MAX_SEEN) {
 
 /** The config line that gives every visitor these pages. */
 export const pagesSnippet = (pages) =>
-  `// Add to your colorsbymax config (the autoMount({...}) call, or the config passed to <ThemeProvider>):\npages: ${JSON.stringify(pages, null, 2)},`
+  `// Add to your Kamiliyon config (the autoMount({...}) call, or the config passed to <ThemeProvider>):\npages: ${JSON.stringify(pages, null, 2)},`
 
 export const pagesPrompt = (pages) =>
-  `In my colorsbymax config (the autoMount({...}) call, or the config passed to <ThemeProvider>), set pages: ${JSON.stringify(pages)} so the theme only colors those pages and every other page keeps its own colors. A path ending in /* covers that section and every page under it. If the site uses import 'colorsbymax/auto', replace it with import { autoMount } from 'colorsbymax/auto' and an autoMount({ pages: [...] }) call. Don't change anything else.`
+  `In my Kamiliyon config (the autoMount({...}) call, or the config passed to <ThemeProvider>), set pages: ${JSON.stringify(pages)} so the theme only colors those pages and every other page keeps its own colors. A path ending in /* covers that section and every page under it. If the site uses import 'kamiliyon/auto', replace it with import { autoMount } from 'kamiliyon/auto' and an autoMount({ pages: [...] }) call. Don't change anything else.`

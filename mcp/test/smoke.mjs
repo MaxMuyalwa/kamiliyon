@@ -33,17 +33,17 @@ const vite = project('vite-app', {
 const next = project('next-app', {
   'package.json': { name: 'shop', dependencies: { next: '15.0.0', react: '19.0.0', 'react-dom': '19.0.0' }, devDependencies: { typescript: '^5', tailwindcss: '^4.1.0' } },
   'app/layout.tsx': 'export default function RootLayout({ children }) { return <html><body>{children}</body></html> }\n',
-  'app/globals.css': '@import "tailwindcss";\n@import "colorsbymax/tokens.css";\n@theme static { --color-primary: #0d6b84; --color-ink: #10222a; }\n',
+  'app/globals.css': '@import "tailwindcss";\n@import "kamiliyon/tokens.css";\n@theme static { --color-primary: #0d6b84; --color-ink: #10222a; }\n',
   'app/page.tsx': 'export default () => <main className="bg-background text-ink"><a className="bg-primary text-on-primary">Buy</a></main>\n',
 })
 const wired = project('wired-app', {
   'package.json': { name: 'wired', dependencies: { colorsbymax: '^0.1.0', react: '^18.2.0', 'react-dom': '^18.2.0' }, devDependencies: { vite: '^6' } },
   'node_modules/colorsbymax/package.json': { name: 'colorsbymax', version: '0.1.0' },
-  'src/main.jsx': "import 'colorsbymax/auto'\n",
+  'src/main.jsx': "import 'kamiliyon/auto'\n",
 })
 const plain = project('static-site', { 'index.html': '<!doctype html><title>Hi</title><body style="background:#fff8e7">Hello</body>' })
 
-const client = new Client({ name: 'colorsbymax-smoke', version: '1.0.0' })
+const client = new Client({ name: 'kamiliyon-smoke', version: '1.0.0' })
 await client.connect(new StdioClientTransport({ command: process.execPath, args: [server] }))
 
 let failures = 0
@@ -69,45 +69,45 @@ try {
   console.log(`${prompts.length === 2 ? 'ok  ' : 'FAIL'} prompts: ${prompts.map((p) => p.name).join(', ')}`)
   if (!client.getInstructions()?.includes('setup_plan')) (failures++, console.log('FAIL instructions'))
 
-  await call('setup_plan', { path: vite }, ['npm install colorsbymax', "import 'colorsbymax/auto'", 'src/main.jsx', 're-coloured automatically', /"hardCodedColours": 3/])
-  await call('setup_plan', { path: next, siteName: 'Shop' }, ["'use client'", 'app/colorsbymax.tsx', "autoMount({", 'siteName: "Shop"', 'themes apply to your tokens', 'Next.js'])
-  await call('setup_plan', { path: wired }, ['already set up', 'src/main.jsx:1', 'colorsbymax@latest'])
-  await call('setup_plan', { path: plain }, ['esm.sh/colorsbymax/auto', 'static site'])
+  await call('setup_plan', { path: vite }, ['npm install kamiliyon', "import 'kamiliyon/auto'", 'src/main.jsx', 're-colored automatically', /"hardCodedColours": 3/])
+  await call('setup_plan', { path: next, siteName: 'Shop' }, ["'use client'", 'app/kamiliyon.tsx', "autoMount({", 'siteName: "Shop"', 'themes apply to your tokens', 'Next.js'])
+  await call('setup_plan', { path: wired }, ['already set up', 'src/main.jsx:1', 'Move to the new package name'])
+  await call('setup_plan', { path: plain }, ['esm.sh/kamiliyon/auto', 'static site'])
   await call('setup_plan', { path: join(tmp, 'nope') }, ['ERROR', 'No folder'])
 
   await call('find_themes', { query: 'ocean' }, ['"id": "ocean"'])
   await call('find_themes', { category: 'pastel', limit: 3 }, ['showing 3'])
   await call('find_themes', { near: '#e63946', limit: 2, mode: 'dark' }, ['"dark": true'])
-  await call('find_themes', { near: 'teal-ish' }, ['ERROR', "isn't a colour"])
+  await call('find_themes', { near: 'teal-ish' }, ['ERROR', "isn't a color"])
 
   await call('get_theme', { id: 'ocean' }, ['"name": "Ocean"', '"primary": "#', '"passing"'])
   await call('get_theme', { id: 'ocean~dark', format: 'css' }, ['--color-background: #', 'dark'])
-  await call('get_theme', { id: 'lib-1', format: 'tailwind' }, ['@theme static', 'colorsbymax/tokens.css'])
+  await call('get_theme', { id: 'lib-1', format: 'tailwind' }, ['@theme static', 'kamiliyon/tokens.css'])
   await call('get_theme', { id: 'nope' }, ['ERROR'])
 
   await call('theme_from_colours', { colours: ['#e63946', '#1d3557', '#f1faee'], name: 'Harbour', withDark: true }, ['# Harbour', '# Harbour (dark)', '"background": "#f1faee"', '"passing": 38'])
-  await call('theme_from_colours', { colours: ['red'] }, ['ERROR', 'Not colours'])
+  await call('theme_from_colours', { colours: ['red'] }, ['ERROR', 'Not colors'])
 
   await call('check_contrast', { pairs: [{ foreground: '#777777', background: '#ffffff' }] }, ['"ratio": "4.4:1"', '"text": "fail"', '"largeText": "pass (AA)"'])
   await call('check_contrast', { tokens: { primary: '#ffe066', 'on-primary': '#ffffff', nonsense: '#000' } }, ['Button text on primary', 'suggestedFixes', 'nonsense'])
 
   await call('finish', { action: 'keep', themeId: 'forest' }, ["autoMount({", 'hidden: import.meta.env.PROD', "'primary': '#"])
   await call('finish', { action: 'keep', tokens: { primary: '#0d6b84' }, name: 'Mine', setup: 'provider', bundler: 'other' }, ['<ThemeProvider', "process.env.NODE_ENV === 'production'", '"Mine"'])
-  await call('finish', { action: 'remove', themeId: 'rose', recolouring: true }, ['npm uninstall colorsbymax', 'hard-coded colours'])
+  await call('finish', { action: 'remove', themeId: 'rose', recolouring: true }, ['npm uninstall kamiliyon', 'hard-coded colors'])
   await call('finish', { action: 'remove', themeId: 'rose' }, [':root {', '--color-primary'])
   await call('finish', { action: 'bring-back' }, ['hidden: false'])
   await call('finish', { action: 'hide-locally' }, ['Alt+Shift+C'])
   await call('finish', { action: 'keep' }, ['ERROR'])
 
-  await call('docs', { topic: 'quick-start' }, ["import 'colorsbymax/auto'"])
+  await call('docs', { topic: 'quick-start' }, ["import 'kamiliyon/auto'"])
   await call('docs', { topic: 'tokens' }, ['`on-primary`', '## Status'])
   await call('docs', { topic: 'api' }, ['ColorsByMaxConfig'])
   await call('docs', { topic: 'finish' }, ['hide it in production'])
   await call('docs', { topic: 'agents' }, ['grok mcp add', 'Google Antigravity', 'context_servers', 'copilot mcp add'])
   await call('docs', { topic: 'overview' }, ['At a glance', 'A floating theme switcher', /^(?![\s\S]*<img)/])
 
-  const prompt = await client.getPrompt({ name: 'add-colorsbymax', arguments: {} })
-  console.log(`${prompt.messages[0].content.text.includes('setup_plan') ? 'ok  ' : 'FAIL'} prompt add-colorsbymax`)
+  const prompt = await client.getPrompt({ name: 'add-kamiliyon', arguments: {} })
+  console.log(`${prompt.messages[0].content.text.includes('setup_plan') ? 'ok  ' : 'FAIL'} prompt add-kamiliyon`)
 } finally {
   await client.close()
   rmSync(tmp, { recursive: true, force: true })

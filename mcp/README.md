@@ -1,6 +1,6 @@
 # Kamiliyon MCP server
 
-An [MCP](https://modelcontextprotocol.io) server that teaches AI agents (Claude Code, Cursor, GitHub Copilot, Codex, Google Antigravity, Gemini CLI, Grok Build, Claude Desktop, Windsurf, Kiro, Zed and others) to use [Kamiliyon](https://github.com/MaxMuyalwa/colorsbymax), the live theme switcher for websites.
+An [MCP](https://modelcontextprotocol.io) server that teaches AI agents (Claude Code, Cursor, GitHub Copilot, Codex, Google Antigravity, Gemini CLI, Grok Build, Claude Desktop, Windsurf, Kiro, Zed and others) to use [Kamiliyon](https://github.com/MaxMuyalwa/kamiliyon), the live theme switcher for websites.
 
 With it, you can ask your agent things like:
 
@@ -25,17 +25,17 @@ It runs with `npx`, so there's nothing to install first. Node 18 or later.
 **Claude Code**
 
 ```bash
-claude mcp add colorsbymax -- npx -y colorsbymax-mcp
+claude mcp add kamiliyon -- npx -y kamiliyon-mcp
 ```
 
-Add `--scope user` to have it in every project. If your terminal says `claude` isn't found, ask Claude Code itself to add the server `npx -y colorsbymax-mcp`.
+Add `--scope user` to have it in every project. If your terminal says `claude` isn't found, ask Claude Code itself to add the server `npx -y kamiliyon-mcp`.
 
 **Cursor**: `.cursor/mcp.json` in your project, or `~/.cursor/mcp.json` for every project:
 
 ```json
 {
   "mcpServers": {
-    "colorsbymax": { "command": "npx", "args": ["-y", "colorsbymax-mcp"] }
+    "kamiliyon": { "command": "npx", "args": ["-y", "kamiliyon-mcp"] }
   }
 }
 ```
@@ -45,7 +45,7 @@ Add `--scope user` to have it in every project. If your terminal says `claude` i
 ```json
 {
   "servers": {
-    "colorsbymax": { "command": "npx", "args": ["-y", "colorsbymax-mcp"] }
+    "kamiliyon": { "command": "npx", "args": ["-y", "kamiliyon-mcp"] }
   }
 }
 ```
@@ -55,13 +55,13 @@ Add `--scope user` to have it in every project. If your terminal says `claude` i
 **GitHub Copilot CLI** (saved to `~/.copilot/mcp-config.json`)
 
 ```bash
-copilot mcp add colorsbymax -- npx -y colorsbymax-mcp
+copilot mcp add kamiliyon -- npx -y kamiliyon-mcp
 ```
 
 **Codex** (OpenAI; the CLI and IDE extension share `~/.codex/config.toml`)
 
 ```bash
-codex mcp add colorsbymax -- npx -y colorsbymax-mcp
+codex mcp add kamiliyon -- npx -y kamiliyon-mcp
 ```
 
 **Google Antigravity**: in the agent panel, open **… → MCP Servers → Manage MCP Servers → View raw config**, add the same `mcpServers` entry as Cursor to `~/.gemini/config/mcp_config.json` (or `.agents/mcp_config.json` for one project), and save. It reloads by itself.
@@ -71,7 +71,7 @@ codex mcp add colorsbymax -- npx -y colorsbymax-mcp
 **Grok Build** (xAI; saved to `~/.grok/config.toml`, or `.grok/config.toml` with `--scope project`)
 
 ```bash
-grok mcp add colorsbymax -- npx -y colorsbymax-mcp
+grok mcp add kamiliyon -- npx -y kamiliyon-mcp
 ```
 
 **Windsurf, Kiro, JetBrains, Cline and Roo** take the same `mcpServers` entry as Cursor: Windsurf in `~/.codeium/windsurf/mcp_config.json`, Kiro in `.kiro/settings/mcp.json` (use the full path to `npx` there if it can't start), JetBrains under Settings → Tools → AI Assistant → Model Context Protocol (or Junie → MCP Settings), and Cline and Roo in their MCP Servers view.
@@ -79,18 +79,18 @@ grok mcp add colorsbymax -- npx -y colorsbymax-mcp
 **Zed**, in `settings.json`:
 
 ```json
-{ "context_servers": { "colorsbymax": { "command": "npx", "args": ["-y", "colorsbymax-mcp"] } } }
+{ "context_servers": { "kamiliyon": { "command": "npx", "args": ["-y", "kamiliyon-mcp"] } } }
 ```
 
 **opencode**, in `opencode.json`:
 
 ```json
-{ "mcp": { "colorsbymax": { "type": "local", "command": ["npx", "-y", "colorsbymax-mcp"] } } }
+{ "mcp": { "kamiliyon": { "type": "local", "command": ["npx", "-y", "kamiliyon-mcp"] } } }
 ```
 
-**Any other MCP client**: the command is `npx`, with `-y colorsbymax-mcp` as its arguments. Most take the same `mcpServers` entry as Cursor.
+**Any other MCP client**: the command is `npx`, with `-y kamiliyon-mcp` as its arguments. Most take the same `mcpServers` entry as Cursor.
 
-On Windows, if your editor can't start `npx`, use `"command": "cmd"` with `"args": ["/c", "npx", "-y", "colorsbymax-mcp"]`.
+On Windows, if your editor can't start `npx`, use `"command": "cmd"` with `"args": ["/c", "npx", "-y", "kamiliyon-mcp"]`.
 
 ## Tools
 
@@ -104,7 +104,7 @@ On Windows, if your editor can't start `npx`, use `"command": "cmd"` with `"args
 | `finish` | Once the colors are chosen: **keep** makes them every visitor's default and hides the button in production; **bring-back** shows it again; **hide-locally** hides it on one device; **remove** uninstalls Kamiliyon and keeps the colors in your CSS. |
 | `docs` | Kamiliyon's documentation by topic: overview, quick start, full setup, tokens, finishing, updating, and the full TypeScript API. |
 
-It also has two prompts, `add-colorsbymax` and `finish-colorsbymax`, which some editors show as slash commands.
+It also has two prompts, `add-kamiliyon` and `finish-kamiliyon`, which some editors show as slash commands.
 
 ## What it can and can't do
 
@@ -125,7 +125,7 @@ node test/smoke.mjs          # starts the server over stdio and calls every tool
 node test/smoke.mjs --show   # the same, printing each result
 ```
 
-To try a local build in an editor, point it at the file: `"command": "node", "args": ["/path/to/colorsbymax/mcp/dist/server.js"]`.
+To try a local build in an editor, point it at the file: `"command": "node", "args": ["/path/to/kamiliyon/mcp/dist/server.js"]`.
 
 ## Licence
 

@@ -28,10 +28,10 @@ const TABS = [
     content: (
       <ol className="space-y-6">
         <Step n={1} title="Install it">
-          <CodeBlock title="terminal" code="npm install colorsbymax" />
+          <CodeBlock title="terminal" code="npm install kamiliyon" />
         </Step>
         <Step n={2} title="Add one line to your app’s entry file">
-          <CodeBlock title="main.jsx" code={`import 'colorsbymax/auto'`} />
+          <CodeBlock title="main.jsx" code={`import 'kamiliyon/auto'`} />
           <Note>
             That’s all. The color button appears once the page loads. If your site uses hard-coded colors, Kamiliyon reads what’s on the page
             and swaps each color for its role in the chosen theme: greys follow the theme’s background and text, brand shades follow its brand,
@@ -51,7 +51,7 @@ const TABS = [
           <CodeBlock
             title="app.css"
             code={`@import "tailwindcss";
-@import "colorsbymax/tokens.css";
+@import "kamiliyon/tokens.css";
 
 @theme static {
   --color-primary: #5b3df5; /* your colors */
@@ -62,7 +62,7 @@ const TABS = [
         <Step n={2} title="Wrap your app and add the switcher">
           <CodeBlock
             title="App.jsx"
-            code={`import { ThemeProvider, ThemeSwitcher } from 'colorsbymax'
+            code={`import { ThemeProvider, ThemeSwitcher } from 'kamiliyon'
 
 <ThemeProvider config={{
   siteName: 'Your site',
@@ -83,7 +83,7 @@ const TABS = [
     content: (
       <ol className="space-y-6">
         <Step n={1} title="Install it">
-          <CodeBlock title="terminal" code="npm install colorsbymax" />
+          <CodeBlock title="terminal" code="npm install kamiliyon" />
         </Step>
         <Step n={2} title="Load it in the browser from a small client component">
           <CodeBlock
@@ -92,14 +92,14 @@ const TABS = [
 
 import { useEffect } from 'react'
 
-export default function ColorsByMax() {
+export default function Kamiliyon() {
   useEffect(() => {
-    import('colorsbymax/auto')
+    import('kamiliyon/auto')
   }, [])
   return null
 }`}
           />
-          <Note>Then render {'<ColorsByMax />'} inside {'<body>'} in app/layout.tsx. The same pattern works in Remix and other server-rendered apps.</Note>
+          <Note>Then render {'<Kamiliyon />'} inside {'<body>'} in app/layout.tsx. The same pattern works in Remix and other server-rendered apps.</Note>
         </Step>
       </ol>
     ),
@@ -113,7 +113,7 @@ export default function ColorsByMax() {
           <CodeBlock
             title="index.html"
             code={`<script type="module">
-  import 'https://esm.sh/colorsbymax/auto'
+  import 'https://esm.sh/kamiliyon/auto'
 </script>`}
           />
           <Note>Plain HTML sites load Kamiliyon and React from a CDN. Put it before {'</body>'} on each page that should have the button.</Note>
@@ -162,7 +162,7 @@ export default function ColorsByMax() {
         <Step n={2} title="Keep your colors and hide the switcher in production">
           <CodeBlock
             title="main.jsx"
-            code={`import { autoMount } from 'colorsbymax/auto'
+            code={`import { autoMount } from 'kamiliyon/auto'
 
 autoMount({
   defaultTheme: { name: 'Ocean', tokens: { /* every color, filled in by the panel */ } },

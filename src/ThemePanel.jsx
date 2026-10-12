@@ -1104,8 +1104,8 @@ function FinishView({ onBack, onAddToSite }) {
       {choice === 'remove' && (
         <div className="space-y-3">
           <ol className="list-decimal space-y-1 pl-4 text-[11px] text-zinc-700">
-            <li>Uninstall it: <code className="font-mono">npm uninstall colorsbymax</code></li>
-            <li>Delete its import (<code className="font-mono">import 'colorsbymax/auto'</code>, <code className="font-mono">autoMount</code>, or <code className="font-mono">ThemeProvider</code> and <code className="font-mono">ThemeSwitcher</code>) and any Kamiliyon pre-paint script.</li>
+            <li>Uninstall it: <code className="font-mono">npm uninstall kamiliyon</code></li>
+            <li>Delete its import (<code className="font-mono">import 'kamiliyon/auto'</code>, <code className="font-mono">autoMount</code>, or <code className="font-mono">ThemeProvider</code> and <code className="font-mono">ThemeSwitcher</code>) and any Kamiliyon pre-paint script.</li>
             <li>
               {recolouring
                 ? 'Keep the colors: your site’s CSS uses its own hard-coded colors, which Kamiliyon was swapping as the page ran, so they need writing into your CSS. The prompt below asks your AI editor to do that.'

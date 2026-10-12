@@ -11,7 +11,7 @@
 
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto'
 
-export const REPO = 'MaxMuyalwa/colorsbymax'
+export const REPO = 'MaxMuyalwa/kamiliyon'
 export const SITE_URL = (process.env.SITE_URL || 'https://www.mrmaxdesigns.com/colorsbymax').replace(/\/$/, '')
 export const CALLBACK = `${SITE_URL}/api/admin/callback`
 export const BRANCH = process.env.CONTENT_BRANCH || 'content'

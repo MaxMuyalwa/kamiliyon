@@ -12,7 +12,7 @@ import changelogCopy from '../../CHANGELOG.md?raw'
 import { REPO } from './ui.jsx'
 import { ADMIN_PAGE, Modal, avatarOf, useAdmin } from './Admin.jsx'
 
-const RAW = 'https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/'
+const RAW = 'https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/'
 const BLOB = `${REPO}/blob/main/`
 const API = `${import.meta.env.BASE_URL}api`
 

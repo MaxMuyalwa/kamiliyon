@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/docs/readme/hero.svg" alt="Kamiliyon (colorsbymax) by mrmaxdesigns: re-color any website, live." width="880">
+  <img src="https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/docs/readme/hero.svg" alt="Kamiliyon (colorsbymax) by mrmaxdesigns: re-color any website, live." width="880">
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/colorsbymax"><img src="https://img.shields.io/npm/v/colorsbymax?style=flat-square&color=0d6b84&label=colorsbymax" alt="colorsbymax on npm"></a>
-  <a href="https://www.npmjs.com/package/colorsbymax-mcp"><img src="https://img.shields.io/npm/v/colorsbymax-mcp?style=flat-square&color=7c3aed&label=colorsbymax-mcp" alt="colorsbymax-mcp on npm"></a>
+  <a href="https://www.npmjs.com/package/kamiliyon"><img src="https://img.shields.io/npm/v/kamiliyon?style=flat-square&color=0d6b84&label=kamiliyon" alt="kamiliyon on npm"></a>
+  <a href="https://www.npmjs.com/package/kamiliyon-mcp"><img src="https://img.shields.io/npm/v/kamiliyon-mcp?style=flat-square&color=7c3aed&label=kamiliyon-mcp" alt="kamiliyon-mcp on npm"></a>
   <img src="https://img.shields.io/badge/React-18%20%7C%2019-be185d?style=flat-square" alt="React 18 or 19">
   <img src="https://img.shields.io/badge/types-included-15803d?style=flat-square" alt="TypeScript types included">
   <a href="LICENSE"><img src="https://img.shields.io/badge/licence-MIT-c2410c?style=flat-square" alt="MIT licence"></a>
@@ -12,44 +12,44 @@
 
 <p align="center"><strong><a href="https://mrmaxdesigns.com/colorsbymax">See it live at mrmaxdesigns.com/colorsbymax →</a></strong><br>Open the color button on the page and re-color the whole site.</p>
 
-> **Kamiliyon is the new name for colorsbymax.** The package, its imports and its attributes keep the `colorsbymax` name (`npm install colorsbymax`), so nothing on your site needs to change.
+> **Kamiliyon is the new name for colorsbymax**, and from 0.7.0 the package is `kamiliyon`. Already on colorsbymax? See [Moving from colorsbymax](#moving-from-colorsbymax): a reinstall and a find-and-replace on your imports. Your config, attributes and visitors' saved themes carry over.
 
 A floating theme switcher for websites. Visitors (or the site's owner) can re-color the whole site instantly: pick one of the site's own themes, a hand-tuned pick, or one of 715 library themes in 14 categories; build and share custom palettes; or override single colors. Every theme is checked against the Web Content Accessibility Guidelines (WCAG) contrast rules, with one-click fixes.
 
 <p align="center">
-  <a href="#at-a-glance"><img src="https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/docs/readme/nav-start.svg" alt="1. Get started" height="36"></a>
-  <a href="#coding-agents-mcp"><img src="https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/docs/readme/nav-agents.svg" alt="2. Coding agents" height="36"></a>
-  <a href="#features"><img src="https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/docs/readme/nav-inside.svg" alt="3. Features" height="36"></a>
-  <a href="#add-it-to-a-site"><img src="https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/docs/readme/nav-control.svg" alt="4. Full control" height="36"></a>
-  <a href="#finished-keep-your-colors-and-hide-the-switcher"><img src="https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/docs/readme/nav-ship.svg" alt="5. Ship it" height="36"></a>
-  <a href="#building-the-package"><img src="https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/docs/readme/nav-hood.svg" alt="6. Under the hood" height="36"></a>
+  <a href="#at-a-glance"><img src="https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/docs/readme/nav-start.svg" alt="1. Get started" height="36"></a>
+  <a href="#coding-agents-mcp"><img src="https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/docs/readme/nav-agents.svg" alt="2. Coding agents" height="36"></a>
+  <a href="#features"><img src="https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/docs/readme/nav-inside.svg" alt="3. Features" height="36"></a>
+  <a href="#add-it-to-a-site"><img src="https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/docs/readme/nav-control.svg" alt="4. Full control" height="36"></a>
+  <a href="#finished-keep-your-colors-and-hide-the-switcher"><img src="https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/docs/readme/nav-ship.svg" alt="5. Ship it" height="36"></a>
+  <a href="#building-the-package"><img src="https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/docs/readme/nav-hood.svg" alt="6. Under the hood" height="36"></a>
 </p>
 
 <br>
 
-<img src="https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/docs/readme/section-start.svg" alt="01 · Get started: two steps to a live color switcher" width="100%">
+<img src="https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/docs/readme/section-start.svg" alt="01 · Get started: two steps to a live color switcher" width="100%">
 
 ## At a glance
 
-- **Two steps.** `npm install colorsbymax`, then `import 'colorsbymax/auto'` once. The color button appears and visitors can re-color the site, even if its colors are hard-coded (see [Quick start](#quick-start)).
+- **Two steps.** `npm install kamiliyon`, then `import 'kamiliyon/auto'` once. The color button appears and visitors can re-color the site, even if its colors are hard-coded (see [Quick start](#quick-start)).
 - **Go as deep as you like.** One click recolors the whole site; [Studio](#studio) colors it part by part; [Subtle, Balanced or Colorful](#color-styles) sets how bold it is; and a [contrast guard](#the-contrast-guard) keeps every piece of text readable.
 - **React 18 or 19.**
-- **Tailwind optional.** The panel carries its own styles, so it works with Tailwind v4, older Tailwind or plain CSS. Your site only needs to paint its colors with `var(--color-…)` variables. The optional `colorsbymax/tokens.css` helper is for Tailwind v4 (`@theme` syntax); without Tailwind v4, define the variables yourself.
+- **Tailwind optional.** The panel carries its own styles, so it works with Tailwind v4, older Tailwind or plain CSS. Your site only needs to paint its colors with `var(--color-…)` variables. The optional `kamiliyon/tokens.css` helper is for Tailwind v4 (`@theme` syntax); without Tailwind v4, define the variables yourself.
 - **TypeScript types included.**
 - **No runtime dependencies** besides React. PDF uploads are opt-in and need `pdfjs-dist` (see [PDF uploads](#pdf-uploads)).
-- **ESM only.** Import it from a bundler or `import()`; `require('colorsbymax')` from CommonJS isn't supported.
+- **ESM only.** Import it from a bundler or `import()`; `require('kamiliyon')` from CommonJS isn't supported.
 - **The color tools work on their own too.** `contrastRatio`, `checkTheme`, `suggestFix`, `fixAll`, `themeFromPalette`, `darkTokens` and the rest are plain functions with no UI.
 
 ## Quick start
 
 ```bash
-npm install colorsbymax
+npm install kamiliyon
 ```
 
 Then add one line anywhere in your site's code, for example `main.jsx`:
 
 ```js
-import 'colorsbymax/auto'
+import 'kamiliyon/auto'
 ```
 
 That's all. The color button appears in the bottom-right corner once the page has loaded, and visitors can start swapping the site's colors. (npm doesn't let a package change your site on install, so this one line is the only step.)
@@ -58,14 +58,14 @@ That's all. The color button appears in the bottom-right corner once the page ha
 - **Settings.** Use `autoMount` instead of the plain import:
 
   ```js
-  import { autoMount } from 'colorsbymax/auto'
+  import { autoMount } from 'kamiliyon/auto'
   autoMount({ siteName: 'My site', storageKey: 'my-site-theme' })
   ```
 
 - **Logos keep their own colors** unless a visitor turns on "Color the logo too" in settings. Mark your logo with `data-colorsbymax-logo` if Kamiliyon doesn't find it (it looks for "logo" in a class, id or label).
 - **Where automatic re-coloring falls short:** images keep their colors, hover and focus colors keep the site's own, and colors drawn by `::before`/`::after` aren't swapped. For full control, use the color variables below; Kamiliyon then applies themes to them directly, with no page reading at all.
 
-Already installed it? Get the newest version with `npm install colorsbymax@latest` (see [Updating](#updating)).
+Already installed it? Get the newest version with `npm install kamiliyon@latest` (see [Updating](#updating)).
 
 ## Try the demo
 
@@ -80,11 +80,11 @@ This serves `demo/`, the same site: built with Tailwind, where every color is a 
 
 <br>
 
-<img src="https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/docs/readme/section-agents.svg" alt="02 · Coding agents: let Claude, Cursor or Copilot do it" width="100%">
+<img src="https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/docs/readme/section-agents.svg" alt="02 · Coding agents: let Claude, Cursor or Copilot do it" width="100%">
 
 ## Coding agents (MCP)
 
-Your coding agent can set Kamiliyon up and use it for you. [colorsbymax-mcp](mcp/) is an [MCP](https://modelcontextprotocol.io) server that gives Claude Code, Cursor, GitHub Copilot, Codex, Google Antigravity, Gemini CLI, Grok Build, Claude Desktop, Windsurf, Kiro, Zed, JetBrains, Cline, opencode and other agents Kamiliyon's own tools:
+Your coding agent can set Kamiliyon up and use it for you. [kamiliyon-mcp](mcp/) is an [MCP](https://modelcontextprotocol.io) server that gives Claude Code, Cursor, GitHub Copilot, Codex, Google Antigravity, Gemini CLI, Grok Build, Claude Desktop, Windsurf, Kiro, Zed, JetBrains, Cline, opencode and other agents Kamiliyon's own tools:
 
 | The agent can… | Tool |
 | --- | --- |
@@ -107,12 +107,12 @@ It reads your project but never changes it: the agent makes the edits, so you re
 ### Claude Code
 
 ```bash
-claude mcp add colorsbymax -- npx -y colorsbymax-mcp
+claude mcp add kamiliyon -- npx -y kamiliyon-mcp
 ```
 
 That adds it for you in this project. Add `--scope user` to have it in every project, or `--scope project` to share it with your team through a `.mcp.json` file. Check it with `/mcp` inside Claude Code.
 
-If your terminal says `claude` isn't found (the desktop app doesn't always put it on your PATH), ask Claude Code itself: *"Add the Kamiliyon MCP server: `npx -y colorsbymax-mcp`."*
+If your terminal says `claude` isn't found (the desktop app doesn't always put it on your PATH), ask Claude Code itself: *"Add the Kamiliyon MCP server: `npx -y kamiliyon-mcp`."*
 
 ### Cursor
 
@@ -121,7 +121,7 @@ Add this to `.cursor/mcp.json` in your project, or to `~/.cursor/mcp.json` for e
 ```json
 {
   "mcpServers": {
-    "colorsbymax": { "command": "npx", "args": ["-y", "colorsbymax-mcp"] }
+    "kamiliyon": { "command": "npx", "args": ["-y", "kamiliyon-mcp"] }
   }
 }
 ```
@@ -135,7 +135,7 @@ Add this to `.vscode/mcp.json`, then use it from Copilot Chat in **Agent** mode:
 ```json
 {
   "servers": {
-    "colorsbymax": { "command": "npx", "args": ["-y", "colorsbymax-mcp"] }
+    "kamiliyon": { "command": "npx", "args": ["-y", "kamiliyon-mcp"] }
   }
 }
 ```
@@ -147,7 +147,7 @@ Open **Settings → Developer → Edit Config**, add the same `mcpServers` entry
 ### GitHub Copilot CLI
 
 ```bash
-copilot mcp add colorsbymax -- npx -y colorsbymax-mcp
+copilot mcp add kamiliyon -- npx -y kamiliyon-mcp
 ```
 
 Or type `/mcp add` inside `copilot`. It's saved to `~/.copilot/mcp-config.json`.
@@ -155,15 +155,15 @@ Or type `/mcp add` inside `copilot`. It's saved to `~/.copilot/mcp-config.json`.
 ### Codex (OpenAI)
 
 ```bash
-codex mcp add colorsbymax -- npx -y colorsbymax-mcp
+codex mcp add kamiliyon -- npx -y kamiliyon-mcp
 ```
 
 It's saved to `~/.codex/config.toml`, which the Codex IDE extension shares. To write it by hand:
 
 ```toml
-[mcp_servers.colorsbymax]
+[mcp_servers.kamiliyon]
 command = "npx"
-args = ["-y", "colorsbymax-mcp"]
+args = ["-y", "kamiliyon-mcp"]
 ```
 
 ### Google Antigravity
@@ -177,7 +177,7 @@ Add the same `mcpServers` entry as Cursor to `~/.gemini/settings.json` (or `.gem
 ### Grok Build (xAI)
 
 ```bash
-grok mcp add colorsbymax -- npx -y colorsbymax-mcp
+grok mcp add kamiliyon -- npx -y kamiliyon-mcp
 ```
 
 It's saved to `~/.grok/config.toml`; add `--scope project` for `.grok/config.toml`. The first start downloads the server, so if it times out, raise `startup_timeout_sec` for it in that file.
@@ -198,7 +198,7 @@ Zed calls them context servers. In `settings.json`, or through **Settings → AI
 ```json
 {
   "context_servers": {
-    "colorsbymax": { "command": "npx", "args": ["-y", "colorsbymax-mcp"] }
+    "kamiliyon": { "command": "npx", "args": ["-y", "kamiliyon-mcp"] }
   }
 }
 ```
@@ -208,16 +208,16 @@ opencode, in `opencode.json`:
 ```json
 {
   "mcp": {
-    "colorsbymax": { "type": "local", "command": ["npx", "-y", "colorsbymax-mcp"] }
+    "kamiliyon": { "type": "local", "command": ["npx", "-y", "kamiliyon-mcp"] }
   }
 }
 ```
 
 ### Any other MCP client
 
-Most take the same `mcpServers` entry as Cursor: the command is `npx`, with `-y colorsbymax-mcp` as its arguments.
+Most take the same `mcpServers` entry as Cursor: the command is `npx`, with `-y kamiliyon-mcp` as its arguments.
 
-On Windows, if an editor can't start `npx`, use `"command": "cmd"` with `"args": ["/c", "npx", "-y", "colorsbymax-mcp"]`.
+On Windows, if an editor can't start `npx`, use `"command": "cmd"` with `"args": ["/c", "npx", "-y", "kamiliyon-mcp"]`.
 
 ### What to ask
 
@@ -231,13 +231,13 @@ On Windows, if an editor can't start `npx`, use `"command": "cmd"` with `"args":
 
 Any coding agent can still do it from a prompt. Paste this into Claude, Cursor, Copilot or another agent:
 
-> Install the Kamiliyon npm package in this project and add `import 'colorsbymax/auto'` to the app's entry file, so the Kamiliyon color button appears on every page. For Next.js, Remix or other server-rendered apps, load it in the browser only, with `import('colorsbymax/auto')` inside a `useEffect`. Follow https://github.com/MaxMuyalwa/colorsbymax#quick-start and don't change anything else.
+> Install the Kamiliyon npm package in this project and add `import 'kamiliyon/auto'` to the app's entry file, so the Kamiliyon color button appears on every page. For Next.js, Remix or other server-rendered apps, load it in the browser only, with `import('kamiliyon/auto')` inside a `useEffect`. Follow https://github.com/MaxMuyalwa/kamiliyon#quick-start and don't change anything else.
 
 When you're done choosing colors, the panel's **I'm done** button gives you ready-made prompts for keeping your colors, hiding the switcher or removing it (see [Finished?](#finished-keep-your-colors-and-hide-the-switcher)).
 
 <br>
 
-<img src="https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/docs/readme/section-inside.svg" alt="03 · What's inside: everything in the panel" width="100%">
+<img src="https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/docs/readme/section-inside.svg" alt="03 · What's inside: everything in the panel" width="100%">
 
 ## Features
 
@@ -373,7 +373,7 @@ When a newer Kamiliyon is published, the panel says so: a small red plus appears
 
 - the version you have and the latest one,
 - the headlines of what changed, from the [changelog](CHANGELOG.md),
-- `npm install colorsbymax@latest` to copy,
+- `npm install kamiliyon@latest` to copy,
 - a prompt for Claude, Cursor or Copilot that updates it and makes any changes the changelog's "Upgrading" notes ask for,
 - a link to the full changelog,
 - and news from mrmaxdesigns: new features to try, and requests for feedback.
@@ -392,7 +392,7 @@ The switcher renders into a `<colorsbymax-root>` element on `<body>` with its ow
 
 <br>
 
-<img src="https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/docs/readme/section-control.svg" alt="04 · Full control: paint with color tokens" width="100%">
+<img src="https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/docs/readme/section-control.svg" alt="04 · Full control: paint with color tokens" width="100%">
 
 ## Add it to a site
 
@@ -400,11 +400,11 @@ This is the full setup, for sites that want exact control over which color goes 
 
 1. **Paint the site with the token variables.** Use `var(--color-<token>)` wherever the site sets a color, with your own colors as the starting values.
 
-   With Tailwind CSS v4, import the defaults (`colorsbymax/tokens.css` is Tailwind v4 syntax), override them, and use the token utilities (`bg-primary`, `text-ink`, …) instead of hard-coded colors:
+   With Tailwind CSS v4, import the defaults (`kamiliyon/tokens.css` is Tailwind v4 syntax), override them, and use the token utilities (`bg-primary`, `text-ink`, …) instead of hard-coded colors:
 
    ```css
    @import "tailwindcss";
-   @import "colorsbymax/tokens.css";
+   @import "kamiliyon/tokens.css";
 
    @theme static {
      --color-primary: #c67cde; /* your colors */
@@ -425,7 +425,7 @@ This is the full setup, for sites that want exact control over which color goes 
 2. **Wrap the app and render the switcher:**
 
    ```jsx
-   import { ThemeProvider, ThemeSwitcher } from 'colorsbymax'
+   import { ThemeProvider, ThemeSwitcher } from 'kamiliyon'
 
    <ThemeProvider config={config}>
      <App />
@@ -433,7 +433,7 @@ This is the full setup, for sites that want exact control over which color goes 
    </ThemeProvider>
    ```
 
-   The switcher needs React but not a React site: `autoMount` from `colorsbymax/auto` mounts it on its own next to any page.
+   The switcher needs React but not a React site: `autoMount` from `kamiliyon/auto` mounts it on its own next to any page.
 
 3. **Add the pre-paint script** to `<head>`, as a classic inline `<script>`, using the same storage key. `prePaintScript(storageKey)` returns its source, and `demo/index.html` shows it in place.
 
@@ -473,7 +473,7 @@ Without a `siteName`, the site group is named from the page's `og:site_name`, it
                                     // theme in on buttons, links and highlights; 'balanced' is the
                                     // theme with a soft wash (the default on a site that paints with the
                                     // variables); 'colorful' is an overhaul: tinted backgrounds and the
-                                    // page painted by role (the default on a site colorsbymax re-colors)
+                                    // page painted by role (the default on a site Kamiliyon re-colors)
   intro: true,                      // the button pops in with a burst of the theme's colors a moment
                                     // after the page loads (default); reduced motion fades it in
 }
@@ -507,14 +507,14 @@ With `ThemeProvider`, `useTheme()` gives `mode` ('light' or 'dark'), `modeSettin
 
 ### PDF uploads
 
-Building a palette from an image works out of the box. PDFs, such as brand guides, need [PDF.js](https://mozilla.github.io/pdf.js/), which is large, so it's opt-in: install it and pass the loader from `colorsbymax/pdf`.
+Building a palette from an image works out of the box. PDFs, such as brand guides, need [PDF.js](https://mozilla.github.io/pdf.js/), which is large, so it's opt-in: install it and pass the loader from `kamiliyon/pdf`.
 
 ```bash
 npm install pdfjs-dist
 ```
 
 ```jsx
-import { loadPdf } from 'colorsbymax/pdf'
+import { loadPdf } from 'kamiliyon/pdf'
 
 <ThemeProvider config={{ ...config, pdf: loadPdf }}>
 ```
@@ -525,7 +525,7 @@ PDF.js still downloads only when a visitor picks a PDF. Sites that don't opt in 
 
 <br>
 
-<img src="https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/docs/readme/section-ship.svg" alt="05 · Ship it: keep your colors and go live" width="100%">
+<img src="https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/docs/readme/section-ship.svg" alt="05 · Ship it: keep your colors and go live" width="100%">
 
 ## Finished? Keep your colors and hide the switcher
 
@@ -536,8 +536,8 @@ The colors you pick in the panel are saved only in your own browser. When you're
 Make your pick the site's default for everyone, and keep the button out of production while it still shows when you run the site locally, so you can keep iterating:
 
 ```js
-// With the one-line setup, replace `import 'colorsbymax/auto'` with:
-import { autoMount } from 'colorsbymax/auto'
+// With the one-line setup, replace `import 'kamiliyon/auto'` with:
+import { autoMount } from 'kamiliyon/auto'
 
 autoMount({
   defaultTheme: { name: 'Ocean', tokens: { primary: '#0d6b84', /* …every color… */ } },
@@ -555,8 +555,8 @@ Hides the button in your browser straight away, with no code change and nothing 
 
 ### Remove Kamiliyon
 
-1. `npm uninstall colorsbymax`
-2. Delete its import (`import 'colorsbymax/auto'`, `autoMount`, or `ThemeProvider` and `ThemeSwitcher`) and any Kamiliyon pre-paint script.
+1. `npm uninstall kamiliyon`
+2. Delete its import (`import 'kamiliyon/auto'`, `autoMount`, or `ThemeProvider` and `ThemeSwitcher`) and any Kamiliyon pre-paint script.
 3. Keep your colors:
    - If your site uses the `--color-*` variables, paste the CSS the panel gives you (`:root { --color-primary: …; … }`) into your global stylesheet.
    - If Kamiliyon was re-coloring hard-coded colors for you, the chosen colors only exist while it runs, so your CSS needs updating to them. The panel's prompt asks your AI editor to do that.
@@ -566,15 +566,15 @@ To bring it back later, install it again and follow the [Quick start](#quick-sta
 ## Updating
 
 ```bash
-npm install colorsbymax@latest
+npm install kamiliyon@latest
 ```
 
-This moves you to the newest release and records it in your `package.json`. `npm update` alone isn't enough while Kamiliyon is below 1.0: with the usual `^0.1.0` range, npm treats 0.2.0 as a breaking change and stays on 0.1.x. Check which version you have with `npm ls colorsbymax`.
+This moves you to the newest release and records it in your `package.json`. `npm update` alone isn't enough while Kamiliyon is below 1.0: with the usual `^0.1.0` range, npm treats 0.2.0 as a breaking change and stays on 0.1.x. Check which version you have with `npm ls kamiliyon`.
 
 If it still installs the old version right after a release, npm is using its cached list of versions; add `--prefer-online` to check the registry:
 
 ```bash
-npm install colorsbymax@latest --prefer-online
+npm install kamiliyon@latest --prefer-online
 ```
 
 What changed in each release, and anything you need to do when upgrading, is in [CHANGELOG.md](CHANGELOG.md).
@@ -583,7 +583,29 @@ From 0.5.0, Kamiliyon tells you itself: when a newer version is out, the bell in
 
 <br>
 
-<img src="https://raw.githubusercontent.com/MaxMuyalwa/colorsbymax/main/docs/readme/section-hood.svg" alt="06 · Under the hood: build, regenerate, contribute" width="100%">
+<img src="https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/docs/readme/section-hood.svg" alt="06 · Under the hood: build, regenerate, contribute" width="100%">
+
+### Moving from colorsbymax
+
+Kamiliyon used to be published as `colorsbymax`. That package stops at 0.6.0; every release from 0.7.0 is `kamiliyon`. Moving takes a minute:
+
+```bash
+npm uninstall colorsbymax
+npm install kamiliyon
+```
+
+Then change your imports. Everything after the name stays the same:
+
+| Before | After |
+| --- | --- |
+| `import 'colorsbymax/auto'` | `import 'kamiliyon/auto'` |
+| `import { autoMount } from 'colorsbymax/auto'` | `import { autoMount } from 'kamiliyon/auto'` |
+| `import { ThemeProvider, ThemeSwitcher } from 'colorsbymax'` | `import { ThemeProvider, ThemeSwitcher } from 'kamiliyon'` |
+| `import { loadPdf } from 'colorsbymax/pdf'` | `import { loadPdf } from 'kamiliyon/pdf'` |
+| `@import "colorsbymax/tokens.css";` | `@import "kamiliyon/tokens.css";` |
+| `npx -y colorsbymax-mcp` (MCP server) | `npx -y kamiliyon-mcp` |
+
+Nothing else changes. Your config, the `data-colorsbymax-*` attributes, the `--color-*` variables, the pre-paint script and your visitors' saved themes all keep working as they are. Using an AI editor? Ask it to *"Move this project from colorsbymax to kamiliyon: uninstall colorsbymax, install kamiliyon, and change every import from 'colorsbymax' to 'kamiliyon'."* The MCP server's `setup_plan` spots a project on the old name and gives the same steps.
 
 ## Building the package
 

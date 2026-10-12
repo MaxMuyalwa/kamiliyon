@@ -233,8 +233,8 @@ export function Hero() {
               </a>
             </div>
             <div className="hero-in mt-4 flex w-fit items-center gap-3 rounded-full border border-border bg-surface/80 py-1 pr-1 pl-4 shadow-sm transition-colors duration-700" style={{ '--hero-delay': '550ms' }}>
-              <code className="font-mono text-sm text-ink">npm install colorsbymax</code>
-              <CopyButton text="npm install colorsbymax" className="rounded-full" />
+              <code className="font-mono text-sm text-ink">npm install kamiliyon</code>
+              <CopyButton text="npm install kamiliyon" className="rounded-full" />
             </div>
           </div>
 

@@ -1,4 +1,4 @@
-// Type declarations for 'colorsbymax/pdf'.
+// Type declarations for 'kamiliyon/pdf'.
 
 /**
  * Loads PDF.js for PDF uploads. Pass it as `pdf` in the ThemeProvider config; needs the

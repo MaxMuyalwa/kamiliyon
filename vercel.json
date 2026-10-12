@@ -8,13 +8,23 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "/colorsbymax/",
+      "destination": "/kamiliyon/",
       "permanent": false
+    },
+    {
+      "source": "/colorsbymax",
+      "destination": "/kamiliyon/",
+      "permanent": true
+    },
+    {
+      "source": "/colorsbymax/:path*",
+      "destination": "/kamiliyon/:path*",
+      "permanent": true
     }
   ],
   "headers": [
     {
-      "source": "/colorsbymax/assets/(.*)",
+      "source": "/kamiliyon/assets/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -25,7 +35,7 @@
   ],
   "rewrites": [
     {
-      "source": "/colorsbymax/api/:path*",
+      "source": "/kamiliyon/api/:path*",
       "destination": "/api/:path*"
     }
   ],

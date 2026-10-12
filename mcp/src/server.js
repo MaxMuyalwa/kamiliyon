@@ -1,4 +1,4 @@
-// colorsbymax MCP server: lets AI agents set colorsbymax up in a project, find and build themes,
+// Kamiliyon MCP server: lets AI agents set Kamiliyon up in a project, find and build themes,
 // check contrast, and finish a site's colors. It reads projects but never writes to them; the
 // agent makes the edits it describes.
 
@@ -16,17 +16,17 @@ import { inspectProject } from './project.js'
 import { setupPlan } from './plan.js'
 import { version } from '../package.json'
 
-const INSTRUCTIONS = `colorsbymax (npm package "colorsbymax") is a live theme switcher for websites. A color button sits on the page; its panel swaps the whole site's colors between ${THEME_COUNT} themes, keeps WCAG contrast, builds palettes from images, and has an Audit that pins notes to anything that won't look right.
+const INSTRUCTIONS = `Kamiliyon (npm package "kamiliyon", formerly colorsbymax) is a live theme switcher for websites. A color button sits on the page; its panel swaps the whole site's colors between ${THEME_COUNT} themes, keeps WCAG contrast, builds palettes from images, and has an Audit that pins notes to anything that won't look right.
 
 Every color is one of 35 tokens (primary, background, surface, ink, data-1…), exposed as --color-<token> CSS variables. Sites that paint with those variables are themed directly; any other site is re-colored automatically by reading its painted colors.
 
 How to help a user with it:
 1. setup_plan with the project's folder: it inspects the project and returns the exact install command and edits for its framework. This server never writes files; make the edits yourself, and ask before bigger changes such as upgrading React.
 2. The user picks colors in the panel on their running site. You can also choose for them: find_themes (by mood, category or brand color), get_theme, or theme_from_colors (a full theme around their brand colors), then check_contrast.
-3. finish with the chosen colors: it returns the code that makes them the site's default and hides the switcher in production, or removes colorsbymax while keeping the colors.
+3. finish with the chosen colors: it returns the code that makes them the site's default and hides the switcher in production, or removes Kamiliyon while keeping the colors.
 Theme JSON ({ name, tokens }) from get_theme or theme_from_colors can be pasted into the panel's Import/export. docs has the README and the full TypeScript API.`
 
-const server = new McpServer({ name: 'colorsbymax', title: 'colorsbymax', version }, { instructions: INSTRUCTIONS })
+const server = new McpServer({ name: 'kamiliyon', title: 'Kamiliyon', version }, { instructions: INSTRUCTIONS })
 
 const text = (body) => ({ content: [{ type: 'text', text: body }] })
 const json = (value) => '```json\n' + JSON.stringify(value, null, 2) + '\n```'
@@ -47,7 +47,7 @@ function formatTheme(name, tokens, format) {
     case 'tailwind':
       return `Tailwind CSS v4: in the main stylesheet. Utilities like bg-primary and text-ink then follow the theme.\n\n${code('css', tailwindSnippet(tokens))}`
     case 'config':
-      return `colorsbymax config: makes this the site's default theme.\n\n${code('js', `defaultTheme: ${JSON.stringify({ name, tokens }, null, 2)}`)}`
+      return `Kamiliyon config: makes this the site's default theme.\n\n${code('js', `defaultTheme: ${JSON.stringify({ name, tokens }, null, 2)}`)}`
     default:
       return `Theme JSON: paste into the panel's Import/export, or pass as defaultTheme.\n\n${code('json', themeJson(name, tokens))}`
   }
@@ -58,9 +58,9 @@ function formatTheme(name, tokens, format) {
 server.registerTool(
   'setup_plan',
   {
-    title: 'Plan the colorsbymax setup for a project',
+    title: 'Plan the Kamiliyon setup for a project',
     description:
-      'Inspects a project folder (framework, package manager, whether colorsbymax is installed or wired up, whether the CSS uses colorsbymax tokens or hard-coded colors) and returns the install command and the exact edits to add the color switcher. Also reports an existing setup and whether an update is available. Read-only.',
+      'Inspects a project folder (framework, package manager, whether Kamiliyon is installed or wired up, whether the CSS uses Kamiliyon tokens or hard-coded colors) and returns the install command and the exact edits to add the color switcher. Also reports an existing setup and whether an update is available. Read-only.',
     inputSchema: {
       path: z.string().describe('Absolute path to the project folder (where package.json is).'),
       siteName: z.string().optional().describe('Name for the site’s own theme group in the panel. Detected from the page when left out.'),
@@ -85,7 +85,7 @@ server.registerTool(
       if (s.command) out.push(code('bash', s.command))
       for (const f of s.files ?? []) out.push(`${f.action === 'create' ? 'Create' : 'Edit'} \`${f.file}\`:\n\n${code(langOf(f), f.code)}`)
     })
-    out.push(`## What was found\n\n${json({ framework: info.framework, packageManager: info.packageManager, react: info.react, tailwind: info.tailwind, colorsbymax: info.colorsbymax, colours: info.colours, entryFiles: info.entryFiles, filesScanned: info.filesScanned })}`)
+    out.push(`## What was found\n\n${json({ framework: info.framework, packageManager: info.packageManager, react: info.react, tailwind: info.tailwind, kamiliyon: info.kamiliyon, colours: info.colours, entryFiles: info.entryFiles, filesScanned: info.filesScanned })}`)
     return text(out.join('\n\n'))
   },
 )
@@ -95,7 +95,7 @@ server.registerTool(
 server.registerTool(
   'find_themes',
   {
-    title: 'Find colorsbymax themes',
+    title: 'Find Kamiliyon themes',
     description: `Searches the ${THEME_COUNT} built-in themes (Max's picks and the library) by name or mood words, category, or closeness to a brand color. Returns ids with their key colors; pass an id to get_theme for every token.`,
     inputSchema: {
       query: z.string().optional().describe('Words to match in names and categories, e.g. "ocean", "teal", "pastel".'),
@@ -121,7 +121,7 @@ server.registerTool(
   'get_theme',
   {
     title: 'Get a theme’s colors',
-    description: 'Every token of one theme, in light or dark, with its contrast report. Formats: json (the panel’s Import/export format), css (--color-* variables), tailwind (Tailwind v4 @theme), config (defaultTheme for the colorsbymax config).',
+    description: 'Every token of one theme, in light or dark, with its contrast report. Formats: json (the panel’s Import/export format), css (--color-* variables), tailwind (Tailwind v4 @theme), config (defaultTheme for the Kamiliyon config).',
     inputSchema: {
       id: z.string().describe('Theme id from find_themes, e.g. "ocean" or "lib-12". Add "~dark" for the dark twin.'),
       mode: z.enum(['light', 'dark']).optional(),
@@ -182,7 +182,7 @@ server.registerTool(
     const out = []
     if (tokens) {
       const { tokens: full, given, rejected } = completeFrom(tokens)
-      out.push(`## Theme\n\nChecked with ${given.length} of your tokens; the other ${35 - given.length} use colorsbymax’s neutral defaults.${rejected.length ? ` Ignored (not a token or not a color): ${rejected.join(', ')}.` : ''}\n\n${json(contrastReport(full))}`)
+      out.push(`## Theme\n\nChecked with ${given.length} of your tokens; the other ${35 - given.length} use Kamiliyon’s neutral defaults.${rejected.length ? ` Ignored (not a token or not a color): ${rejected.join(', ')}.` : ''}\n\n${json(contrastReport(full))}`)
     }
     if (pairs?.length) {
       const bad = pairs.filter((p) => !normalizeHex(p.foreground) || !normalizeHex(p.background))
@@ -200,15 +200,15 @@ server.registerTool(
   {
     title: 'Finish: keep the colors, hide or remove the switcher',
     description:
-      'What to change once colors are chosen. keep: make the colors the site’s default for every visitor and hide the button in production (recommended). bring-back: show the button in production again. hide-locally: hide it on one device, with no code change. remove: uninstall colorsbymax and keep the colors in the site’s own CSS. Pass the colors as a theme id or tokens.',
+      'What to change once colors are chosen. keep: make the colors the site’s default for every visitor and hide the button in production (recommended). bring-back: show the button in production again. hide-locally: hide it on one device, with no code change. remove: uninstall Kamiliyon and keep the colors in the site’s own CSS. Pass the colors as a theme id or tokens.',
     inputSchema: {
       action: z.enum(['keep', 'bring-back', 'hide-locally', 'remove']),
       themeId: z.string().optional().describe('A theme id from find_themes (add "~dark" for dark).'),
       tokens: tokensSchema.optional().describe('The chosen colors, e.g. from the panel’s Import/export or theme_from_colors.'),
       name: z.string().optional().describe('Name for the theme. Defaults to the theme’s name or "My colors".'),
-      setup: z.enum(['auto', 'provider']).optional().describe('auto for import "colorsbymax/auto" or autoMount (default); provider for <ThemeProvider>.'),
+      setup: z.enum(['auto', 'provider']).optional().describe('auto for import "kamiliyon/auto" or autoMount (default); provider for <ThemeProvider>.'),
       bundler: z.enum(['vite', 'other']).optional().describe('vite uses import.meta.env.PROD; other (Next.js, webpack…) uses process.env.NODE_ENV. Defaults to vite.'),
-      recolouring: z.boolean().optional().describe('For remove: true when the site uses hard-coded colors that colorsbymax was re-coloring (no --color-* tokens).'),
+      recolouring: z.boolean().optional().describe('For remove: true when the site uses hard-coded colors that Kamiliyon was re-coloring (no --color-* tokens).'),
     },
     annotations: READ_ONLY,
   },
@@ -217,7 +217,7 @@ server.registerTool(
       return text('# Hide it on this device only\n\nNo code change, and nobody else is affected. In the panel, press **I’m done**, pick "Hide it on this device only", then **Hide the button here**. Pressing **Alt+Shift+C** on the page also hides it.\n\nTo bring it back: press **Alt+Shift+C** again, or add `?colorsbymax` to the address.')
     }
     if (action === 'bring-back') {
-      return text(`# Show the switcher in production again\n\nIn the colorsbymax config (the autoMount({...}) call or the config passed to <ThemeProvider>), set \`hidden: false\` or delete the \`hidden\` line. It always shows in development.\n\nAs a prompt for an AI editor:\n\n> ${BRING_BACK_PROMPT}`)
+      return text(`# Show the switcher in production again\n\nIn the Kamiliyon config (the autoMount({...}) call or the config passed to <ThemeProvider>), set \`hidden: false\` or delete the \`hidden\` line. It always shows in development.\n\nAs a prompt for an AI editor:\n\n> ${BRING_BACK_PROMPT}`)
     }
     let full
     let themeName = name
@@ -243,7 +243,7 @@ server.registerTool(
           'Everyone gets these colors; the button keeps showing in development so the user can keep iterating.',
           code(setup === 'auto' ? 'js' : 'jsx', keepSnippet(setup, themeName, full, prod)),
           setup === 'auto'
-            ? 'For Next.js, Remix and other server-rendered setups that load colorsbymax with `import(\'colorsbymax/auto\')` inside a useEffect, call `autoMount` from its result: `import(\'colorsbymax/auto\').then(({ autoMount }) => autoMount({ defaultTheme, hidden }))`.'
+            ? 'For Next.js, Remix and other server-rendered setups that load Kamiliyon with `import(\'kamiliyon/auto\')` inside a useEffect, call `autoMount` from its result: `import(\'kamiliyon/auto\').then(({ autoMount }) => autoMount({ defaultTheme, hidden }))`.'
             : '',
           `Visitors who picked another theme before keep their pick until they choose "${themeName}" or clear it. To bring the button back in production later, use this tool with action "bring-back".`,
         ].filter(Boolean).join('\n\n'),
@@ -252,12 +252,12 @@ server.registerTool(
     // remove
     return text(
       [
-        `# Remove colorsbymax, keep "${themeName}"`,
-        `1. Uninstall:\n\n${code('bash', 'npm uninstall colorsbymax')}`,
-        '2. Delete its usage: `import \'colorsbymax/auto\'`, `autoMount`, or `ThemeProvider` and `ThemeSwitcher`, and any colorsbymax pre-paint script in index.html. Keep react and react-dom if the site uses React itself.',
+        `# Remove Kamiliyon, keep "${themeName}"`,
+        `1. Uninstall:\n\n${code('bash', 'npm uninstall kamiliyon')}`,
+        '2. Delete its usage: `import \'kamiliyon/auto\'`, `autoMount`, or `ThemeProvider` and `ThemeSwitcher`, and any Kamiliyon pre-paint script in index.html. Keep react and react-dom if the site uses React itself.',
         recolouring
-          ? `3. Keep the colors: the site's CSS uses hard-coded colors that colorsbymax swapped while it ran, so update the site's own CSS to this palette (primary is the main brand color, background the page, ink the text):\n\n${code('json', JSON.stringify(full, null, 2))}`
-          : `3. Keep the colors: add these to the global stylesheet, replacing any existing --color-* values. If it imports colorsbymax/tokens.css, replace that import with this block.\n\n${code('css', cssSnippet(full))}`,
+          ? `3. Keep the colors: the site's CSS uses hard-coded colors that Kamiliyon swapped while it ran, so update the site's own CSS to this palette (primary is the main brand color, background the page, ink the text):\n\n${code('json', JSON.stringify(full, null, 2))}`
+          : `3. Keep the colors: add these to the global stylesheet, replacing any existing --color-* values. If it imports kamiliyon/tokens.css, replace that import with this block.\n\n${code('css', cssSnippet(full))}`,
         `As a prompt for an AI editor:\n\n> ${removePrompt(full, recolouring)}`,
       ].join('\n\n'),
     )
@@ -282,15 +282,15 @@ const TOPICS = {
   updating: () => section('updating'),
   tokens: () =>
     `# The 35 color tokens\n\nEach is a CSS variable, --color-<key>. A site that paints with them is themed directly.\n\n${TOKEN_GROUPS.map((g) => `## ${g.group}\n\n${g.tokens.map((t) => `- \`${t.key}\` (${t.label}): ${t.usage}`).join('\n')}`).join('\n\n')}`,
-  api: () => `# colorsbymax TypeScript API\n\n${code('ts', TYPES)}`,
+  api: () => `# Kamiliyon TypeScript API\n\n${code('ts', TYPES)}`,
   readme: () => README_TEXT,
 }
 
 server.registerTool(
   'docs',
   {
-    title: 'colorsbymax documentation',
-    description: 'colorsbymax’s documentation by topic: overview, quick-start, full-setup (tokens, config, ThemeProvider, PDF uploads), agents (adding this MCP server to Claude Code, Cursor, Copilot, Codex, Antigravity, Gemini CLI, Grok Build, Windsurf, Kiro, Zed, JetBrains, Cline, opencode and others), finish, updating, tokens (all 35 with what each colors), api (the TypeScript declarations), or readme (everything).',
+    title: 'Kamiliyon documentation',
+    description: 'Kamiliyon’s documentation by topic: overview, quick-start, full-setup (tokens, config, ThemeProvider, PDF uploads), agents (adding this MCP server to Claude Code, Cursor, Copilot, Codex, Antigravity, Gemini CLI, Grok Build, Windsurf, Kiro, Zed, JetBrains, Cline, opencode and others), finish, updating, tokens (all 35 with what each colors), api (the TypeScript declarations), or readme (everything).',
     inputSchema: { topic: z.enum(Object.keys(TOPICS)) },
     annotations: READ_ONLY,
   },
@@ -300,10 +300,10 @@ server.registerTool(
 // ---------------------------------------------------------------- prompts
 
 server.registerPrompt(
-  'add-colorsbymax',
+  'add-kamiliyon',
   {
-    title: 'Add colorsbymax to this project',
-    description: 'Sets up the colorsbymax theme switcher in the current project.',
+    title: 'Add Kamiliyon to this project',
+    description: 'Sets up the Kamiliyon theme switcher in the current project.',
     argsSchema: { path: z.string().optional().describe('Project folder. Defaults to the current workspace.') },
   },
   ({ path }) => ({
@@ -312,7 +312,7 @@ server.registerPrompt(
         role: 'user',
         content: {
           type: 'text',
-          text: `Add the colorsbymax theme switcher to this project${path ? ` (${path})` : ''}. Call the colorsbymax setup_plan tool with the project's absolute path, make the edits it lists, run the install command, then tell me how to see the color button. Ask me before anything beyond its plan, such as upgrading React.`,
+          text: `Add the Kamiliyon theme switcher to this project${path ? ` (${path})` : ''}. Call the Kamiliyon setup_plan tool with the project's absolute path, make the edits it lists, run the install command, then tell me how to see the color button. Ask me before anything beyond its plan, such as upgrading React.`,
         },
       },
     ],
@@ -320,9 +320,9 @@ server.registerPrompt(
 )
 
 server.registerPrompt(
-  'finish-colorsbymax',
+  'finish-kamiliyon',
   {
-    title: 'Keep my colorsbymax colors',
+    title: 'Keep my Kamiliyon colors',
     description: 'Makes the chosen colors the site’s default and hides the switcher in production.',
     argsSchema: { theme: z.string().optional().describe('Theme JSON from the panel’s Import/export, or a theme id.') },
   },
@@ -332,7 +332,7 @@ server.registerPrompt(
         role: 'user',
         content: {
           type: 'text',
-          text: `I've picked my colors with colorsbymax. ${theme ? `Here they are: ${theme}. ` : 'Ask me to copy them from the panel’s Import/export if you need them. '}Use the colorsbymax finish tool with action "keep" (check this project's setup and bundler first), apply its change, and don't change anything else.`,
+          text: `I've picked my colors with Kamiliyon. ${theme ? `Here they are: ${theme}. ` : 'Ask me to copy them from the panel’s Import/export if you need them. '}Use the Kamiliyon finish tool with action "keep" (check this project's setup and bundler first), apply its change, and don't change anything else.`,
         },
       },
     ],

@@ -1,10 +1,10 @@
-// One-line setup: `import 'colorsbymax/auto'` anywhere in a site's code (for example main.jsx)
+// One-line setup: `import 'kamiliyon/auto'` anywhere in a site's code (for example main.jsx)
 // puts the color button on the page, with no wrapping and no config. Sites that don't paint
 // with the --color-* variables are re-colored automatically.
 //
 // For settings, call autoMount instead; the automatic mount then steps aside:
 //
-//   import { autoMount } from 'colorsbymax/auto'
+//   import { autoMount } from 'kamiliyon/auto'
 //   autoMount({ siteName: 'My site' })
 
 import { createElement } from 'react'

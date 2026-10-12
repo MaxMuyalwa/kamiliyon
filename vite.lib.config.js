@@ -4,8 +4,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // Builds the package itself into dist/: plain JavaScript (JSX compiled away), so any bundler
-// can use it without extra setup. Three entries: the main one, 'colorsbymax/auto' (the one-line
-// setup) and 'colorsbymax/pdf' for sites that opt in to PDF uploads. React and PDF.js stay
+// can use it without extra setup. Three entries: the main one, 'kamiliyon/auto' (the one-line
+// setup) and 'kamiliyon/pdf' for sites that opt in to PDF uploads. React and PDF.js stay
 // external, so the site's own copies are used.
 //
 // dist/ is committed, so installs straight from GitHub work even when npm skips install

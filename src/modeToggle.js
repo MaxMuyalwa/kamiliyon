@@ -30,7 +30,7 @@ html[data-colorsbymax-scheme="dark"] .cbm-mode-toggle .cbm-mode-sun { display: n
 html[data-colorsbymax-scheme="dark"] .cbm-mode-toggle .cbm-mode-moon { display: block; }`
 
 /** The same switch as a React component. */
-export const TOGGLE_REACT = `// ModeToggle.jsx: put <ModeToggle /> in your top bar. colorsbymax makes it work.
+export const TOGGLE_REACT = `// ModeToggle.jsx: put <ModeToggle /> in your top bar. Kamiliyon makes it work.
 export function ModeToggle() {
   return (
     <button type="button" className="cbm-mode-toggle" data-colorsbymax-mode="toggle" aria-label="Switch between light and dark mode">
@@ -46,7 +46,7 @@ export function ModeToggle() {
 }`
 
 /** A prompt for Claude, Cursor or Copilot that adds the switch to the site's top bar. */
-export const TOGGLE_PROMPT = `Add a light and dark mode switch to my site's top navigation bar, next to its other links or buttons. The site uses colorsbymax, which makes the switch work: any element with data-colorsbymax-mode="toggle" switches the whole site between light and dark and remembers the visitor's choice. Use this button (as a React component if the nav is React):
+export const TOGGLE_PROMPT = `Add a light and dark mode switch to my site's top navigation bar, next to its other links or buttons. The site uses Kamiliyon, which makes the switch work: any element with data-colorsbymax-mode="toggle" switches the whole site between light and dark and remembers the visitor's choice. Use this button (as a React component if the nav is React):
 
 ${TOGGLE_HTML}
 
