@@ -11,9 +11,9 @@ import { useCallback, useEffect, useState } from 'react'
 export const VERSION = typeof __COLORSBYMAX_VERSION__ === 'string' ? __COLORSBYMAX_VERSION__ : null
 
 const LATEST = 'https://registry.npmjs.org/kamiliyon/latest'
-const NOTICES = 'https://www.mrmaxdesigns.com/colorsbymax/api/notices'
+const NOTICES = 'https://www.mrmaxdesigns.com/kamiliyon/api/notices'
 const CHANGELOG_SOURCE = 'https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/CHANGELOG.md'
-export const CHANGELOG_PAGE = 'https://www.mrmaxdesigns.com/colorsbymax/docs#changelog'
+export const CHANGELOG_PAGE = 'https://www.mrmaxdesigns.com/kamiliyon/docs#changelog'
 export const UPDATE_COMMAND = 'npm install kamiliyon@latest'
 export const updatePrompt = (latest) =>
   `Update Kamiliyon in this project to the latest version${latest ? ` (${latest})` : ''}: run ${UPDATE_COMMAND}, then read the changelog at ${CHANGELOG_PAGE} for every version since the one installed, and make any changes its "Upgrading" notes ask for. If the site has a Kamiliyon pre-paint script copied into its HTML, replace it with the current prePaintScript() output. Don't change anything else.`

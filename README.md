@@ -10,7 +10,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/licence-MIT-c2410c?style=flat-square" alt="MIT licence"></a>
 </p>
 
-<p align="center"><strong><a href="https://mrmaxdesigns.com/colorsbymax">See it live at mrmaxdesigns.com/colorsbymax →</a></strong><br>Open the color button on the page and re-color the whole site.</p>
+<p align="center"><strong><a href="https://mrmaxdesigns.com/kamiliyon">See it live at mrmaxdesigns.com/kamiliyon →</a></strong><br>Open the color button on the page and re-color the whole site.</p>
 
 > **Kamiliyon is the new name for colorsbymax**, and from 0.7.0 the package is `kamiliyon`. Already on colorsbymax? See [Moving from colorsbymax](#moving-from-colorsbymax): a reinstall and a find-and-replace on your imports. Your config, attributes and visitors' saved themes carry over.
 
@@ -69,7 +69,7 @@ Already installed it? Get the newest version with `npm install kamiliyon@latest`
 
 ## Try the demo
 
-Kamiliyon's home, **[mrmaxdesigns.com/colorsbymax](https://mrmaxdesigns.com/colorsbymax)**, is the demo: open the color button and the whole page re-colors. To run it locally:
+Kamiliyon's home, **[mrmaxdesigns.com/kamiliyon](https://mrmaxdesigns.com/kamiliyon)**, is the demo: open the color button and the whole page re-colors. To run it locally:
 
 ```bash
 npm install

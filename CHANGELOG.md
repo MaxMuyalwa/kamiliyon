@@ -2,6 +2,10 @@
 
 What changed in each Kamiliyon release (published as colorsbymax up to 0.6.0). Update with `npm install kamiliyon@latest`.
 
+## Unreleased
+
+- The site moved to [mrmaxdesigns.com/kamiliyon](https://mrmaxdesigns.com/kamiliyon), and the links follow: the npm page, the README, and the bell's changelog link and messages. The old /colorsbymax address still redirects there.
+
 ## 0.7.0 (2026-10-12)
 
 - **The package is now `kamiliyon`.** Kamiliyon was published as `colorsbymax` up to 0.6.0; from this release it's `kamiliyon`, and the MCP server is `kamiliyon-mcp`. The GitHub repo moves to MaxMuyalwa/kamiliyon (old links redirect).

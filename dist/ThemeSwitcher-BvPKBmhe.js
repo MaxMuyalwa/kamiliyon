@@ -2327,9 +2327,9 @@ function createGuard() {
 /** This copy's version, built in when the package is built. */
 var VERSION$1 = "0.7.0";
 var LATEST = "https://registry.npmjs.org/kamiliyon/latest";
-var NOTICES = "https://www.mrmaxdesigns.com/colorsbymax/api/notices";
+var NOTICES = "https://www.mrmaxdesigns.com/kamiliyon/api/notices";
 var CHANGELOG_SOURCE = "https://raw.githubusercontent.com/MaxMuyalwa/kamiliyon/main/CHANGELOG.md";
-var CHANGELOG_PAGE = "https://www.mrmaxdesigns.com/colorsbymax/docs#changelog";
+var CHANGELOG_PAGE = "https://www.mrmaxdesigns.com/kamiliyon/docs#changelog";
 var UPDATE_COMMAND = "npm install kamiliyon@latest";
 var updatePrompt = (latest) => `Update Kamiliyon in this project to the latest version${latest ? ` (${latest})` : ""}: run ${UPDATE_COMMAND}, then read the changelog at ${CHANGELOG_PAGE} for every version since the one installed, and make any changes its "Upgrading" notes ask for. If the site has a Kamiliyon pre-paint script copied into its HTML, replace it with the current prePaintScript() output. Don't change anything else.`;
 var DAY = 864e5;

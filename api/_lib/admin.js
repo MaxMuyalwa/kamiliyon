@@ -7,12 +7,12 @@
 //   SESSION_SECRET         a long random string that signs the session cookie
 //   GITHUB_CONTENT_TOKEN   a fine-grained token with Contents read and write on this repo only
 //   CONTENT_BRANCH         where posts and testimonials are saved (default "content")
-//   SITE_URL               the site's address (default https://www.mrmaxdesigns.com/colorsbymax)
+//   SITE_URL               the site's address (default https://www.mrmaxdesigns.com/kamiliyon)
 
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto'
 
 export const REPO = 'MaxMuyalwa/kamiliyon'
-export const SITE_URL = (process.env.SITE_URL || 'https://www.mrmaxdesigns.com/colorsbymax').replace(/\/$/, '')
+export const SITE_URL = (process.env.SITE_URL || 'https://www.mrmaxdesigns.com/kamiliyon').replace(/\/$/, '')
 export const CALLBACK = `${SITE_URL}/api/admin/callback`
 export const BRANCH = process.env.CONTENT_BRANCH || 'content'
 const ADMIN = (process.env.ADMIN_GITHUB_LOGIN || 'MaxMuyalwa').toLowerCase()

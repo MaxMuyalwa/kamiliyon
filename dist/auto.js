@@ -1,4 +1,4 @@
-import { n as ThemeProvider, t as ThemeSwitcher } from "./ThemeSwitcher-D0ZIH3ci.js";
+import { n as ThemeProvider, t as ThemeSwitcher } from "./ThemeSwitcher-BvPKBmhe.js";
 import { createElement } from "react";
 import { createRoot } from "react-dom/client";
 //#region src/auto.js
