@@ -5,7 +5,7 @@
   },
   "announcement": {
     "on": false,
-    "text": "Welcome to colorsbymax, a design tool I’m building to help make websites more unique. It’s still in BETA, so explore, experiment, and share your feedback. Enjoy!!!",
+    "text": "Welcome to Kamiliyon, a design tool I’m building to help make websites more unique. It’s still in BETA, so explore, experiment, and share your feedback. Enjoy!!!",
     "link": "https://www.mrmaxdesigns.com/colorsbymax/docs#changelog",
     "label": "ChangeLogs",
     "tone": "brand"
@@ -28,5 +28,5 @@
       "date": "2026-10-01"
     }
   ],
-  "updated": "2026-11-05T19:12:27.201Z"
+  "updated": "2026-11-05T19:13:07.667Z"
 }
